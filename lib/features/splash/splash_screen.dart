@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../auth/sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const SignInScreen()),

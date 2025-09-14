@@ -4,25 +4,27 @@ import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/features/navigations/genealogy_screen.dart';
-import 'package:tipl_app/features/navigations/home_screen.dart';
-import 'package:tipl_app/features/navigations/profile_screen.dart';
 import 'package:tipl_app/features/navigations/suggestion_screen.dart';
+import 'package:tipl_app/features/navigations/user/user_home_screen.dart';
+import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
 import 'package:tipl_app/features/navigations/wallet_screen.dart';
+import 'package:tipl_app/features/notification_screen.dart';
 
 
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class UserDashboardScreen extends StatefulWidget {
+  const UserDashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<UserDashboardScreen> createState() => _UserDashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int _notificationCount = 3;
   int _bottomNavIndex = 0;
-  final List<Widget> _screens = [HomeScreen(),WalletScreen(),GenealogyScreen(),ProfileScreen(),SuggestionScreen()];
+  final List<Widget> _screens = [UserHomeScreen(),WalletScreen(),GenealogyScreen(),UserProfileScreen(),SuggestionScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // if(canVibrate){
         //   Haptics.vibrate(HapticsType.selection);
         // }
+        if(!mounted) return;
         Haptics.canVibrate().then((canVibrate){
           if(canVibrate){
             Haptics.vibrate(HapticsType.selection);
@@ -124,6 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if(mounted)
                     setState(() {
                       _notificationCount = 0;
+                      navigateWithAnimation(context, NotificationsScreen());
                     });
                 },
                 icon: const Icon(Iconsax.notification_bing, size: 25,color: Colors.black,),

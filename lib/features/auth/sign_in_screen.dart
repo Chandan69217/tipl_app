@@ -7,9 +7,11 @@ import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/features/auth/forget_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
-import 'package:tipl_app/features/dashboard/dashboard_screen.dart';
+import 'package:tipl_app/features/dashboard/admin/admin_dashboard_screen.dart';
+import 'package:tipl_app/features/dashboard/users/user_dashboard_screen.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+
 
 
 class SignInScreen extends StatefulWidget {
@@ -196,10 +198,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             const SizedBox(height: 16),
 
                             // Login Button
-                            CustomButton(
-                              iconData: Iconsax.login,
-                                text: "Sign In", onPressed:_onSignIn,
-                            ),
+                          CustomButton(
+                            iconData: Iconsax.login,
+                            text: "Sign In", onPressed:_onSignIn,
+                          ),
                             const SizedBox(height: 24),
                           ],
                         ),
@@ -276,7 +278,12 @@ class _SignInScreenState extends State<SignInScreen> {
       return null;
     }
 
-    navigatePushReplacementWithAnimation(context, DashboardScreen());
+    final userId = _emailController.text;
+    if(userId == 'admin'){
+      navigatePushReplacementWithAnimation(context, AdminDashboardScreen());
+      return;
+    }
+    navigatePushReplacementWithAnimation(context, UserDashboardScreen());
   }
 
 }

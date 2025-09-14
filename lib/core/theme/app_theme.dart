@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 
@@ -8,9 +9,17 @@ class AppTheme {
     textTheme: GoogleFonts.montserratTextTheme(),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
-      foregroundColor: CustColors.white,
+      foregroundColor: Colors.black,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.black,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.dark,
+      ),
       elevation: 0,
-      titleTextStyle: TextStyle(fontSize: 12,color: CustColors.white),
+      titleTextStyle: TextStyle(fontSize: 18,color: Colors.black),
+    ),
+    cardTheme: CardThemeData(
+      color: CustColors.white
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
