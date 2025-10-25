@@ -10,9 +10,11 @@ class SnackBarHelper {
       }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(color: textColor, fontSize: 14),
+        content: Center(
+          child: Text(
+            message,
+            style: TextStyle(color: textColor, fontSize: 14),
+          ),
         ),
         backgroundColor: backgroundColor,
         duration: Duration(seconds: durationSeconds),

@@ -13,6 +13,7 @@ class CustomMessageDialog {
         VoidCallback? onConfirm,
         String? cancelText,
         VoidCallback? onCancel,
+        bool rootNavigation = false,
         Color confirmColor = Colors.teal,
       }) {
     showDialog(
@@ -20,7 +21,7 @@ class CustomMessageDialog {
       barrierDismissible: false,
       builder: (context) {
         return Dialog(
-          insetPadding: const EdgeInsets.symmetric(horizontal: 12),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
           backgroundColor: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -115,8 +116,10 @@ class CustomMessageDialog {
                             horizontal: 18, vertical: 12),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
-                        if (onConfirm != null) onConfirm();
+                        Navigator.of(context).pop();
+                        WidgetsBinding.instance.addPostFrameCallback((duration){
+                          if (onConfirm != null) onConfirm();
+                        });
                       },
                       child: Text(
                         confirmText,

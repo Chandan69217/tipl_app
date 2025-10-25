@@ -5,6 +5,8 @@ import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/navigations/admin/admin_home_screen.dart';
 import 'package:tipl_app/features/navigations/admin/admin_wallet_screen.dart';
@@ -146,7 +148,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         IconButton(
           icon: const Icon(Iconsax.logout, color: Colors.redAccent),
           onPressed: () {
-
+            Pref.Logout();
+            navigatePushAndRemoveUntilWithAnimation(context, SignInScreen());
           },
         ),
         SizedBox(width: 20.0,),

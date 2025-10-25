@@ -1,10 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tipl_app/api_service/api_url.dart';
+import 'package:tipl_app/api_service/handle_reposone.dart';
+import 'package:tipl_app/api_service/log_api_response.dart';
+import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
+import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/auth/forget_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/dashboard/admin/admin_dashboard_screen.dart';
@@ -24,14 +35,29 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isRemember = true;
+  bool _isRemember = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  bool _isLoading = false;
   bool obscurePassword = true;
 
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init()async{
+    final saved_email = Pref.instance.getString(PrefConst.SAVED_EMAIL)??'';
+    final saved_password = Pref.instance.getString(PrefConst.SAVED_PASSWORD)??'';
+    WidgetsBinding.instance.addPostFrameCallback((duration){
+      setState(() {
+        if(saved_email.isNotEmpty||saved_password.isNotEmpty){
+          _isRemember = true;
+        }
+        _emailController.text = saved_email;
+        _passwordController.text = saved_password;
+      });
+    });
   }
 
   @override
@@ -147,7 +173,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             CustomTextField(
                               isRequired: true,
                               prefixIcon: Icon(Iconsax.personalcard),
-                              label: "Associate ID",
+                              label: "Email ID",
                               controller: _emailController,
                             ),
                             const SizedBox(height: 16),
@@ -173,6 +199,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                           setState(() {
                                             _isRemember = !_isRemember;
                                           });
+                                          if(_isRemember){
+                                            Pref.instance.setString(PrefConst.SAVED_EMAIL, _emailController.text);
+                                            Pref.instance.setString(PrefConst.SAVED_PASSWORD, _passwordController.text);
+                                          }else{
+                                            Pref.instance.remove(PrefConst.SAVED_EMAIL);
+                                            Pref.instance.remove(PrefConst.SAVED_PASSWORD);
+                                          }
                                         }
                                       },
                                     ),
@@ -198,7 +231,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             const SizedBox(height: 16),
 
                             // Login Button
-                          CustomButton(
+                          _isLoading ? CustomCircularIndicator() : CustomButton(
                             iconData: Iconsax.login,
                             text: "Sign In", onPressed:_onSignIn,
                           ),
@@ -278,12 +311,65 @@ class _SignInScreenState extends State<SignInScreen> {
       return null;
     }
 
+    final connection = ConnectivityService();
+    if(connection.isConnected.value){
+      SnackBarHelper.show(context, message: 'No Internet Connection.');
+      return;
+    }
+    setState(() {
+      _isLoading = true;
+    });
+
     final userId = _emailController.text;
+    final password = _passwordController.text;
     if(userId == 'admin'){
       navigatePushReplacementWithAnimation(context, AdminDashboardScreen());
       return;
     }
-    navigatePushReplacementWithAnimation(context, UserDashboardScreen());
+    
+    try{
+      final url = Uri.https(Urls.baseUrl,Urls.login);
+      final body = {
+        'email' : userId,
+        'transaction_password': password
+      };
+      final response = await post(url,body: json.encode(body),headers: {
+        'content-type': 'Application/json'
+      });
+      printAPIResponse(response);
+      if(response.statusCode == 200){
+        final value = json.decode(response.body) as Map<String,dynamic>;
+        final status = value['isSuccess'];
+        final message = value['message'];
+        if(status){
+          final data = value['data'] as Map<String,dynamic>;
+          final member_id = data['member_id']??'';
+          final sponsor_id = data['sponsor_id'];
+          final token = data['token']??'';
+          Pref.instance.setBool(PrefConst.IS_LOGIN, true);
+          Pref.instance.setString(PrefConst.MEMBER_ID, member_id);
+          Pref.instance.setString(PrefConst.TOKEN, token);
+          if(sponsor_id != null){
+            Pref.instance.setString(PrefConst.SPONSOR_ID,sponsor_id);
+          }
+          navigatePushReplacementWithAnimation(context, sponsor_id != null ? UserDashboardScreen() : AdminDashboardScreen());
+        }else{
+          CustomMessageDialog.show(context, title: 'Invalid Credentials', message: message);
+        }
+
+      }else if(response.statusCode == 400){
+        SnackBarHelper.show(context, message: 'credentials are invalid');
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exceptin,trace){
+      print('Exception: ${exceptin},Trace: ${trace}');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
   }
 
 }

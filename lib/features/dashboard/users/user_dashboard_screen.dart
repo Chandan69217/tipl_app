@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tipl_app/api_service/profile_api_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/features/navigations/genealogy_screen.dart';
 import 'package:tipl_app/features/navigations/suggestion_screen.dart';
+import 'package:tipl_app/features/navigations/user/update_profile/update_profile.dart';
 import 'package:tipl_app/features/navigations/user/user_home_screen.dart';
 import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
 import 'package:tipl_app/features/navigations/wallet_screen.dart';
@@ -25,6 +28,17 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int _notificationCount = 3;
   int _bottomNavIndex = 0;
   final List<Widget> _screens = [UserHomeScreen(),WalletScreen(),GenealogyScreen(),UserProfileScreen(),SuggestionScreen()];
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((duraton)async{
+      if(!await ProfileAPIService(context: context).isProfileCompleted()){
+        UpdateProfile.show(context);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

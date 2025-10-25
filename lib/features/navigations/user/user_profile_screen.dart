@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_button.dart';
+import 'package:tipl_app/features/auth/sign_in_screen.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -130,8 +134,15 @@ class UserProfileScreen extends StatelessWidget {
 
           // Contact Details Card
          addressDetailCard(),
-          const SizedBox(height: 20),
-
+          const SizedBox(height: 10),
+          CustomButton(
+            text: 'Log Out',
+            color: Colors.red,
+            iconData: Iconsax.logout,
+            onPressed: (){
+             Pref.Logout();
+              navigatePushAndRemoveUntilWithAnimation(context, SignInScreen());
+          },)
         ],
       ),
     );
@@ -298,3 +309,9 @@ class UserProfileScreen extends StatelessWidget {
 
 
 }
+
+
+
+
+
+
