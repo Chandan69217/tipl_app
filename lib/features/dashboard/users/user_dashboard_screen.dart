@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 import 'package:tipl_app/api_service/profile_api_service.dart';
+import 'package:tipl_app/core/providers/user_profile_provider.dart';
+import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
-import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_network_image.dart';
+import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigations/genealogy_screen.dart';
 import 'package:tipl_app/features/navigations/suggestion_screen.dart';
+import 'package:tipl_app/features/navigations/user/id_card.dart';
 import 'package:tipl_app/features/navigations/user/update_profile/update_profile.dart';
 import 'package:tipl_app/features/navigations/user/user_home_screen.dart';
 import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
+import 'package:tipl_app/features/navigations/user/welcome_letter.dart';
 import 'package:tipl_app/features/navigations/wallet_screen.dart';
 import 'package:tipl_app/features/notification_screen.dart';
 
@@ -33,9 +39,15 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((duraton)async{
-      if(!await ProfileAPIService(context: context).isProfileCompleted()){
-        UpdateProfile.show(context);
+    checkProfileCompleted();
+  }
+
+  void checkProfileCompleted() {
+    ConnectivityService().isConnected.addListener(() async {
+      if (!ConnectivityService().isConnected.value) {
+        if (!await ProfileAPIService(context: context).isProfileCompleted()) {
+          UpdateProfile.show(context);
+        }
       }
     });
   }
@@ -112,24 +124,29 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
           statusBarIconBrightness: Brightness.dark
       ),
       elevation: 0,
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.grey.shade200,
-            child: Icon(Iconsax.profile_circle,color: Colors.black,size: 28,),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("Chandan Sharma",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.black)),
-              Text("chandan@example.com",
-                  style: TextStyle(fontSize: 12, color: Colors.black45,)),
+      title: Consumer<UserProfileProvider>(
+        builder: (context,value,child) {
+          final data  = value.data;
+          return Row(
+            children: [
+              CustomNetworkImage(
+                width: 36,
+                height: 36,
+                imageUrl: data.profile,
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data.fullName,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600,color: Colors.black)),
+                  Text(data.email,
+                      style: TextStyle(fontSize: 12, color: Colors.black45,)),
+                ],
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
       actions: [
         Padding(
@@ -169,6 +186,27 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
             ],
           ),
         ),
+        if (_bottomNavIndex == 3) ...[
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'change_password') {
+                showChangePasswordBottomSheet(context);
+              }else if('view_card' == value){
+                navigateWithAnimation(context, IdCardScreen());
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                value: 'view_card',
+                child: Text('View Card'),
+              ),
+              const PopupMenuItem(
+                value: 'change_password',
+                child: Text('Change Password'),
+              ),
+            ],
+          ),
+        ]
       ],
     );
   }

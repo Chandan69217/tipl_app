@@ -205,7 +205,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     .map<DropdownMenuItem<String>>(
                                       (v) => DropdownMenuItem(
                                     child: Text(v),
-                                    value: v,
+                                    value: v.toLowerCase(),
                                   ),
                                 )
                                     .toList(),

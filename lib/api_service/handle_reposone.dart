@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 
 
-void handleApiResponse(BuildContext context, http.Response response) {
+void handleApiResponse(BuildContext? context, http.Response response) {
 
   String message = "Something went wrong. Please try again.";
 
@@ -38,6 +38,7 @@ void handleApiResponse(BuildContext context, http.Response response) {
       message = "Error ${response.statusCode}: $message";
   }
 
+  if(context != null)
   CustomMessageDialog.show(context, title: 'Error', message: message,iconColor: Colors.red,icon: Icons.warning_rounded,);
 
 }

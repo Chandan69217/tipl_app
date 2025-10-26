@@ -21,6 +21,19 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: CustColors.white
     ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      textStyle: const TextStyle(
+        color: Colors.black87,
+        fontSize: 16,
+      ),
+      position: PopupMenuPosition.under,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

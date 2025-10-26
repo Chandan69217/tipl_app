@@ -108,7 +108,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                               CustomTextField(
                                 isRequired: true,
                                 prefixIcon: Icon(Iconsax.personalcard),
-                                label: "Associate ID",
+                                label: "Member ID",
                                 controller: _associateIdController,
                               ),
                               const SizedBox(height: 16),

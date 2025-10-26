@@ -98,6 +98,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             }:null),
             decoration: InputDecoration(
               hintText: widget.hintText??widget.label,
+              counterText: '',
               contentPadding: EdgeInsets.symmetric(horizontal: 4,vertical: 14),
               prefixIcon: widget.prefixIcon,
               suffixIcon:widget.suffixIcon != null ? widget.suffixIcon: widget.obscureText ? IconButton(onPressed: (){
