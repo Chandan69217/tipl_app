@@ -8,6 +8,8 @@ class UserProfile {
     required this.sponsorId,
     required this.sponsorName,
     required this.position,
+    required this.packageType,
+    required this.panNumber,
     required this.fullName,
     required this.mobileNo,
     required this.email,
@@ -20,6 +22,8 @@ class UserProfile {
     required this.createdAt,
   });
 
+  final String panNumber;
+  final String packageType;
   final String memberId;
   final String profile;
   final String maritalStatus;
@@ -43,12 +47,14 @@ class UserProfile {
       memberId: json["member_id"] ?? "N/A",
       profile: json["profile"] ?? "",
       maritalStatus: json["marital_status"] ?? "N/A",
-      dob: json["dob"] ?? "N/A",
+      packageType: json["package_type"] ?? "N/A",
+      dob: json["date_of_birth"] ?? "N/A",
       sponsorId: json["sponsor_id"] ?? "N/A",
       sponsorName: json["sponsor_name"] ?? "N/A",
       position: json["position"] ?? "N/A",
       fullName: json["full_name"] ?? "N/A",
       mobileNo: json["mobile_no"] ?? "N/A",
+      panNumber: json["pan_number"] ?? "N/A",
       email: json["email"] ?? "N/A",
       gender: json["gender"] ?? "N/A",
       state: json["state"] ?? "N/A",

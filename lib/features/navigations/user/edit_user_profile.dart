@@ -8,7 +8,7 @@ import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
-import 'package:tipl_app/core/providers/user_profile_provider.dart';
+import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/TextFieldFormatter/uppercase_formatter.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
@@ -151,7 +151,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
                             onChanged: (value) {
                               if (mounted) {
                                 setState(() {
-                                  _selectedGender = value;
+                                  _selectedMaritalStatus = value;
                                 });
                               }
                             },
@@ -213,6 +213,8 @@ class _EditUserProfileState extends State<EditUserProfile> {
                       label: 'Pin Code',
                       controller: _pinCodeController,
                       isRequired: true,
+                      textInputType: TextInputType.number,
+                      maxLength: 6,
                     ),
                     const SizedBox(height: 16),
                     CustomTextField(
@@ -272,6 +274,8 @@ class _EditUserProfileState extends State<EditUserProfile> {
     try {
       final updatedData = UserProfile(
           memberId: 'N/A',
+          panNumber: 'N/A',
+          packageType: 'N/A',
           profile: _selectedProfUrl??'N/A',
           maritalStatus: _selectedMaritalStatus??'N/A',
           dob: _selectedDOB != null ? '${_selectedDOB?.year}-${_selectedDOB?.month}-${_selectedDOB?.day}':'N/A',

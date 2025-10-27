@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
@@ -10,7 +12,7 @@ import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/navigations/admin/admin_home_screen.dart';
 import 'package:tipl_app/features/navigations/admin/admin_wallet_screen.dart';
-import 'package:tipl_app/features/navigations/admin/manage_user_screen.dart';
+import 'package:tipl_app/features/navigations/admin/manage_users/manage_user_screen.dart';
 import 'package:tipl_app/features/navigations/admin/reports_screen.dart';
 import 'package:tipl_app/features/navigations/admin/settings_screen.dart';
 import 'package:tipl_app/features/notification_screen.dart';
@@ -27,14 +29,25 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _bottomNavIndex = 0;
 
-  final List<Widget> _screens = [
-    AdminHomeScreen(),
-    AdminWalletScreen(),
-    ManageUsersScreen(),
-    ReportsScreen(),
-    SettingsScreen()
-  ];
+  late final List<Widget> _screens;
 
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      AdminHomeScreen(onUpdate: (){
+        WidgetsBinding.instance.addPostFrameCallback((duration){
+          setState(() {
+            _bottomNavIndex = 2;
+          });
+        });
+      },),
+      AdminWalletScreen(),
+      ManageUsersScreen(),
+      ReportsScreen(),
+      SettingsScreen()
+    ];
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,28 +128,32 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       ),
       backgroundColor: CustColors.white,
       elevation: 0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.blue.shade50,
-            child: Icon(Iconsax.shield_tick, color: Colors.blue, size: 26),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("Admin Panel",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black)),
-              Text("admin@example.com",
-                  style: TextStyle(fontSize: 12, color: Colors.black45)),
+      title: Consumer<UserProfileProvider>(
+        builder: (context, value, child) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: Colors.blue.shade50,
+                child: Icon(Iconsax.shield_tick, color: Colors.blue, size: 26),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:  [
+                  Text('${value.data.fullName} (Admin)',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black)),
+                  Text(value.data.email,
+                      style: TextStyle(fontSize: 12, color: Colors.black45)),
+                ],
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
       actions: [
         IconButton(

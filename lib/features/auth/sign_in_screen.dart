@@ -10,7 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
-import 'package:tipl_app/core/providers/user_profile_provider.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
+import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
@@ -359,7 +360,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Pref.instance.setString(PrefConst.SAVED_EMAIL, _emailController.text);
             Pref.instance.setString(PrefConst.SAVED_PASSWORD, _passwordController.text);
           }
-          Provider.of<UserProfileProvider>(context, listen: false).initialized();
+          RecallProvider(context: context);
           navigatePushReplacementWithAnimation(context, sponsor_id != null ? UserDashboardScreen() : AdminDashboardScreen());
         }else{
           CustomMessageDialog.show(context, title: 'Invalid Credentials', message: message);

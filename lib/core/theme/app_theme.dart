@@ -70,5 +70,13 @@ class AppTheme {
         ),
       ),
     ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+          foregroundColor: CustColors.blue,
+          backgroundColor: CustColors.grey.withValues(alpha: 0.1),
+          padding: EdgeInsets.symmetric(horizontal: 18,vertical: 0),
+          textStyle: TextStyle(fontSize: 14,fontWeight:FontWeight.w700)
+      ),
+    )
   );
 }

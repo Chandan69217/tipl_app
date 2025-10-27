@@ -20,4 +20,8 @@ class UserProfileProvider extends ChangeNotifier{
     return data;
   }
 
+  void clear()async{
+    data = UserProfile.fromJson({});
+  }
+
 }
