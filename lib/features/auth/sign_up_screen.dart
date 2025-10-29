@@ -340,6 +340,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 label: 'Pin Code',
                                 controller: _pinCodeController,
                                 isRequired: true,
+                                maxLength: 6,
                               ),
                               const SizedBox(height: 16),
                               CustomTextField(

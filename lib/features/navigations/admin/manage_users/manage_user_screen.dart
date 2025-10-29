@@ -132,10 +132,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                   value: isActive ? "block" : 'unblock',
                                   child: Text(isActive ? "Block User": 'Unblock User'),
                                 ),
-                                PopupMenuItem(
-                                  value: "delete",
-                                  child: Text("Delete User"),
-                                ),
+                                // PopupMenuItem(
+                                //   value: "delete",
+                                //   child: Text("Delete User"),
+                                // ),
                               ];
                             },
                           ),

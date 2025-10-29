@@ -10,6 +10,8 @@ import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
 
+import 'manage_banks/bank_details_list_screen.dart';
+
 
 
 class AdminHomeScreen extends StatelessWidget {
@@ -32,11 +34,11 @@ class AdminHomeScreen extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.2,
+            childAspectRatio: 1.6,
             children: [
-              Consumer<AllUserDetailsProvider>(builder: (context, value, child) {
-                return _dashboardCard(Iconsax.people, "Total Consumers", value.totalUser.toString(), Colors.blue);
-              },),
+              // Consumer<AllUserDetailsProvider>(builder: (context, value, child) {
+              //   return _dashboardCard(Iconsax.people, "Total Consumers", value.totalUser.toString(), Colors.blue);
+              // },),
               Consumer<AllUserDetailsProvider>(builder: (context, value, child) {
                 return _dashboardCard(Iconsax.user_tag, "Active Users", "${value.activeUser}", Colors.green);
               },),
@@ -46,10 +48,149 @@ class AdminHomeScreen extends StatelessWidget {
 
               _dashboardCard(Iconsax.wallet, "Total Income", "₹ 15,40,000", Colors.purple),
               _dashboardCard(Iconsax.money, "Total Withdrawals", "₹ 8,20,000", Colors.orange),
-              _dashboardCard(Iconsax.activity, "Pending Requests", "34", Colors.teal),
+              // _dashboardCard(Iconsax.activity, "Pending Requests", "34", Colors.teal),
             ],
           ),
+          const SizedBox(height: 20),
+          /// Menu Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Menu',style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),),
+              const SizedBox(height: 20,),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 6,
+                mainAxisSpacing: 6,
+                childAspectRatio: 1.3,
+                children: [
+                  _buildMenuCard(
+                    context,
+                    icon: Iconsax.bank,
+                    label: "All Banks",
+                    color: Colors.deepPurple,
+                    onPressed: () {
+                      navigateWithAnimation(context, BankDetailsListScreen(bankDetails: [
+                        {
+                          "id": 1,
+                          "member_id": "NERUPL100012",
+                          "account_name": "ucvuh. hi",
+                          "account_no": "668533606",
+                          "bank_name": "ycycu",
+                          "branch_name": "hchc",
+                          "ifsc_code": "PUNB0014110",
+                          "account_type": "Saving",
+                          "pan_number": "YFYCUV",
+                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
+                          "bank_account_photo": null,
+                          "createdAt": "2025-10-29T12:58:12.000Z",
+                          "updatedAt": "2025-10-29T16:31:51.000Z"
+                        },
+                        {
+                          "id": 2,
+                          "member_id": "NERUPL100012",
+                          "account_name": "ucvuh. hi",
+                          "account_no": "668533606",
+                          "bank_name": "ycycu",
+                          "branch_name": "hchc",
+                          "ifsc_code": "PUNB0014110",
+                          "account_type": "Saving",
+                          "pan_number": "YFYCUV",
+                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
+                          "bank_account_photo": null,
+                          "createdAt": "2025-10-29T12:59:47.000Z",
+                          "updatedAt": "2025-10-29T16:31:51.000Z"
+                        },
+                        {
+                          "id": 3,
+                          "member_id": "NERUPL100012",
+                          "account_name": "ucvuh. hi",
+                          "account_no": "8665887486558",
+                          "bank_name": "ycycu",
+                          "branch_name": "hchc",
+                          "ifsc_code": "PUNB0014110",
+                          "account_type": "Saving",
+                          "pan_number": "YFYCUV",
+                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
+                          "bank_account_photo": null,
+                          "createdAt": "2025-10-29T13:11:51.000Z",
+                          "updatedAt": "2025-10-29T16:31:51.000Z"
+                        },
+                        {
+                          "id": 4,
+                          "member_id": "NERUPL100012",
+                          "account_name": "ucvuh. hi",
+                          "account_no": "96548992577",
+                          "bank_name": "ycycu",
+                          "branch_name": "hchc",
+                          "ifsc_code": "PUNB0014110",
+                          "account_type": "Saving",
+                          "pan_number": "YFYCUV",
+                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
+                          "bank_account_photo": null,
+                          "createdAt": "2025-10-29T13:19:49.000Z",
+                          "updatedAt": "2025-10-29T16:31:51.000Z"
+                        },
+                        {
+                          "id": 5,
+                          "member_id": "NERUPL100012",
+                          "account_name": "ucvuh. hi",
+                          "account_no": "34543534534634",
+                          "bank_name": "ycycu",
+                          "branch_name": "hchc",
+                          "ifsc_code": "PUNB0014110",
+                          "account_type": "Saving",
+                          "pan_number": "YFYCUV",
+                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
+                          "bank_account_photo": "bankdocs/compressed-bank_account_photo-1761744360431-675274898.jpg",
+                          "createdAt": "2025-10-29T13:26:01.000Z",
+                          "updatedAt": "2025-10-29T16:31:51.000Z"
+                        },
+                        {
+                          "id": 6,
+                          "member_id": "NERUPL100001",
+                          "account_name": "Dharmendra kumar",
+                          "account_no": "7724047276",
+                          "bank_name": "INDIAN BANK",
+                          "branch_name": "Kamta",
+                          "ifsc_code": "IDIB000K556",
+                          "account_type": "Saving",
+                          "pan_number": "CUSPK6018E",
+                          "pan_card_photo": null,
+                          "bank_account_photo": null,
+                          "createdAt": "2025-10-29T15:20:25.000Z",
+                          "updatedAt": "2025-10-29T15:20:25.000Z"
+                        }
+                      ],));
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Iconsax.user,
+                    label: "Manage Users",
+                    color: Colors.green,
+                    onPressed: () {
+                      // navigateWithAnimation(context, CreditWalletScreen());
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Iconsax.wallet,
+                    label: "Wallet Control",
+                    color: Colors.red,
+                    onPressed: () {
+                      // navigateWithAnimation(context, DebitWalletScreen());
+                    },
+                  ),
 
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
 
           // Recent Activity
@@ -70,18 +211,25 @@ class AdminHomeScreen extends StatelessWidget {
           Consumer<AllUserDetailsProvider>(
               builder: (context,value,child){
                 return ListView.builder(
-                  reverse: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                    itemCount: value.users.length < 6 ? value.users.length : 5,
-                    itemBuilder: (context,index){
-                    final user = value.users[index];
-                    final date = DateTime.tryParse(user['createdAt']??'');
+                  itemCount: value.users.length < 5 ? value.users.length : 5,
+                  itemBuilder: (context, index) {
+                    final reversedUsers = value.users.reversed.toList();
+                    final user = reversedUsers[index];
+
+                    final date = DateTime.tryParse(user['createdAt'] ?? '');
                     final formatDate = date != null ? DateFormat('dd MMM yyyy').format(date) : '-';
-                    return _recentTile(onTap: (){
-                      navigateWithAnimation(context, UserDetailsScreen(data: user));
-                    },user['full_name']??'N/A', user['status']??'-', formatDate);
-                    }
+
+                    return _recentTile(
+                      onTap: () {
+                        navigateWithAnimation(context, UserDetailsScreen(data: user));
+                      },
+                      user['full_name'] ?? 'N/A',
+                      user['status'] ?? '-',
+                      formatDate,
+                    );
+                  },
                 );
               }
           ),
@@ -96,6 +244,51 @@ class AdminHomeScreen extends StatelessWidget {
           _recentTile("Amit Singh", "₹ 12,000", "12 Sep 2025"),
           _recentTile("Priya Das", "₹ 8,500", "11 Sep 2025"),
           _recentTile("Karan Mehta", "₹ 5,000", "10 Sep 2025"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(
+      BuildContext context, {
+        required IconData icon,
+        required String label,
+        required Color color,
+        required VoidCallback onPressed,
+      }) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Circular colored background for icon
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 30,
+            ),
+          ),
+          const SizedBox(height: 6),
+          // Label
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: Colors.black87,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -117,18 +310,20 @@ class AdminHomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: color.withOpacity(0.15),
+            backgroundColor: color.withValues(alpha: 0.15),
             child: Icon(icon, color: color),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 4),
           Text(title,
               style: const TextStyle(fontSize: 13, color: Colors.black54)),
           const SizedBox(height: 6),
-          Text(value,
-              style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black)),
+          Expanded(
+            child: Text(value,
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black)),
+          ),
         ],
       ),
     );

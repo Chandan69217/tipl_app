@@ -9,7 +9,7 @@ import 'package:tipl_app/core/utilities/cust_colors.dart';
 class CustomNetworkImage extends StatelessWidget {
   final String? imageUrl;
   final File? selectedFile;
-  final IconData? placeHolder;
+  final String? placeHolder;
   final double width;
   final double height;
   final BorderRadius? borderRadius;
@@ -22,7 +22,7 @@ class CustomNetworkImage extends StatelessWidget {
     this.height = 160,
     this.borderRadius,
     this.selectedFile,
-    this.placeHolder,
+    this.placeHolder = 'assets/logo/profile_holder.webp',
     this.fit = BoxFit.cover,
   }) : super(key: key);
 
@@ -38,14 +38,15 @@ class CustomNetworkImage extends StatelessWidget {
           fit: BoxFit.cover,
         )
             : imageUrl==null || imageUrl!.isEmpty ?  Container(
-          padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: CustColors.grey.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(80),
           ),
-          child: Icon(
-            placeHolder??Iconsax.profile_circle,
-            size: width,
+          child: Image.asset(
+            placeHolder??'assets/logo/profile_holder.webp',
+            width: width,
+            height: height,
+            fit: fit,
           ),
         ): CachedNetworkImage(
           imageUrl: imageUrl ?? '',
@@ -62,7 +63,7 @@ class CustomNetworkImage extends StatelessWidget {
               ),
             ),
           ),
-          placeholder: (context, url) => Container(
+          placeholder: (context, url) => SizedBox(
             width: width,
             height: height,
             child: Center(
@@ -70,13 +71,12 @@ class CustomNetworkImage extends StatelessWidget {
             ),
           ),
           errorWidget: (context, url, error) => Container(
-            padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: CustColors.grey.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(80),
             ),
             child: placeHolder != null
-                ? Icon(placeHolder!, size: width,)
+                ? Image.asset(placeHolder!, width: width,height: height,fit: fit,)
                 : const Icon(Icons.broken_image, size: 40),
           ),
         )

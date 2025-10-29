@@ -92,7 +92,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         child: ValueListenableBuilder<bool>(
             valueListenable: ConnectivityService().isConnected,
             builder: (context,value,child){
-              if(!value){
+              if(value){
                 return NoInternetScreen(onRetry: (){
                   setState(() {
                     _profileData = ProfileAPIService(context: context).getProfileDetailsByMemberId();

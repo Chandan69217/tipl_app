@@ -17,6 +17,7 @@ class CustomTextField extends StatefulWidget {
   final VoidCallback? onFocusLost;
   final String? hintText;
   final int? maxLength;
+  final TextInputAction? textInputAction;
   final List<TextInputFormatter>? textInputFormatter;
   final TextAlignVertical? textAlignVertical;
 
@@ -33,6 +34,7 @@ class CustomTextField extends StatefulWidget {
     this.textAlignVertical,
     this.prefixIcon,
     this.onChange,
+    this.textInputAction,
     this.maxLength,
     this.onFocusLost,
     this.textInputFormatter,
@@ -80,6 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           child: TextFormField(
             keyboardType: widget.textInputType,
             controller: widget.controller,
+            textInputAction: widget.textInputAction,
             textAlignVertical: widget.textAlignVertical,
             obscureText: _visibility,
             onChanged: widget.onChange,

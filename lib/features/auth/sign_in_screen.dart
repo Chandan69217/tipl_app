@@ -223,6 +223,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                     navigateWithAnimation(context,ForgetScreen());
                                   },
                                   style: ButtonStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                        Colors.transparent
+                                    ),
                                     foregroundColor: WidgetStatePropertyAll(
                                       CustColors.blue,
                                     ),

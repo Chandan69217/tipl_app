@@ -34,7 +34,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int _notificationCount = 3;
   int _bottomNavIndex = 0;
   final List<Widget> _screens = [UserHomeScreen(),WalletScreen(),GenealogyScreen(),UserProfileScreen(),SuggestionScreen()];
-
+  bool _isUpdateProfileOpened = false;
 
   @override
   void initState() {
@@ -42,11 +42,16 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     checkProfileCompleted();
   }
 
-  void checkProfileCompleted() {
+  void checkProfileCompleted() async{
+    if (!await ProfileAPIService(context: context).isProfileCompleted() && ! ConnectivityService().isConnected.value) {
+    UpdateProfile.show(context);
+    _isUpdateProfileOpened = true;
+    }
     ConnectivityService().isConnected.addListener(() async {
       if (!ConnectivityService().isConnected.value) {
-        if (!await ProfileAPIService(context: context).isProfileCompleted()) {
+        if (!await ProfileAPIService(context: context).isProfileCompleted() && !_isUpdateProfileOpened) {
           UpdateProfile.show(context);
+          _isUpdateProfileOpened = true;
         }
       }
     });
@@ -116,7 +121,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     );
   }
 
-  AppBar _appBar() {
+  AppBar  _appBar() {
     return AppBar(
       systemOverlayStyle: SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,

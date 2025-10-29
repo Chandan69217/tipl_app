@@ -70,10 +70,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   value: isActive ? "block" : 'unblock',
                   child: Text(isActive ? "Block User": 'Unblock User'),
                 ),
-                PopupMenuItem(
-                  value: "delete",
-                  child: Text("Delete User"),
-                ),
+                // PopupMenuItem(
+                //   value: "delete",
+                //   child: Text("Delete User"),
+                // ),
               ];
             },
           )

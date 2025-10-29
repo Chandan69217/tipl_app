@@ -11,4 +11,6 @@ class Urls{
   static const String userIdCard = '/api/user/idCard';
   static const String getAllUsers = '/api/user/getAllUserDetails';
   static const String userUpdate = '/api/user/updateUser';
+  static const String addBankDetails = '/api/bank/addBankDetail';
+  static const String updateBankDetails = '/api/bank/updateBankDetail';
 }

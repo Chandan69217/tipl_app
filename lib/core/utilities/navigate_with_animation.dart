@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 
-void navigateWithAnimation(BuildContext context, Widget screen) {
-  Navigator.of(context).push(
+dynamic navigateWithAnimation(BuildContext context, Widget screen) async{
+  return await Navigator.of(context).push(
     PageRouteBuilder(
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, animation, secondaryAnimation) => screen,
