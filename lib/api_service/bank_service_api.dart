@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
+import 'package:tipl_app/core/utilities/compress_image.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 
@@ -114,10 +116,10 @@ class BankServiceAPI {
         ..fields['pan_number'] = pan_number
         ..fields['member_id'] = member_id ?? '';
 
-
-      final panBytes = await pan_img.readAsBytes();
-      final accBytes = await bank_acc_img.readAsBytes();
-
+      final compressed_pan_img = await compressImage(pan_img);
+      final compressed_bank_img = await compressImage(bank_acc_img);
+      final panBytes = await compressed_pan_img.readAsBytes();
+      final accBytes = await compressed_bank_img.readAsBytes();
       final panFile = http.MultipartFile.fromBytes(
         'pan_card_photo',
         panBytes,
@@ -208,7 +210,8 @@ class BankServiceAPI {
       if (pan_number != null && pan_number.isNotEmpty) request.fields['pan_number'] = pan_number;
 
       if (pan_img != null) {
-        final pan_img_bytes = await pan_img.readAsBytes();
+        final compress_pan_img = await compressImage(pan_img);
+        final pan_img_bytes = await compress_pan_img.readAsBytes();
         final multipartFile = await http.MultipartFile.fromBytes(
           'pan_card_photo',
           pan_img_bytes,
@@ -219,7 +222,8 @@ class BankServiceAPI {
       }
 
       if (bank_acc_img != null) {
-        final bank_acc_img_bytes = await bank_acc_img.readAsBytes();
+        final compress_bank_img = await compressImage(bank_acc_img);
+        final bank_acc_img_bytes = await compress_bank_img.readAsBytes();
         final multipartFile = await http.MultipartFile.fromBytes(
           'bank_account_photo',
           bank_acc_img_bytes,
@@ -263,6 +267,97 @@ class BankServiceAPI {
     }
 
     return false;
+  }
+  
+  
+  Future<List<dynamic>> getAllBankRecords()async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+    try{
+      final url  = Uri.https(Urls.baseUrl,Urls.getAllBankRecords);
+      final response = await get(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'Application/json'
+      });
+
+      printAPIResponse(response);
+      if(response.statusCode == 200){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          final data = body['data'] as List<dynamic>;
+          return data;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print("Exception: $exception,Trace: $trace");
+    }
+    return [];
+  }
+
+  Stream<String?> deleteBankRecords(Set<String> memberIds) async* {
+
+    try {
+      final token = Pref.instance.getString(PrefConst.TOKEN);
+
+      for (var memberId in memberIds) {
+        try {
+          final url = Uri.https(Urls.baseUrl, Urls.deleteBankRecords, {
+            'member_id': memberId,
+          });
+
+          final response = await delete(url, headers: {
+            'Authorization': 'Bearer $token',
+          });
+
+          if(response.statusCode == 200){
+            final body = json.decode(response.body) as Map<String, dynamic>;
+            final success = body['isSuccess'] ?? false;
+            if (success) {
+              yield memberId;
+            } else {
+              yield null;
+            }
+          }
+
+        } catch (exception) {
+          print('Exception deleting $memberId: $exception');
+          yield null;
+        }
+      }
+    } catch (exception, trace) {
+      print('Outer Exception: $exception\n$trace');
+      yield null;
+    }
+
+  }
+  
+  Future<Map<String,dynamic>?> getBankDetailsByMemberId({required String member_id})async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+    try{
+      final url = Uri.https(Urls.baseUrl,Urls.getBankDetails,{
+        'member_id' : member_id
+      });
+      final response = await get(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'Application/json'
+      });
+      printAPIResponse(response);
+      if(response.statusCode == 200){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          final data = body['data'];
+          return data;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print('Exception: ${exception},Trace: ${trace}');
+    }
+    return null;
   }
 
 }

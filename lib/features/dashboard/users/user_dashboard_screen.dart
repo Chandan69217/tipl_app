@@ -12,6 +12,7 @@ import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigations/genealogy_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 import 'package:tipl_app/features/navigations/suggestion_screen.dart';
 import 'package:tipl_app/features/navigations/user/id_card.dart';
 import 'package:tipl_app/features/navigations/user/update_profile/update_profile.dart';
@@ -33,7 +34,7 @@ class UserDashboardScreen extends StatefulWidget {
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int _notificationCount = 3;
   int _bottomNavIndex = 0;
-  final List<Widget> _screens = [UserHomeScreen(),WalletScreen(),GenealogyScreen(),UserProfileScreen(),SuggestionScreen()];
+  final List<Widget> _screens = [UserHomeScreen(),WalletScreen(),MeetingListScreen(),GenealogyScreen(),UserProfileScreen(),];
   bool _isUpdateProfileOpened = false;
 
   @override
@@ -84,8 +85,8 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
       splashColor: CustColors.majorelleBlue.withValues(alpha: 0.2),
       blurEffect: true,
       tabBuilder: (int index, bool isActive) {
-        final icons = [Iconsax.home, Iconsax.wallet,Iconsax.hierarchy,Iconsax.user,Iconsax.message_question];
-        final labels = ["Home", "Wallet",'Genealogy','Profile','Suggestion'];
+        final icons = [Iconsax.home, Iconsax.wallet,Iconsax.people,Iconsax.hierarchy,Iconsax.user];
+        final labels = ["Home", "Wallet",'Meetings','Genealogy','Profile'];
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -134,10 +135,15 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
           final data  = value.data;
           return Row(
             children: [
-              CustomNetworkImage(
-                width: 36,
-                height: 36,
-                imageUrl: data.profile,
+              GestureDetector(
+                onTap: (){
+                  navigateWithAnimation(context, UserProfileScreen(canPop: true,));
+                },
+                child: CustomNetworkImage(
+                  width: 36,
+                  height: 36,
+                  imageUrl: data.profile,
+                ),
               ),
               const SizedBox(width: 12),
               Column(
@@ -191,7 +197,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
             ],
           ),
         ),
-        if (_bottomNavIndex == 3) ...[
+        if (_bottomNavIndex == 4) ...[
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'change_password') {

@@ -71,7 +71,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
           Expanded(
             child: Consumer<AllUserDetailsProvider>(
               builder: (context, userProvider, child) {
-                final users = userProvider.filteredUsers;
+                final users = userProvider.filteredUsers.reversed.toList();
                 return  userProvider.filteredUsers.isEmpty
                     ? const Center(
                   child: Text(

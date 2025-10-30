@@ -8,6 +8,7 @@ import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
+import 'core/utilities/dashboard_type/dashboard_type.dart';
 import 'features/splash/splash_screen.dart';
 import 'core/theme/app_theme.dart';
 
@@ -17,6 +18,7 @@ void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   ConnectivityService().initialize(scaffoldMessengerKey);
   await Pref.initialized();
+  UserType.initialize();
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(
     MultiProvider(providers: [

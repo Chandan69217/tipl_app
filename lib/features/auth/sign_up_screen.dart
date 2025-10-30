@@ -20,8 +20,8 @@ import 'package:tipl_app/core/widgets/custom_text_field.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 
 class SignUpScreen extends StatefulWidget {
-  SignUpScreen({super.key});
-
+  SignUpScreen({super.key,this.canPop = false});
+  final bool canPop;
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -74,6 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   child: Column(
                     children: [
+                      if(!widget.canPop)
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,

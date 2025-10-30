@@ -8,6 +8,7 @@ import 'package:tipl_app/core/utilities/capitalize_first.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/connectivity/on_internet_screen.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
@@ -49,6 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
 
+    final isAdmin = UserRole.admin == UserType.role;
     return Scaffold(
       appBar: widget.canPop ? AppBar(
         title: Text('Profile'),
@@ -81,7 +83,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               if(value){
                 return NoInternetScreen(onRetry: (){
                   setState(() {
-                    Provider.of<UserProfileProvider>(context,listen: false).initialized();
+                    if(!ConnectivityService().isConnected.value){
+                      Provider.of<UserProfileProvider>(context,listen: false).initialized();
+                    }
                   });
                 });
               }else{
@@ -198,6 +202,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                if(!isAdmin)
                                 profileListTile(
                                   icon: Iconsax.document,
                                   title: "Welcome Letter",
@@ -207,20 +212,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   },
                                   iconColor: Colors.orangeAccent,
                                 ),
-                                const Divider(),
-                                profileListTile(
-                                    onTap: (){
-                                      navigateWithAnimation(context, _isBankDetailsCompleted ? ViewBankDetailsScreen():AddBankDetailsScreen(onSuccess: (){
-                                        setState(() {
-                                          _isBankDetailsCompleted = true;
-                                        });
-                                      },));
-                                    },
-                                    icon: Iconsax.bank,
-                                    title: 'Bank Details',
-                                    value: _isBankDetailsCompleted ? 'View your bank details' : 'Add your bank details',
-                                    iconColor: Colors.pinkAccent
-                                ),
+                                if(!isAdmin)...[
+                                  const Divider(),
+                                  profileListTile(
+                                      onTap: (){
+                                        navigateWithAnimation(context, _isBankDetailsCompleted ? ViewBankDetailsScreen():AddBankDetailsScreen(onSuccess: (){
+                                          setState(() {
+                                            _isBankDetailsCompleted = true;
+                                          });
+                                        },));
+                                      },
+                                      icon: Iconsax.bank,
+                                      title: 'Bank Details',
+                                      value: _isBankDetailsCompleted ? 'View your bank details' : 'Add your bank details',
+                                      iconColor: Colors.pinkAccent
+                                  ),
+                                ],
                                 const Divider(),
                                 profileListTile(
                                   icon: Iconsax.key,
@@ -228,20 +235,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   value: user.memberId,
                                   iconColor: Colors.green,
                                 ),
-                                const Divider(),
-                                profileListTile(
-                                  icon: Iconsax.key,
-                                  title: "Sponsor ID",
-                                  value: user.sponsorId,
-                                  iconColor: Colors.teal,
-                                ),
-                                const Divider(),
-                                profileListTile(
-                                  icon: Iconsax.user_edit,
-                                  title: "Sponsor Name",
-                                  value: user.sponsorName,
-                                  iconColor: Colors.deepPurple,
-                                ),
+
+                                if(!isAdmin)...[
+                                  const Divider(),
+                                  profileListTile(
+                                    icon: Iconsax.key,
+                                    title: "Sponsor ID",
+                                    value: user.sponsorId,
+                                    iconColor: Colors.teal,
+                                  ),
+                                  const Divider(),
+                                  profileListTile(
+                                    icon: Iconsax.user_edit,
+                                    title: "Sponsor Name",
+                                    value: user.sponsorName,
+                                    iconColor: Colors.deepPurple,
+                                  ),
+                                ],
+
                                 const Divider(),
         
                                 profileListTile(

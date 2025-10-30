@@ -13,4 +13,12 @@ class Urls{
   static const String userUpdate = '/api/user/updateUser';
   static const String addBankDetails = '/api/bank/addBankDetail';
   static const String updateBankDetails = '/api/bank/updateBankDetail';
+  static const String getBankDetails = '/api/bank/getBankDetail';
+  static const String getAllBankRecords = '/api/bank/getAllBankDetails';
+  static const String deleteBankRecords = '/api/bank/deleteBankDetail';
+
+          // Meeting URLS
+  static const String getMeeting = '/api/meetings/all';
+  static const String getMeetingByFilter = '/api/meetings/filter';
+  static const String addNewMeeting = '/api/meetings/add';
 }

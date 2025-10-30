@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/bank_service_api.dart';
 import 'package:tipl_app/core/utilities/TextFieldFormatter/uppercase_formatter.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
@@ -10,10 +12,215 @@ import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
+import 'package:tipl_app/core/widgets/image_viewer_screen.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
+
+// class ViewBankDetailsScreen extends StatefulWidget {
+//
+//
+//   const ViewBankDetailsScreen({super.key,});
+//
+//   @override
+//   State<ViewBankDetailsScreen> createState() => _ViewBankDetailsScreenState();
+// }
+//
+// class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
+//   late Map<String, dynamic> bankData;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+//
+//   void _editBankDetails() async {
+//
+//     final updatedData = await navigateWithAnimation(context, EditBankDetailsScreen(data: bankData));
+//     if (updatedData != null && mounted) {
+//       setState(() {
+//         // bankData = updatedData;
+//       });
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Bank Details"),
+//         actions: [
+//           IconButton(
+//             icon: const Icon(Iconsax.edit),
+//             onPressed: _editBankDetails,
+//           ),
+//         ],
+//       ),
+//       body: FutureBuilder<Map<String,dynamic>?>(
+//           future: BankServiceAPI(context: context).getBankDetails(),
+//         builder: (context, snapshot) {
+//             if(snapshot.connectionState == ConnectionState.waiting){
+//               return CustomCircularIndicator();
+//             }
+//             if(snapshot.hasData && snapshot.data != null){
+//               bankData = Map<String, dynamic>.from(snapshot.data!);
+//               return SingleChildScrollView(
+//                 padding: const EdgeInsets.all(20),
+//                 child: Column(
+//                   children: [
+//                     _buildDetailCard(context),
+//                     const SizedBox(height: 20),
+//                     // _buildImageCard("PAN Card Photo", bankData["pan_card_photo"]??''),
+//                     // const SizedBox(height: 16),
+//                     // _buildImageCard("Bank Account Photo", bankData["bank_account_photo"]??''),
+//                     // const SizedBox(height: 20,),
+//                   ],
+//                 ),
+//               );
+//             }else{
+//               return Center(
+//                 child: Text('Something went wrong !'),
+//               );
+//             }
+//         },
+//       ),
+//     );
+//   }
+//
+//   Widget _buildDetailCard(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16),
+//       child: Column(
+//         children: [
+//           _buildDetailRow(Iconsax.user, "Account Name", bankData["account_name"]??'N/A'),
+//           _buildDetailRow(Iconsax.card, "Account Number", bankData["account_no"]??'N/A'),
+//           _buildDetailRow(Iconsax.bank, "Bank Name", bankData["bank_name"]??'N/A'),
+//           _buildDetailRow(Iconsax.building_3, "Branch Name", bankData["branch_name"]??'N/A'),
+//           _buildDetailRow(Iconsax.code, "IFSC Code", bankData["ifsc_code"]??'N/A'),
+//           _buildDetailRow(Iconsax.briefcase, "Account Type", bankData["account_type"]??'N/A'),
+//           _buildDetailRow(Iconsax.document, "PAN Number", bankData["pan_number"]??'N/A'),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildDetailRow(IconData icon, String label, String? value) {
+//     return Container(
+//       margin: const EdgeInsets.symmetric(vertical: 8),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Icon(icon, color: Colors.teal, size: 22),
+//           const SizedBox(width: 12),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(label,
+//                     style: const TextStyle(
+//                         fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500)),
+//                 const SizedBox(height: 4),
+//                 Text(
+//                   value ?? "N/A",
+//                   style: const TextStyle(
+//                       fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildImageCard(String title, String? imagePath) {
+//     final bool hasImage = imagePath != null && imagePath.isNotEmpty;
+//     final bool isNetworkImage =  hasImage  && imagePath.startsWith('http');
+//
+//     bool isValidLocalFile(String path) {
+//       try {
+//         final file = File(path);
+//         return file.existsSync();
+//       } catch (_) {
+//         return false;
+//       }
+//     }
+//
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 14),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             title,
+//             style: const TextStyle(
+//               fontSize: 16,
+//               fontWeight: FontWeight.w600,
+//               color: Colors.black87,
+//             ),
+//           ),
+//           const SizedBox(height: 12),
+//
+//           if (hasImage)
+//             ClipRRect(
+//               borderRadius: BorderRadius.circular(10),
+//               child: isNetworkImage
+//                   ? CachedNetworkImage(
+//                 imageUrl: imagePath,
+//                 width: double.infinity,
+//                 height: 180,
+//                 fit: BoxFit.cover,
+//                 placeholder: (context, url) => Container(
+//                   height: 180,
+//                   alignment: Alignment.center,
+//                   child: const CircularProgressIndicator(color: Colors.teal),
+//                 ),
+//                 errorWidget: (context, url, error) => Container(
+//                   height: 180,
+//                   alignment: Alignment.center,
+//                   color: Colors.grey.shade200,
+//                   child: const Icon(Icons.broken_image, color: Colors.grey),
+//                 ),
+//               )
+//                   : isValidLocalFile(imagePath) ? Image.file(
+//                 File(imagePath),
+//                 width: double.infinity,
+//                 height: 180,
+//                 fit: BoxFit.cover,
+//               ):Container(
+//                 width: double.infinity,
+//                 height: 160,
+//                 alignment: Alignment.center,
+//                 decoration: BoxDecoration(
+//                   border: Border.all(color: Colors.black26),
+//                   borderRadius: BorderRadius.circular(10),
+//                 ),
+//                 child: const Text(
+//                   "No Image Uploaded",
+//                   style: TextStyle(color: Colors.black54),
+//                 ),
+//               ),
+//             )
+//           else
+//             Container(
+//               width: double.infinity,
+//               height: 160,
+//               alignment: Alignment.center,
+//               decoration: BoxDecoration(
+//                 border: Border.all(color: Colors.black26),
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//               child: const Text(
+//                 "No Image Uploaded",
+//                 style: TextStyle(color: Colors.black54),
+//               ),
+//             ),
+//         ],
+//       ),
+//     );
+//   }
+//
+// }
 
 class ViewBankDetailsScreen extends StatefulWidget {
-
-
   const ViewBankDetailsScreen({super.key,});
 
   @override
@@ -21,7 +228,7 @@ class ViewBankDetailsScreen extends StatefulWidget {
 }
 
 class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
-  late Map<String, dynamic> bankData;
+  late Map<String, dynamic> data;
 
   @override
   void initState() {
@@ -29,11 +236,9 @@ class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
   }
 
   void _editBankDetails() async {
-
-    final updatedData = await navigateWithAnimation(context, EditBankDetailsScreen(data: bankData));
+    final updatedData = await navigateWithAnimation(context, EditBankDetailsScreen(data: data));
     if (updatedData != null && mounted) {
       setState(() {
-        // bankData = updatedData;
       });
     }
   }
@@ -50,165 +255,197 @@ class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
           ),
         ],
       ),
+
       body: FutureBuilder<Map<String,dynamic>?>(
-          future: BankServiceAPI(context: context).getBankDetails(),
+        future: BankServiceAPI(context: context).getBankDetails(),
         builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return CustomCircularIndicator();
-            }
-            if(snapshot.hasData && snapshot.data != null){
-              bankData = Map<String, dynamic>.from(snapshot.data!);
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return CustomCircularIndicator();
+          }
+
+          if(snapshot.hasData && snapshot.data != null){
+            data = Map<String, dynamic>.from(snapshot.data!);
+            final String? panPhoto = data['pan_card_photo'];
+            final String? bankPhoto = data['bank_account_photo'];
+            final String baseUrl = "https://${Urls.baseUrl}/";
+            return  SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 30),
+              child: SafeArea(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildDetailCard(context),
-                    const SizedBox(height: 20),
-                    // _buildImageCard("PAN Card Photo", bankData["pan_card_photo"]??''),
-                    // const SizedBox(height: 16),
-                    // _buildImageCard("Bank Account Photo", bankData["bank_account_photo"]??''),
-                    // const SizedBox(height: 20,),
+                    _buildProfileHeader(context, data),
+                    const SizedBox(height: 24),
+                    _detailRow(
+                      Iconsax.user,
+                      Colors.orange,
+                      "Account Name",
+                      data['account_name'],
+                    ),
+                    _detailRow(
+                      Iconsax.card,
+                      Colors.blueAccent,
+                      "Account Number",
+                      data['account_no'],
+                      trailing: IconButton(
+                        icon: const Icon(Iconsax.copy, size: 18, color: Colors.grey),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: data['account_no'] ?? ""));
+                          SnackBarHelper.show(
+                              message: "Account number copied",
+                              context
+                          );
+                        },
+                      ),
+                    ),
+                    _detailRow(
+                      Iconsax.bank,
+                      Colors.teal,
+                      "Bank Name",
+                      data['bank_name'],
+                      trailing: IconButton(
+                        icon: const Icon(Iconsax.eye, size: 20, color: Colors.teal),
+                        onPressed: () {
+                          navigateWithAnimation(context, ImageViewerScreen(imageUrl: baseUrl + (bankPhoto??'')));
+                        },
+                      ),
+                    ),
+                    _detailRow(
+                      Iconsax.building,
+                      Colors.purpleAccent,
+                      "Branch Name",
+                      data['branch_name'],
+                    ),
+                    _detailRow(
+                      Iconsax.code,
+                      Colors.pinkAccent,
+                      "IFSC Code",
+                      data['ifsc_code'],
+                      trailing: IconButton(
+                        icon: const Icon(Icons.copy, size: 18, color: Colors.grey),
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: data['ifsc_code'] ?? ""));
+                          SnackBarHelper.show(context, message: "IFSC Code copied");
+                        },
+                      ),
+                    ),
+                    _detailRow(
+                      Iconsax.wallet_3,
+                      Colors.cyan,
+                      "Account Type",
+                      data['account_type'],
+                    ),
+                    _detailRow(
+                      Iconsax.document,
+                      Colors.blue,
+                      "PAN Number",
+                      data['pan_number'],
+                      trailing: IconButton(
+                        icon: const Icon(Iconsax.eye, size: 20, color: Colors.blue),
+                        onPressed: () {
+                          navigateWithAnimation(context, ImageViewerScreen(imageUrl: baseUrl + (panPhoto??'')));
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 30),
                   ],
                 ),
-              );
-            }else{
-              return Center(
-                child: Text('Something went wrong !'),
-              );
-            }
+              ),
+            );
+          }else{
+            return Center(
+              child: Text('Something went wrong !'),
+            );
+          }
         },
       ),
     );
   }
 
-  Widget _buildDetailCard(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          _buildDetailRow(Iconsax.user, "Account Name", bankData["account_name"]??'N/A'),
-          _buildDetailRow(Iconsax.card, "Account Number", bankData["account_no"]??'N/A'),
-          _buildDetailRow(Iconsax.bank, "Bank Name", bankData["bank_name"]??'N/A'),
-          _buildDetailRow(Iconsax.building_3, "Branch Name", bankData["branch_name"]??'N/A'),
-          _buildDetailRow(Iconsax.code, "IFSC Code", bankData["ifsc_code"]??'N/A'),
-          _buildDetailRow(Iconsax.briefcase, "Account Type", bankData["account_type"]??'N/A'),
-          _buildDetailRow(Iconsax.document, "PAN Number", bankData["pan_number"]??'N/A'),
-        ],
-      ),
+  Widget _buildProfileHeader(BuildContext context, Map<String, dynamic> data) {
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.teal,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Iconsax.bank, color: Colors.white, size: 45),
+            ),
+            // 🔹 View Profile button
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: InkWell(
+                onTap: () {
+                  // TODO: Navigate to user profile screen
+                },
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Iconsax.user, color: Colors.teal, size: 20),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          data['account_name'] ?? "Account Holder",
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          data['bank_name'] ?? "Bank Name",
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.black54,
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String? value) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+
+
+  Widget _detailRow(IconData icon,Color? iconColor ,String title, String? value,{
+    Widget? trailing,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.teal, size: 22),
+          Icon(icon, color: iconColor??Colors.black, size: 22),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label,
+                Text(title,
                     style: const TextStyle(
-                        fontSize: 14, color: Colors.black54, fontWeight: FontWeight.w500)),
-                const SizedBox(height: 4),
+                        color: Colors.black54,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500)),
                 Text(
-                  value ?? "N/A",
+                  value?.isNotEmpty == true ? value! : "N/A",
                   style: const TextStyle(
-                      fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600),
+                      color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageCard(String title, String? imagePath) {
-    final bool hasImage = imagePath != null && imagePath.isNotEmpty;
-    final bool isNetworkImage =  hasImage  && imagePath.startsWith('http');
-
-    bool isValidLocalFile(String path) {
-      try {
-        final file = File(path);
-        return file.existsSync();
-      } catch (_) {
-        return false;
-      }
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          if (hasImage)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: isNetworkImage
-                  ? CachedNetworkImage(
-                imageUrl: imagePath,
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  height: 180,
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(color: Colors.teal),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: 180,
-                  alignment: Alignment.center,
-                  color: Colors.grey.shade200,
-                  child: const Icon(Icons.broken_image, color: Colors.grey),
-                ),
-              )
-                  : isValidLocalFile(imagePath) ? Image.file(
-                File(imagePath),
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-              ):Container(
-                width: double.infinity,
-                height: 160,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black26),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  "No Image Uploaded",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-            )
-          else
-            Container(
-              width: double.infinity,
-              height: 160,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black26),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                "No Image Uploaded",
-                style: TextStyle(color: Colors.black54),
-              ),
-            ),
+          if (trailing != null) trailing,
         ],
       ),
     );
@@ -527,3 +764,4 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
   }
 
 }
+

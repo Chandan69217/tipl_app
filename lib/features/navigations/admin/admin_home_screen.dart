@@ -20,6 +20,23 @@ class AdminHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = 2;
+    if (screenWidth > 900) {
+      crossAxisCount = 4; // desktop/tablet
+    } else if (screenWidth > 600) {
+      crossAxisCount = 3; // tablet/large phone
+    }
+    double aspectRatio;
+    if (screenWidth < 350) {
+      aspectRatio = 0.9;
+    } else if (screenWidth < 600) {
+      aspectRatio = 1.2;
+    } else if (screenWidth < 900) {
+      aspectRatio = 1.3;
+    } else {
+      aspectRatio = 1.5;
+    }
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -31,10 +48,10 @@ class AdminHomeScreen extends StatelessWidget {
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
+            crossAxisCount: crossAxisCount,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 1.6,
+            childAspectRatio: aspectRatio,
             children: [
               // Consumer<AllUserDetailsProvider>(builder: (context, value, child) {
               //   return _dashboardCard(Iconsax.people, "Total Consumers", value.totalUser.toString(), Colors.blue);
@@ -74,98 +91,7 @@ class AdminHomeScreen extends StatelessWidget {
                     label: "All Banks",
                     color: Colors.deepPurple,
                     onPressed: () {
-                      navigateWithAnimation(context, BankDetailsListScreen(bankDetails: [
-                        {
-                          "id": 1,
-                          "member_id": "NERUPL100012",
-                          "account_name": "ucvuh. hi",
-                          "account_no": "668533606",
-                          "bank_name": "ycycu",
-                          "branch_name": "hchc",
-                          "ifsc_code": "PUNB0014110",
-                          "account_type": "Saving",
-                          "pan_number": "YFYCUV",
-                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
-                          "bank_account_photo": null,
-                          "createdAt": "2025-10-29T12:58:12.000Z",
-                          "updatedAt": "2025-10-29T16:31:51.000Z"
-                        },
-                        {
-                          "id": 2,
-                          "member_id": "NERUPL100012",
-                          "account_name": "ucvuh. hi",
-                          "account_no": "668533606",
-                          "bank_name": "ycycu",
-                          "branch_name": "hchc",
-                          "ifsc_code": "PUNB0014110",
-                          "account_type": "Saving",
-                          "pan_number": "YFYCUV",
-                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
-                          "bank_account_photo": null,
-                          "createdAt": "2025-10-29T12:59:47.000Z",
-                          "updatedAt": "2025-10-29T16:31:51.000Z"
-                        },
-                        {
-                          "id": 3,
-                          "member_id": "NERUPL100012",
-                          "account_name": "ucvuh. hi",
-                          "account_no": "8665887486558",
-                          "bank_name": "ycycu",
-                          "branch_name": "hchc",
-                          "ifsc_code": "PUNB0014110",
-                          "account_type": "Saving",
-                          "pan_number": "YFYCUV",
-                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
-                          "bank_account_photo": null,
-                          "createdAt": "2025-10-29T13:11:51.000Z",
-                          "updatedAt": "2025-10-29T16:31:51.000Z"
-                        },
-                        {
-                          "id": 4,
-                          "member_id": "NERUPL100012",
-                          "account_name": "ucvuh. hi",
-                          "account_no": "96548992577",
-                          "bank_name": "ycycu",
-                          "branch_name": "hchc",
-                          "ifsc_code": "PUNB0014110",
-                          "account_type": "Saving",
-                          "pan_number": "YFYCUV",
-                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
-                          "bank_account_photo": null,
-                          "createdAt": "2025-10-29T13:19:49.000Z",
-                          "updatedAt": "2025-10-29T16:31:51.000Z"
-                        },
-                        {
-                          "id": 5,
-                          "member_id": "NERUPL100012",
-                          "account_name": "ucvuh. hi",
-                          "account_no": "34543534534634",
-                          "bank_name": "ycycu",
-                          "branch_name": "hchc",
-                          "ifsc_code": "PUNB0014110",
-                          "account_type": "Saving",
-                          "pan_number": "YFYCUV",
-                          "pan_card_photo": "bankdocs/compressed-pan_card_photo-1761755510940-225399016.jpg",
-                          "bank_account_photo": "bankdocs/compressed-bank_account_photo-1761744360431-675274898.jpg",
-                          "createdAt": "2025-10-29T13:26:01.000Z",
-                          "updatedAt": "2025-10-29T16:31:51.000Z"
-                        },
-                        {
-                          "id": 6,
-                          "member_id": "NERUPL100001",
-                          "account_name": "Dharmendra kumar",
-                          "account_no": "7724047276",
-                          "bank_name": "INDIAN BANK",
-                          "branch_name": "Kamta",
-                          "ifsc_code": "IDIB000K556",
-                          "account_type": "Saving",
-                          "pan_number": "CUSPK6018E",
-                          "pan_card_photo": null,
-                          "bank_account_photo": null,
-                          "createdAt": "2025-10-29T15:20:25.000Z",
-                          "updatedAt": "2025-10-29T15:20:25.000Z"
-                        }
-                      ],));
+                      navigateWithAnimation(context, BankDetailsListScreen());
                     },
                   ),
                   _buildMenuCard(
