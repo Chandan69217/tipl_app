@@ -110,4 +110,91 @@ class MeetingApiService{
     return false;
   }
 
+  Future<bool> updateMeeting({required String meeting_id,required String title,String? description,required String meeting_date,required String meeting_link,})async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+
+    try{
+      final url = Uri.https(Urls.baseUrl, '${Urls.updateMeeting}$meeting_id');
+      final response = await put(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      },body: json.encode({
+        "title": title,
+        "description": description,
+        "meeting_date":meeting_date,
+        "meeting_link": meeting_link,
+      }));
+      printAPIResponse(response);
+      if(response.statusCode == 200 || response.statusCode == 201){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          CustomMessageDialog.show(context, title: 'Meeting Scheduled', message: 'Your meeting has been updated successfully!',onConfirm: (){
+            Navigator.of(context).pop();
+          });
+          return true;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print("Exception: $exception, Trace: $trace");
+    }
+    return false;
+  }
+
+  Future<Map<String,dynamic>?> changeMeetingStatus(String meeting_id,String status)async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+
+    try{
+      final url = Uri.https(Urls.baseUrl, '${Urls.updateMeeting}$meeting_id');
+      final response = await put(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      },body: json.encode({
+        'status' : status
+      }));
+      printAPIResponse(response);
+      if(response.statusCode == 200 || response.statusCode == 201){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          Navigator.of(context).pop();
+          return body['data'] as Map<String,dynamic>;
+        }
+      }else{
+        handleApiResponse(context,response);
+      }
+    }catch(exception,trace){
+      print("Exception: $exception, Trace: $trace");
+    }
+    return null;
+  }
+
+  Future<bool> deleteMeeting({required String meeting_id})async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+
+    try{
+      final url = Uri.https(Urls.baseUrl,'${Urls.deleteMeeting}$meeting_id');
+      final response = await delete(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      },);
+      printAPIResponse(response);
+      if(response.statusCode == 200 || response.statusCode == 201){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          CustomMessageDialog.show(context, title: 'Meeting Deleted', message: 'Your meeting removed successfully!');
+          return true;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print("Exception: $exception, Trace: $trace");
+    }
+    return false;
+  }
+
 }

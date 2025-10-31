@@ -4,18 +4,18 @@ import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/api_service/meeting_api/meeting_api_service.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
-import 'package:tipl_app/core/widgets/custom_date_picker_text_field.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
 
 class AddMeetingScreen extends StatefulWidget {
-  final void Function(bool isSuccess) onSave;
+  final void Function(Map<String,dynamic>) onSave;
+  final VoidCallback? onSuccess;
   final Map<String,dynamic>? data;
-  const AddMeetingScreen({super.key, required this.onSave,this.data});
+  const AddMeetingScreen({super.key,this.onSuccess, required this.onSave,this.data});
 
   @override
   State<AddMeetingScreen> createState() => _AddMeetingScreenState();
 
-  static void show(BuildContext context, {Function(bool)? onSave,Map<String,dynamic>? data}) {
+  static void show(BuildContext context, {VoidCallback? onSuccess, Function(Map<String,dynamic>)? onSave,Map<String,dynamic>? data}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -26,6 +26,7 @@ class AddMeetingScreen extends StatefulWidget {
       builder: (ctx) => SafeArea(
         child: AddMeetingScreen(
           data: data,
+          onSuccess: onSuccess,
           onSave: (isSuccess) {
             if (onSave != null) {
               onSave(isSuccess);
@@ -47,6 +48,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   final TextEditingController _linkController = TextEditingController();
   bool _isLoading = false;
   DateTime? _selectedDateTime;
+  final _dateFormat = DateFormat("yyyy-MM-dd HH:mm");
 
   @override
   void initState() {
@@ -58,7 +60,8 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
   init()async{
     _titleController.text = widget.data?['title']??'';
     _descriptionController.text = widget.data?['description']??'';
-    _dateTimeController.text = widget.data?['meeting_date']??'';
+    _selectedDateTime = DateTime.tryParse(widget.data?['meeting_date']??'')??DateTime.now();
+    _dateTimeController.text = _dateFormat.format(_selectedDateTime??DateTime.now());
     _linkController.text = widget.data?['meeting_link']??'';
   }
 
@@ -108,6 +111,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     controller: _titleController,
                     label: "Meeting Title",
                     isRequired: true,
+                    textInputAction: TextInputAction.next,
                   ),
 
                   const SizedBox(height: 16),
@@ -132,6 +136,17 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     prefixIcon: Icon(Iconsax.link_1),
                     label: "Meeting Link",
                     isRequired: true,
+                    textInputAction: TextInputAction.next,
+                    textInputType: TextInputType.url,
+                    validate: (value){
+                      if(value == null || value.isEmpty){
+                       return 'Please enter meeting link.';
+                      }
+                      if(!value.startsWith('https://')){
+                        return 'The link you entered doesn’t seem to be valid.';
+                      }
+                      return null;
+                    },
                   ),
 
                   const SizedBox(height: 16),
@@ -183,7 +198,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
     final selected = DateTime(date.year, date.month, date.day, time.hour, time.minute);
     setState(() {
       _selectedDateTime = selected;
-      _dateTimeController.text = DateFormat("yyyy-MM-dd HH:mm").format(selected);
+      _dateTimeController.text = _dateFormat.format(selected);
     });
   }
 
@@ -193,26 +208,48 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
       _isLoading = true;
     });
 
-    final isScheduled = await MeetingApiService(context: context).addNewMeeting(
+    if(widget.data == null){
+      final isScheduled = await MeetingApiService(context: context).addNewMeeting(
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         meeting_date: _selectedDateTime?.toIso8601String()??'',
         meeting_link: _linkController.text.trim(),
-    );
+      );
+      if(isScheduled){
+        widget.onSuccess?.call();
+        setState(() {
+          _titleController.text = '';
+          _descriptionController.text = '';
+          _selectedDateTime = null;
+          _linkController.text = '';
+          _dateTimeController.text = '';
+        });
+      }
 
-    widget.onSave(isScheduled);
-    if(isScheduled){
-      setState(() {
-        _titleController.text = '';
-        _descriptionController.text = '';
-        _selectedDateTime = null;
-        _linkController.text = '';
-        _dateTimeController.text = '';
-      });
+    }else{
+      final re_scheduled = await MeetingApiService(context: context).updateMeeting(
+          meeting_id: '${widget.data?['id']??''}',
+          title: _titleController.text.trim(),
+          meeting_date: _dateTimeController.text.trim(),
+          meeting_link: _linkController.text.trim(),
+        description: _descriptionController.text.trim()
+      );
+
+      if(re_scheduled){
+        widget.onSave({
+          'id' : widget.data?['id']??'',
+          'title' :  _titleController.text.trim(),
+          'description' : _descriptionController.text.trim(),
+          'meeting_date' : _selectedDateTime?.toIso8601String()??'',
+          'meeting_link' : _linkController.text.trim(),
+        });
+      }
+
     }
 
     setState(() {
       _isLoading =false;
     });
   }
+
 }

@@ -1,8 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/features/auth/sign_in_screen.dart';
+import 'package:tipl_app/features/auth/sign_up_screen.dart';
+import 'package:tipl_app/features/change_password/change_password.dart';
+import 'package:tipl_app/features/navigations/admin/manage_banks/bank_details_list_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
 
 
-import 'package:flutter/material.dart';
+
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -20,27 +29,31 @@ class SettingsScreen extends StatelessWidget {
         const SizedBox(height: 10),
 
         _buildTile(
-          icon: Icons.person,
+          icon: Iconsax.user,
           iconColor: Colors.blue,
-          title: "Edit Profile",
-          subtitle: "Update name, email, phone number",
-          onTap: () {},
+          title: "View Profile",
+          subtitle: "Update name, dob, address",
+          onTap: () {
+            navigateWithAnimation(context, UserProfileScreen(canPop: true,));
+          },
         ),
         _buildTile(
-          icon: Icons.lock,
+          icon: Iconsax.lock,
           iconColor: Colors.orange,
           title: "Change Password",
           subtitle: "Update login security",
-          onTap: () {},
+          onTap: () {
+            showChangePasswordBottomSheet(context);
+          },
         ),
-        SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          secondary: const Icon(Icons.security, color: Colors.purple),
-          title: const Text("Two-Factor Authentication"),
-          subtitle: const Text("Enable extra security"),
-          value: true,
-          onChanged: (v) {},
-        ),
+        // SwitchListTile(
+        //   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+        //   secondary: const Icon(Icons.security, color: Colors.purple),
+        //   title: const Text("Two-Factor Authentication"),
+        //   subtitle: const Text("Enable extra security"),
+        //   value: true,
+        //   onChanged: (v) {},
+        // ),
 
         const Divider(height: 32),
 
@@ -52,28 +65,50 @@ class SettingsScreen extends StatelessWidget {
         const SizedBox(height: 10),
 
         _buildTile(
-          icon: Icons.notifications,
+          icon: Iconsax.notification,
           iconColor: Colors.red,
           title: "Notifications",
           subtitle: "Manage push & email alerts",
           onTap: () {},
         ),
+        // _buildTile(
+        //   icon: Icons.color_lens,
+        //   iconColor: Colors.teal,
+        //   title: "Theme",
+        //   subtitle: "Light / Dark mode",
+        //   onTap: () {},
+        // ),
+
         _buildTile(
-          icon: Icons.color_lens,
+          icon: Iconsax.bank,
           iconColor: Colors.teal,
-          title: "Theme",
-          subtitle: "Light / Dark mode",
-          onTap: () {},
+          title: "All Banks",
+          subtitle: "manage user banks",
+          onTap: () {
+            navigateWithAnimation(context, BankDetailsListScreen());
+          },
         ),
+
         _buildTile(
-          icon: Icons.person_add,
+          icon: Iconsax.user_add,
           iconColor: Colors.green,
           title: "New User Registration",
           subtitle: "Register a new member",
-          onTap: () {},
+          onTap: () {
+            navigateWithAnimation(context, SignUpScreen(canPop: true,));
+          },
         ),
         _buildTile(
-          icon: Icons.account_tree,
+          icon: Iconsax.people,
+          iconColor: Colors.green,
+          title: "Meetings",
+          subtitle: "Manage & schedule meeting",
+          onTap: () {
+            navigateWithAnimation(context, MeetingListScreen(canPop: true,));
+          },
+        ),
+        _buildTile(
+          icon: Iconsax.hierarchy,
           iconColor: Colors.indigo,
           title: "Genealogy",
           subtitle: "View user genealogy tree",
@@ -89,25 +124,29 @@ class SettingsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
+        // _buildTile(
+        //   icon: Icons.update,
+        //   iconColor: Colors.deepOrange,
+        //   title: "Check for Updates",
+        //   onTap: () {},
+        // )
+
         _buildTile(
-          icon: Icons.update,
-          iconColor: Colors.deepOrange,
-          title: "Check for Updates",
-          onTap: () {},
-        ),
-        _buildTile(
-          icon: Icons.description,
+          icon: Iconsax.information,
           iconColor: Colors.brown,
           title: "Terms & Policies",
           onTap: () {},
         ),
         ListTile(
-          leading: const Icon(Icons.logout, color: Colors.red),
+          leading: const Icon(Iconsax.logout, color: Colors.red),
           title: const Text(
             "Logout",
             style: TextStyle(color: Colors.red),
           ),
-          onTap: () {},
+          onTap: () {
+            Pref.Logout();
+            navigatePushAndRemoveUntilWithAnimation(context, SignInScreen());
+          },
         ),
       ],
     );

@@ -290,7 +290,6 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
    appBar: AppBar(
     title: _isSelectionMode
     ? Text("${_selectedIds.length} selected")
@@ -329,7 +328,7 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
                   prefixIcon: const Icon(Iconsax.search_normal, color: Colors.teal),
                   hintText: "Search bank, account or IFSC...",
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: Colors.grey.shade100,
                   contentPadding:
                   const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   border: OutlineInputBorder(
@@ -381,9 +380,9 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
                         border: selected ? Border.all(color: Colors.teal, width: 2) : null,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            color: Colors.grey.withValues(alpha: 0.15),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),

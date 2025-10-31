@@ -21,4 +21,6 @@ class Urls{
   static const String getMeeting = '/api/meetings/all';
   static const String getMeetingByFilter = '/api/meetings/filter';
   static const String addNewMeeting = '/api/meetings/add';
+  static const String updateMeeting = '/api/meetings/update/';
+  static const String deleteMeeting = '/api/meetings/delete/';
 }

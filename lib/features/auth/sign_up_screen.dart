@@ -60,7 +60,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         statusBarColor: CustColors.white,
       ),
       child: Scaffold(
-        backgroundColor: CustColors.white,
+        appBar: widget.canPop ? AppBar(
+          title: Text('Register new user'),
+        ) : null,
         body: Stack(
           children: [
             GestureDetector(
@@ -361,7 +363,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               //   textInputType: TextInputType.visiblePassword,
                               // ),
                               const SizedBox(height: 16.0),
-
+                              if(!widget.canPop)
                               FormField<bool>(
                                 initialValue: false,
                                 validator: (value) {

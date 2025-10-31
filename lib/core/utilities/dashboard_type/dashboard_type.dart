@@ -19,6 +19,10 @@ class UserType {
     return _role!;
   }
 
+  static set role(UserRole? value) {
+    _role = value;
+  }
+
   static void initialize() {
     if(_role != null){
       return;

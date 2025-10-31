@@ -18,8 +18,7 @@ import 'package:tipl_app/features/navigations/user/id_card.dart';
 import 'package:tipl_app/features/navigations/user/update_profile/update_profile.dart';
 import 'package:tipl_app/features/navigations/user/user_home_screen.dart';
 import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
-import 'package:tipl_app/features/navigations/user/welcome_letter.dart';
-import 'package:tipl_app/features/navigations/wallet_screen.dart';
+import 'package:tipl_app/features/navigations/user/wallets/wallet_screen.dart';
 import 'package:tipl_app/features/notification_screen.dart';
 
 

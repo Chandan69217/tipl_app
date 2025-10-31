@@ -8,7 +8,9 @@ import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
+import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 
 import 'manage_banks/bank_details_list_screen.dart';
 
@@ -23,9 +25,9 @@ class AdminHomeScreen extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     int crossAxisCount = 2;
     if (screenWidth > 900) {
-      crossAxisCount = 4; // desktop/tablet
+      crossAxisCount = 4;
     } else if (screenWidth > 600) {
-      crossAxisCount = 3; // tablet/large phone
+      crossAxisCount = 3;
     }
     double aspectRatio;
     if (screenWidth < 350) {
@@ -80,10 +82,10 @@ class AdminHomeScreen extends StatelessWidget {
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
+                crossAxisCount: screenWidth > 350 ? 3 : 2,
                 crossAxisSpacing: 6,
                 mainAxisSpacing: 6,
-                childAspectRatio: 1.3,
+                childAspectRatio: screenWidth > 350 ? 1.2:1,
                 children: [
                   _buildMenuCard(
                     context,
@@ -96,20 +98,20 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                   _buildMenuCard(
                     context,
-                    icon: Iconsax.user,
-                    label: "Manage Users",
-                    color: Colors.green,
+                    icon: Iconsax.user_add,
+                    label: "New Registration",
+                    color: Colors.red,
                     onPressed: () {
-                      // navigateWithAnimation(context, CreditWalletScreen());
+                      navigateWithAnimation(context, SignUpScreen(canPop: true,));
                     },
                   ),
                   _buildMenuCard(
                     context,
-                    icon: Iconsax.wallet,
-                    label: "Wallet Control",
-                    color: Colors.red,
+                    icon: Iconsax.people,
+                    label: "Manage Meetings",
+                    color: Colors.green,
                     onPressed: () {
-                      // navigateWithAnimation(context, DebitWalletScreen());
+                      navigateWithAnimation(context, MeetingListScreen(canPop: true,));
                     },
                   ),
 
@@ -193,7 +195,7 @@ class AdminHomeScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -208,6 +210,8 @@ class AdminHomeScreen extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,

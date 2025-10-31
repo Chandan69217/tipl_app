@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 
 class Pref{
   Pref._();
@@ -14,6 +15,7 @@ class Pref{
     instance.remove(PrefConst.TOKEN);
     instance.remove(PrefConst.MEMBER_ID);
     instance.remove(PrefConst.SPONSOR_ID);
+    UserType.role = null;
   }
 
 

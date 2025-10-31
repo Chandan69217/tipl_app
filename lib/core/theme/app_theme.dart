@@ -8,7 +8,7 @@ class AppTheme {
     scaffoldBackgroundColor: CustColors.white,
     textTheme: GoogleFonts.montserratTextTheme(),
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       foregroundColor: Colors.black,
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Colors.black,
