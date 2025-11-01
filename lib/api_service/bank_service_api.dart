@@ -10,6 +10,7 @@ import 'package:tipl_app/api_service/log_api_response.dart';
 import 'package:tipl_app/core/utilities/compress_image.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 
 class BankServiceAPI {
   final BuildContext context;
@@ -310,7 +311,7 @@ class BankServiceAPI {
           final response = await delete(url, headers: {
             'Authorization': 'Bearer $token',
           });
-
+          printAPIResponse(response);
           if(response.statusCode == 200){
             final body = json.decode(response.body) as Map<String, dynamic>;
             final success = body['isSuccess'] ?? false;
@@ -319,6 +320,8 @@ class BankServiceAPI {
             } else {
               yield null;
             }
+          }else{
+            SnackBarHelper.show(context, message: 'Unable to delete, something went wrongs!');
           }
 
         } catch (exception) {

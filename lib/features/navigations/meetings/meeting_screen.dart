@@ -11,6 +11,7 @@ import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -75,7 +76,7 @@ class _MeetingListScreenState extends State<MeetingListScreen> {
   }
   void init()async{
     _isLoading = true;
-    meetings = await MeetingApiService(context: context).getAllMeetings();
+    meetings =UserRole.admin == UserType.role ? await MeetingApiService(context: context).getAllMeetings() : await MeetingApiService(context: context).getAllMeetingsByMemberId();
     setState(() {
       _isLoading = false;
     });
@@ -390,7 +391,7 @@ Widget _meetingCard(BuildContext context, Map<String, dynamic> meeting, String f
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () => _joinMeeting(meeting["meeting_link"]),
+                  onPressed: '${meeting['status']??'scheduled'}'.toLowerCase() == 'scheduled' ? () =>  _joinMeeting(meeting["meeting_link"]) : null,
                   icon: const Icon(Iconsax.video, size: 18),
                   label: const Text("Join Meeting"),
                   style: ElevatedButton.styleFrom(
@@ -403,6 +404,11 @@ Widget _meetingCard(BuildContext context, Map<String, dynamic> meeting, String f
                 const SizedBox(width: 12,),
                 TextButton.icon(
                     onPressed: (){
+                      final isMeetingLinkValid = '${meeting['status']??'scheduled'}'.toLowerCase() == 'scheduled';
+                      if(!isMeetingLinkValid){
+                        SnackBarHelper.show(context, message: '“This meeting has been canceled/completed.”');
+                        return;
+                      }
                       Clipboard.setData(ClipboardData(text: meeting["meeting_link"]??''));
                     },
                   style: TextButton.styleFrom(
@@ -487,6 +493,7 @@ Widget _meetingCard(BuildContext context, Map<String, dynamic> meeting, String f
   }
 
   void _joinMeeting(String? url) async {
+
     if (url == null || url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri != null && await canLaunchUrl(uri)) {

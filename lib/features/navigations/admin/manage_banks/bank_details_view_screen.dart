@@ -19,7 +19,6 @@ class BankDetailsViewScreen extends StatelessWidget {
     final String? panPhoto = data['pan_card_photo'];
     final String? bankPhoto = data['bank_account_photo'];
     final String baseUrl = "https://${Urls.baseUrl}/";
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bank Details"),

@@ -2,189 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tipl_app/api_service/bank_service_api.dart';
+import 'package:tipl_app/api_service/meeting_api/meeting_api_service.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 
 import 'bank_details_view_screen.dart';
-
-// class BankDetailsListScreen extends StatelessWidget {
-//   final List<Map<String, dynamic>> bankDetails;
-//
-//   const BankDetailsListScreen({super.key, required this.bankDetails});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey.shade100,
-//       appBar: AppBar(
-//         title: const Text("All Banks"),
-//       ),
-//       body: bankDetails.isEmpty
-//           ? const Center(
-//         child: Text(
-//           "No Bank Details Found",
-//           style: TextStyle(color: Colors.black54, fontSize: 16),
-//         ),
-//       )
-//           : ListView.builder(
-//         padding: const EdgeInsets.all(12),
-//         itemCount: bankDetails.length,
-//         itemBuilder: (context, index) {
-//           final bank = bankDetails[index];
-//           final createdAt = DateTime.tryParse(bank["createdAt"] ?? "");
-//           final date = createdAt != null
-//               ? DateFormat('dd MMM yyyy').format(createdAt)
-//               : "-";
-//
-//           return Container(
-//             margin: const EdgeInsets.symmetric(vertical: 8),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(16),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.1),
-//                   blurRadius: 10,
-//                   offset: const Offset(0, 4),
-//                 ),
-//               ],
-//             ),
-//             child: Column(
-//               children: [
-//                 // top accent
-//                 Container(
-//                   height: 5,
-//                   decoration: const BoxDecoration(
-//                     color: Colors.teal,
-//                     borderRadius: BorderRadius.only(
-//                       topLeft: Radius.circular(16),
-//                       topRight: Radius.circular(16),
-//                     ),
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.all(16),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Row(
-//                         children: [
-//                           const CircleAvatar(
-//                             backgroundColor: Colors.teal,
-//                             radius: 18,
-//                             child: Icon(Iconsax.bank, color: Colors.white, size: 18),
-//                           ),
-//                           const SizedBox(width: 10),
-//                           Expanded(
-//                             child: Text(
-//                               bank["account_name"] ?? "N/A",
-//                               style: const TextStyle(
-//                                 fontSize: 16,
-//                                 fontWeight: FontWeight.bold,
-//                                 color: Colors.black87,
-//                               ),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                       const SizedBox(height: 10),
-//                       _buildInfo(Iconsax.building_4, "Bank", bank["bank_name"]),
-//                       _buildInfo(Iconsax.card, "Account No", bank["account_no"]),
-//                       _buildInfo(Iconsax.code, "IFSC", bank["ifsc_code"]),
-//                       const Divider(height: 20),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Row(
-//                             children: [
-//                               const Icon(Iconsax.calendar_1, size: 16, color: Colors.teal),
-//                               const SizedBox(width: 5),
-//                               Text(
-//                                 date,
-//                                 style: const TextStyle(
-//                                     fontSize: 12, color: Colors.black54),
-//                               ),
-//                             ],
-//                           ),
-//                           ElevatedButton.icon(
-//                             onPressed: () {
-//                               Navigator.push(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                   builder: (_) =>
-//                                       BankDetailsViewScreen(data: bank),
-//                                 ),
-//                               );
-//                             },
-//                             style: ElevatedButton.styleFrom(
-//                               backgroundColor: Colors.teal.shade600,
-//                               foregroundColor: Colors.white,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(10),
-//                               ),
-//                               padding: const EdgeInsets.symmetric(
-//                                   horizontal: 14, vertical: 8),
-//                             ),
-//                             icon: const Icon(Iconsax.eye, size: 16),
-//                             label: const Text("View", style: TextStyle(fontSize: 13)),
-//                           ),
-//                         ],
-//                       )
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-//
-//   Widget _buildInfo(IconData icon, String title, String? value) {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 6),
-//       child: Row(
-//         children: [
-//           Icon(icon, size: 18, color: Colors.teal.shade400),
-//           const SizedBox(width: 8),
-//           Text(
-//             "$title: ",
-//             style: const TextStyle(
-//               fontWeight: FontWeight.w500,
-//               color: Colors.black87,
-//             ),
-//           ),
-//           Expanded(
-//             child: Text(
-//               value?.toString() ?? "N/A",
-//               style: const TextStyle(
-//                 color: Colors.black87,
-//                 fontWeight: FontWeight.w400,
-//               ),
-//               overflow: TextOverflow.ellipsis,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-// class BankDetailsViewScreen extends StatelessWidget {
-//   final Map<String, dynamic> data;
-//
-//   const BankDetailsViewScreen({super.key, required this.data});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Bank Details")),
-//       body: Center(child: Text(data["account_name"] ?? "N/A")),
-//     );
-//   }
-// }
 
 
 
@@ -217,7 +41,7 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
     setState(() {
       _isLoading = true;
     });
-    bankRecords = await BankServiceAPI(context: context).getAllBankRecords();
+    bankRecords =  await BankServiceAPI(context: context).getAllBankRecords();
     if(bankRecords.isNotEmpty){
       filteredList = bankRecords;
     }
@@ -302,7 +126,10 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
         : null,
     actions: _isSelectionMode
     ? [
-    IconButton(
+    _isDeleting ? Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+      child: CustomCircularIndicator(),
+    ):IconButton(
     icon: Icon(Iconsax.trash,color: Colors.red,),
     onPressed: _deleteSelection),
     ]
@@ -317,6 +144,7 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
     ),
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 🔍 Search Bar
             Padding(
@@ -338,7 +166,13 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
                 ),
               ),
             ),
-        
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
+              child: Text('All user banks',style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w900
+              ),),
+            ),
             // 🧾 Bank Details List
             _isLoading ? CustomCircularIndicator() : Expanded(
               child: filteredList.isEmpty
@@ -558,208 +392,3 @@ class _BankDetailsListScreenState extends State<BankDetailsListScreen> {
 
 }
 
-
-
-
-
-// class BankDetailsListScreen extends StatelessWidget {
-//   final List<Map<String, dynamic>> bankDetails;
-//
-//   const BankDetailsListScreen({super.key, required this.bankDetails});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // Predefined color palette (you can customize)
-//     final colorPalette = [
-//       Colors.teal,
-//       Colors.indigo,
-//       Colors.deepOrange,
-//       Colors.purple,
-//       Colors.green,
-//       Colors.blueGrey,
-//     ];
-//
-//     return Scaffold(
-//       backgroundColor: Colors.grey.shade100,
-//       appBar: AppBar(
-//         title: const Text("Bank Details"),
-//         centerTitle: true,
-//         backgroundColor: Colors.teal,
-//         elevation: 2,
-//       ),
-//       body: bankDetails.isEmpty
-//           ? const Center(
-//         child: Text(
-//           "No Bank Details Found",
-//           style: TextStyle(color: Colors.black54, fontSize: 16),
-//         ),
-//       )
-//           : ListView.builder(
-//         padding: const EdgeInsets.all(12),
-//         itemCount: bankDetails.length,
-//         itemBuilder: (context, index) {
-//           final bank = bankDetails[index];
-//           final color = colorPalette[index % colorPalette.length];
-//           final createdAt = DateTime.tryParse(bank["createdAt"] ?? "");
-//           final date = createdAt != null
-//               ? DateFormat('dd MMM yyyy').format(createdAt)
-//               : "-";
-//
-//           return Container(
-//             margin: const EdgeInsets.symmetric(vertical: 8),
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(16),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: color.withOpacity(0.15),
-//                   blurRadius: 8,
-//                   offset: const Offset(0, 4),
-//                 ),
-//               ],
-//             ),
-//             child: Column(
-//               children: [
-//                 // top accent
-//                 Container(
-//                   height: 5,
-//                   decoration: BoxDecoration(
-//                     color: color,
-//                     borderRadius: const BorderRadius.only(
-//                       topLeft: Radius.circular(16),
-//                       topRight: Radius.circular(16),
-//                     ),
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.all(16),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Row(
-//                         children: [
-//                           CircleAvatar(
-//                             backgroundColor: color,
-//                             radius: 18,
-//                             child: const Icon(Iconsax.bank,
-//                                 color: Colors.white, size: 18),
-//                           ),
-//                           const SizedBox(width: 10),
-//                           Expanded(
-//                             child: Text(
-//                               bank["account_name"] ?? "N/A",
-//                               style: const TextStyle(
-//                                 fontSize: 16,
-//                                 fontWeight: FontWeight.bold,
-//                                 color: Colors.black87,
-//                               ),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                       const SizedBox(height: 10),
-//                       _buildInfo(Iconsax.building_4, "Bank",
-//                           bank["bank_name"], color),
-//                       _buildInfo(
-//                           Iconsax.card, "Account No", bank["account_no"], color),
-//                       _buildInfo(Iconsax.code, "IFSC", bank["ifsc_code"], color),
-//                       const Divider(height: 20),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Row(
-//                             children: [
-//                               Icon(Iconsax.calendar_1,
-//                                   size: 16, color: color),
-//                               const SizedBox(width: 5),
-//                               Text(
-//                                 date,
-//                                 style: const TextStyle(
-//                                     fontSize: 12, color: Colors.black54),
-//                               ),
-//                             ],
-//                           ),
-//                           ElevatedButton.icon(
-//                             onPressed: () {
-//                               Navigator.push(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                   builder: (_) =>
-//                                       BankDetailsViewScreen(data: bank),
-//                                 ),
-//                               );
-//                             },
-//                             style: ElevatedButton.styleFrom(
-//                               backgroundColor: color,
-//                               foregroundColor: Colors.white,
-//                               shape: RoundedRectangleBorder(
-//                                 borderRadius: BorderRadius.circular(10),
-//                               ),
-//                               padding: const EdgeInsets.symmetric(
-//                                   horizontal: 14, vertical: 8),
-//                             ),
-//                             icon: const Icon(Iconsax.eye, size: 16),
-//                             label: const Text("View",
-//                                 style: TextStyle(fontSize: 13)),
-//                           ),
-//                         ],
-//                       )
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-//
-//   Widget _buildInfo(IconData icon, String title, String? value, Color color) {
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 6),
-//       child: Row(
-//         children: [
-//           Icon(icon, size: 18, color: color.withOpacity(0.8)),
-//           const SizedBox(width: 8),
-//           Text(
-//             "$title: ",
-//             style: const TextStyle(
-//               fontWeight: FontWeight.w500,
-//               color: Colors.black87,
-//             ),
-//           ),
-//           Expanded(
-//             child: Text(
-//               value?.toString() ?? "N/A",
-//               style: const TextStyle(
-//                 color: Colors.black87,
-//                 fontWeight: FontWeight.w400,
-//               ),
-//               overflow: TextOverflow.ellipsis,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-// class BankDetailsViewScreen extends StatelessWidget {
-//   final Map<String, dynamic> data;
-//
-//   const BankDetailsViewScreen({super.key, required this.data});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("Bank Details")),
-//       body: Center(
-//         child: Text(
-//           data["account_name"] ?? "N/A",
-//           style: const TextStyle(fontSize: 18),
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -7,15 +7,16 @@ import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
 
 class AddMeetingScreen extends StatefulWidget {
+  final String? member_id;
   final void Function(Map<String,dynamic>) onSave;
   final VoidCallback? onSuccess;
   final Map<String,dynamic>? data;
-  const AddMeetingScreen({super.key,this.onSuccess, required this.onSave,this.data});
+  const AddMeetingScreen({this.member_id,super.key,this.onSuccess, required this.onSave,this.data});
 
   @override
   State<AddMeetingScreen> createState() => _AddMeetingScreenState();
 
-  static void show(BuildContext context, {VoidCallback? onSuccess, Function(Map<String,dynamic>)? onSave,Map<String,dynamic>? data}) {
+  static void show(BuildContext context, {String? meeting_id,VoidCallback? onSuccess, Function(Map<String,dynamic>)? onSave,Map<String,dynamic>? data,}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -26,6 +27,7 @@ class AddMeetingScreen extends StatefulWidget {
       builder: (ctx) => SafeArea(
         child: AddMeetingScreen(
           data: data,
+          member_id: meeting_id,
           onSuccess: onSuccess,
           onSave: (isSuccess) {
             if (onSave != null) {
@@ -105,7 +107,6 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                   // 📝 Title
                   CustomTextField(
                     controller: _titleController,
@@ -210,6 +211,7 @@ class _AddMeetingScreenState extends State<AddMeetingScreen> {
 
     if(widget.data == null){
       final isScheduled = await MeetingApiService(context: context).addNewMeeting(
+        member_id: widget.member_id,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         meeting_date: _selectedDateTime?.toIso8601String()??'',

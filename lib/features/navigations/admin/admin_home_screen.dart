@@ -10,6 +10,8 @@ import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
+import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
+import 'package:tipl_app/features/navigations/genealogy/tree_view_screen.dart';
 import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 
 import 'manage_banks/bank_details_list_screen.dart';
@@ -98,6 +100,15 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                   _buildMenuCard(
                     context,
+                    icon: Iconsax.hierarchy,
+                    label: "View Tree",
+                    color: Colors.blue,
+                    onPressed: () {
+                      LeftRightTreeView.show(context);
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
                     icon: Iconsax.user_add,
                     label: "New Registration",
                     color: Colors.red,
@@ -112,6 +123,16 @@ class AdminHomeScreen extends StatelessWidget {
                     color: Colors.green,
                     onPressed: () {
                       navigateWithAnimation(context, MeetingListScreen(canPop: true,));
+                    },
+                  ),
+
+                  _buildMenuCard(
+                    context,
+                    icon: Iconsax.hierarchy_square,
+                    label: "Genealogy",
+                    color: Colors.pinkAccent,
+                    onPressed: () {
+                      navigateWithAnimation(context, GenealogyScreen(canPop: true,));
                     },
                   ),
 

@@ -7,6 +7,7 @@ import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigations/admin/manage_banks/bank_details_list_screen.dart';
+import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
 import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
 
@@ -64,13 +65,13 @@ class SettingsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 10),
 
-        _buildTile(
-          icon: Iconsax.notification,
-          iconColor: Colors.red,
-          title: "Notifications",
-          subtitle: "Manage push & email alerts",
-          onTap: () {},
-        ),
+        // _buildTile(
+        //   icon: Iconsax.notification,
+        //   iconColor: Colors.red,
+        //   title: "Notifications",
+        //   subtitle: "Manage push & email alerts",
+        //   onTap: () {},
+        // ),
         // _buildTile(
         //   icon: Icons.color_lens,
         //   iconColor: Colors.teal,
@@ -112,7 +113,9 @@ class SettingsScreen extends StatelessWidget {
           iconColor: Colors.indigo,
           title: "Genealogy",
           subtitle: "View user genealogy tree",
-          onTap: () {},
+          onTap: () {
+            navigateWithAnimation(context, GenealogyScreen(canPop: true,));
+          },
         ),
 
         const Divider(height: 32),

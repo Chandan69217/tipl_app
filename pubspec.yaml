@@ -52,6 +52,7 @@ dependencies:
   flutter_image_compress: ^2.4.0
   http_parser: ^4.1.2
   url_launcher: ^6.3.2
+  graphview: ^1.5.1
 
 dev_dependencies:
   flutter_test:

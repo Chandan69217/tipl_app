@@ -11,6 +11,7 @@ class ImageViewerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Received Url: ${imageUrl}');
     return Scaffold(
       appBar: AppBar(
         title: Text("Document"),

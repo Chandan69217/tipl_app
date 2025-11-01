@@ -103,7 +103,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      const SizedBox(height: 16,),
+                                      // const SizedBox(height: 16,),
                                       CustomNetworkImage(
                                         imageUrl: user.profile,
                                       ),

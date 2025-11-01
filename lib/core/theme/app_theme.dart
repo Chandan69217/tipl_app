@@ -68,6 +68,9 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        disabledBackgroundColor: Colors.grey.shade400,
+        disabledForegroundColor: Colors.white70,
+        disabledIconColor: Colors.white70
       ),
     ),
     textButtonTheme: TextButtonThemeData(

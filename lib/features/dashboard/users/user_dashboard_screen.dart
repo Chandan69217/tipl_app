@@ -11,7 +11,7 @@ import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
-import 'package:tipl_app/features/navigations/genealogy_screen.dart';
+import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
 import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 import 'package:tipl_app/features/navigations/suggestion_screen.dart';
 import 'package:tipl_app/features/navigations/user/id_card.dart';

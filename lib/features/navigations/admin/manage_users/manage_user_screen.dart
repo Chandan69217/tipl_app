@@ -8,6 +8,7 @@ import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/update_user_details.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
 
 
 
@@ -118,6 +119,8 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                 case 'unblock':
                                 userProvider.blockAndUnblockUser(block: false,userMemberID: user['member_id']??'');
                               break;
+                                case 'meeting_schedule':
+                                  AddMeetingScreen.show(context,meeting_id: user['member_id'],);
                               }
                             },
                             itemBuilder: (context){
@@ -127,6 +130,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                 PopupMenuItem(
                                   value: "edit",
                                   child: Text("Edit User"),
+                                ),
+                                PopupMenuItem(
+                                  value: 'meeting_schedule',
+                                  child: Text('Schedule meeting'),
                                 ),
                                 PopupMenuItem(
                                   value: isActive ? "block" : 'unblock',

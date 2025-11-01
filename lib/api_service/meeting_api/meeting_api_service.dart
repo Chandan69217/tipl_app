@@ -37,6 +37,31 @@ class MeetingApiService{
     }
     return [];
   }
+  Future<List<dynamic>> getAllMeetingsByMemberId()async{
+    final token = Pref.instance.getString(PrefConst.TOKEN);
+    final member_id = Pref.instance.getString(PrefConst.MEMBER_ID);
+    try{
+      final url = Uri.https(Urls.baseUrl,Urls.getMeetingByMemberId+'${member_id??''}');
+      final response = await get(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      });
+      printAPIResponse(response);
+      if(response.statusCode == 200){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final status = body['isSuccess']??false;
+        if(status){
+          final data = body['data'] as List<dynamic>;
+          return data;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print("Exception: $exception, Trace: $trace");
+    }
+    return [];
+  }
 
   Future<List<dynamic>> getAllMeetingsByFilter({String? status,DateTime? startData,DateTime? endData})async{
     final token = Pref.instance.getString(PrefConst.TOKEN);
@@ -78,9 +103,8 @@ class MeetingApiService{
     return [];
   }
 
-  Future<bool> addNewMeeting({required String title,String? description,required String meeting_date,required String meeting_link})async{
+  Future<bool> addNewMeeting({String? member_id,required String title,String? description,required String meeting_date,required String meeting_link})async{
     final token = Pref.instance.getString(PrefConst.TOKEN);
-    final member_id = Pref.instance.getString(PrefConst.MEMBER_ID);
     try{
       final url = Uri.https(Urls.baseUrl,Urls.addNewMeeting);
       final response = await post(url,headers: {
@@ -98,7 +122,9 @@ class MeetingApiService{
         final body = json.decode(response.body) as Map<String,dynamic>;
         final status = body['isSuccess']??false;
         if(status){
-          CustomMessageDialog.show(context, title: 'Meeting Scheduled', message: 'Your meeting has been successfully scheduled!');
+          CustomMessageDialog.show(context, title: 'Meeting Scheduled', message: 'Your meeting has been successfully scheduled!',onConfirm: (){
+            Navigator.of(context).pop();
+          });
           return true;
         }
       }else{

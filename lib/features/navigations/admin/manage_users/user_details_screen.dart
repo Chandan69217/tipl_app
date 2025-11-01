@@ -3,11 +3,16 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/navigations/admin/manage_users/update_user_details.dart';
+import 'package:tipl_app/features/navigations/genealogy/create_genealogy_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
+import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
 
 
 
@@ -56,6 +61,24 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     });
                   }
                   break;
+                case 'meeting_schedule':
+                  AddMeetingScreen.show(context,meeting_id: widget.data['member_id'],);
+                  break;
+                case 'genealogy':
+                  CreateGenealogyScreen.show(context,
+                    member_id: widget.data['member_id'],
+                    sponsor_id: widget.data['sponsor_id'],
+                    position: widget.data['position'],
+                    onSave: (value){
+                    setState(() {
+                      widget.data['member_id'] = value['member_id'];
+                      widget.data['sponsor_id'] = value['sponsor_id'];
+                      widget.data['position'] = value['position'];
+                    });
+                    RecallProvider(context: context);
+                    }
+                  );
+                  break;
               }
             },
             itemBuilder: (context){
@@ -67,9 +90,18 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   child: Text("Edit User"),
                 ),
                 PopupMenuItem(
+                  value: 'meeting_schedule',
+                  child: Text('Schedule meeting'),
+                ),
+                PopupMenuItem(
+                  value: 'genealogy',
+                  child: Text('Genealogy'),
+                ),
+                PopupMenuItem(
                   value: isActive ? "block" : 'unblock',
                   child: Text(isActive ? "Block User": 'Unblock User'),
                 ),
+
                 // PopupMenuItem(
                 //   value: "delete",
                 //   child: Text("Delete User"),
@@ -86,7 +118,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
                 CustomNetworkImage(
                   imageUrl: widget.data['photo'],
                 ),
@@ -226,7 +258,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
             // Address Info
             addressDetailCard(widget.data),
             const SizedBox(height: 20),

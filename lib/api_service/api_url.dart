@@ -19,8 +19,19 @@ class Urls{
 
           // Meeting URLS
   static const String getMeeting = '/api/meetings/all';
+  static const String getMeetingByMemberId = '/api/meetings/member/';
   static const String getMeetingByFilter = '/api/meetings/filter';
   static const String addNewMeeting = '/api/meetings/add';
   static const String updateMeeting = '/api/meetings/update/';
   static const String deleteMeeting = '/api/meetings/delete/';
+
+        // Genealogy trees
+  static const String genealogyTree = '/api/genealogy/tree-view';
+  static const String genealogyInactiveTeam = '/api/genealogy/inactive-team';
+  static const String genealogyActiveTeam = '/api/genealogy/active-team';
+  static const String genealogyAllTeam = '/api/genealogy/all-team';
+  static const String genealogyDirectMembers = '/api/genealogy/direct-members';
+  static const String createGenealogy = '/api/genealogy/create';
+  static const String genealogyUpdate = '/api/genealogy/update';
+
 }
