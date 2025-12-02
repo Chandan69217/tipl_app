@@ -174,13 +174,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               navigateWithAnimation(context, NotificationsScreen());
             }
         ),
-        IconButton(
-          icon: const Icon(Iconsax.logout, color: Colors.redAccent),
-          onPressed: () {
-            Pref.Logout();
-            navigatePushAndRemoveUntilWithAnimation(context, SignInScreen());
-          },
-        ),
+        // IconButton(
+        //   icon: const Icon(Iconsax.logout, color: Colors.redAccent),
+        //   onPressed: () {
+        //     Pref.Logout();
+        //     navigatePushAndRemoveUntilWithAnimation(context, SignInScreen());
+        //   },
+        // ),
         SizedBox(width: 20.0,),
       ],
     );

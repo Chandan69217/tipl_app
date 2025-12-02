@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/features/navigations/incomes/income_screen.dart';
+import 'package:tipl_app/features/navigations/investment/investment_screen.dart';
 
 class WalletScreen extends StatefulWidget {
   WalletScreen({super.key});
@@ -140,8 +143,16 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                   //     bgColor: const Color(0xff1f3f3f),
                   //     iconColor: Colors.white,
                   // ),
-                  _quickAction(Iconsax.add, "Top-up"),
-                  _quickAction(Iconsax.receipt, "Statement"),
+                  _quickAction(Iconsax.add, "Top-up",
+                  onTap: (){
+                    navigateWithAnimation(context, InvestmentScreen());
+                  }
+                  ),
+                  _quickAction(Iconsax.receipt, "Statement",
+                    onTap: (){
+                    navigateWithAnimation(context, IncomeScreen());
+                    }
+                  ),
                 ],
               ),
             ),
@@ -252,34 +263,39 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
   Widget _quickAction(IconData icon, String label,
       {Color bgColor = Colors.white,
         Color iconColor = const Color(0xff1f3f3f),
-        Color textColor = const Color(0xff1f3f3f)}) {
-    return Column(
-      children: [
-        Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 5,
-                  offset: const Offset(0, 3))
-            ],
-          ),
-          child: Icon(icon, color: iconColor, size: 22),
-        ),
-        const SizedBox(height: 4),
-        Text(label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: textColor,
+        Color textColor = const Color(0xff1f3f3f),
+        VoidCallback? onTap
+      }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 5,
+                    offset: const Offset(0, 3))
+              ],
             ),
-        ),
-      ],
+            child: Icon(icon, color: iconColor, size: 22),
+          ),
+          const SizedBox(height: 4),
+          Text(label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+              ),
+          ),
+        ],
+      ),
     );
   }
 
