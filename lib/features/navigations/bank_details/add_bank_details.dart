@@ -188,7 +188,6 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                     controller: panNumberController,
                     textInputType: TextInputType.text,
                   maxLength: 10,
-                  isRequired: true,
                   textInputFormatter: [
                     UpperCaseTextFormatter()
                   ],

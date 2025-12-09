@@ -145,10 +145,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Expanded(
                                     child: CustomTextField(
                                       label: "Sponsor ID",
-                                      isRequired: true,
                                       validate: (value){
                                         if(value == null || value.isEmpty){
-                                          return 'Please enter Sponsor ID';
+                                          return null;
                                         }
                                         if(!_isSponsorIDValid){
                                           return 'Please enter a valid sponsor ID';
@@ -516,7 +515,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "district": _districtController.text,
         "address": _addressController.text,
         "pin_code": _pinCodeController.text,
-        "sponsor_id": _sponsorIdController.text,
+        "sponsor_id": _sponsorIdController.text.isNotEmpty?_sponsorIdController.text:null,
+        "role" : "user"
         //"transaction_password": "1234"
       };
 

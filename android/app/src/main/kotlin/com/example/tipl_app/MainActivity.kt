@@ -1,4 +1,4 @@
-package com.example.tipl_app
+package com.neural.finance
 
 import io.flutter.embedding.android.FlutterActivity
 

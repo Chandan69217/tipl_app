@@ -2,6 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+import 'package:tipl_app/core/models/wallet_transaction.dart';
+import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 
 class UserHomeScreen extends StatelessWidget{
@@ -139,12 +142,20 @@ class UserHomeScreen extends StatelessWidget{
                         fontSize: 16, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 12),
 
-                _transactionTile("Starbucks Coffee", "-\₹5.75", "Today"),
-                _transactionTile("Salary", "+\₹2500", "Yesterday",
-                    isIncome: true),
-                _transactionTile("Netflix Subscription", "-\₹12.99",
-                    "Yesterday"),
-                _transactionTile("Amazon Shopping", "-\₹45.20", "2 days ago"),
+                Consumer<WalletProvider>(
+                  builder: (context, value, child) {
+                    return value.transaction.isEmpty ? Text("No transaction available"):ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: value.transaction.length < 5 ?value.transaction.length : 5,
+                      itemBuilder: (BuildContext context, int index) {
+                        return _transactionItem(
+                            data:  value.transaction[index]
+                        );
+                      },
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 20),
 
@@ -158,40 +169,27 @@ class UserHomeScreen extends StatelessWidget{
   }
 
 
-
-
-  // Transaction Tile
-  static Widget _transactionTile(String title, String amount, String date,
-      {bool isIncome = false}) {
-    return Card(
-      color: Colors.white,
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor:
-          isIncome ? Colors.green.shade100 : Colors.red.shade100,
-          child: Icon(
-            isIncome ? Icons.arrow_downward : Icons.arrow_upward,
-            color: isIncome ? Colors.green : Colors.red,
-          ),
+  Widget _transactionItem({
+    required WalletTransaction data
+  }) {
+    final isCredit = data.txnType.toLowerCase() == 'credit';
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: isCredit ? Colors.green.withValues(alpha: 0.1):Colors.red.withValues(alpha: 0.1),
+        child: Icon(
+          isCredit ? Iconsax.received : Iconsax.send,
+          color: isCredit ? Colors.green:Colors.red,
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(date, style: TextStyle(color: Colors.grey.shade600)),
-        trailing: Text(
-          amount,
+      ),
+      title: Text(data.source,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+      subtitle: Text(data.formattedDate, style: const TextStyle(fontSize: 12)),
+      trailing: Text('${isCredit ? '+' : '-'}'+'${data.amount}',
           style: TextStyle(
-            color: isIncome ? Colors.green : Colors.red,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+            fontSize: 14, fontWeight: FontWeight.w600, color: isCredit ? Colors.green:Colors.red,)
       ),
     );
   }
-
-  // Goal Card
-
 
 
 

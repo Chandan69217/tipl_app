@@ -102,11 +102,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Image.asset('assets/logo/only_logo.webp'),
+                                Image.asset('assets/logo/only_logo.webp',width: 50.0,),
+                                SizedBox(width: 8.0,),
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'TRSKGALAXY',
+                                      'NEURAL',
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineLarge!
@@ -117,7 +119,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                           ),
                                     ),
                                     Text(
-                                      'INFRASTRUCTURE PVT. TLD.',
+                                      'MICRO MINI FINANCE.',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!
@@ -353,9 +355,11 @@ class _SignInScreenState extends State<SignInScreen> {
           final member_id = data['member_id']??'';
           final sponsor_id = data['sponsor_id'];
           final token = data['token']??'';
+          final role = data['role']??'';
           Pref.instance.setBool(PrefConst.IS_LOGIN, true);
           Pref.instance.setString(PrefConst.MEMBER_ID, member_id);
           Pref.instance.setString(PrefConst.TOKEN, token);
+          Pref.instance.setString(PrefConst.ROLE, role);
           if(sponsor_id != null){
             Pref.instance.setString(PrefConst.SPONSOR_ID,sponsor_id);
           }

@@ -7,6 +7,7 @@ import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/providers/genealogy_provider/genealogy_provider.dart';
 import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
+import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'core/utilities/dashboard_type/dashboard_type.dart';
@@ -25,7 +26,8 @@ void main()async {
     MultiProvider(providers: [
       ChangeNotifierProvider<UserProfileProvider>(create: (_)=>UserProfileProvider(),lazy: false,),
       ChangeNotifierProvider<AllUserDetailsProvider>(create: (_)=>AllUserDetailsProvider(),lazy: false,),
-      ChangeNotifierProvider<GenealogyProvider>(create: (_)=>GenealogyProvider(),lazy: false,)
+      ChangeNotifierProvider<GenealogyProvider>(create: (_)=>GenealogyProvider(),lazy: false,),
+      ChangeNotifierProvider<WalletProvider>(create: (_)=>WalletProvider(),lazy: false,)
     ],
     child: MyApp(),
     )

@@ -593,7 +593,6 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
                   textInputType: TextInputType.text,
                   textInputFormatter: [UpperCaseTextFormatter()],
                   textInputAction: TextInputAction.next,
-                  isRequired: true,
                   prefixIcon: Icon(Iconsax.document),
                 ),
 

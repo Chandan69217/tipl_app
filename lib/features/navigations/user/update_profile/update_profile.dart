@@ -229,7 +229,6 @@ class _UpdateProfileState extends State<UpdateProfile> {
                               textInputFormatter: [
                                 UpperCaseTextFormatter()
                               ],
-                              isRequired: true,
                               maxLength: 10,
                             ),
                             const SizedBox(height: 20),

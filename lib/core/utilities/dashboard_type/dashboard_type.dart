@@ -31,8 +31,12 @@ class UserType {
     if(!isLogin){
       return;
     }
-    final sponsorId = Pref.instance.getString(PrefConst.SPONSOR_ID);
-    if (sponsorId == null || sponsorId.isEmpty) {
+    final role = Pref.instance.getString(PrefConst.ROLE);
+    if(role == null || role.isEmpty){
+      _role = UserRole.none;
+      return;
+    }
+    if (role.toLowerCase() == 'admin') {
       _role = UserRole.admin;
     } else {
       _role = UserRole.user;

@@ -34,4 +34,14 @@ class Urls{
   static const String createGenealogy = '/api/genealogy/create';
   static const String genealogyUpdate = '/api/genealogy/update';
 
+      // Wallet Details
+  static const String walletDetails = '/api/wallet/details/';
+  static const String walletAddFund = '/api/wallet/add-fund';
+  static const String walletTopUp = '/api/wallet/top-up';
+  static const String walletHistory = '/api/wallet/history/';
+  static const String purchaseMembership = '/api/wallet/purchase';
+  static const String getMembershipDetails = '/api/wallet/my-memberships/';
+  static const String updateWalletTransactionPassword = '/api/wallet/update-transaction-password';
+
+
 }

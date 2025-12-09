@@ -30,4 +30,5 @@ class PrefConst{
   static final String TOKEN = 'token';
   static final String MEMBER_ID = 'member_id';
   static final String SPONSOR_ID = 'sponsor_id';
+  static final String ROLE = 'role';
 }
