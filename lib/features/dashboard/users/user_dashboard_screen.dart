@@ -11,14 +11,13 @@ import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
-import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
-import 'package:tipl_app/features/navigations/suggestion_screen.dart';
-import 'package:tipl_app/features/navigations/user/id_card.dart';
-import 'package:tipl_app/features/navigations/user/update_profile/update_profile.dart';
-import 'package:tipl_app/features/navigations/user/user_home_screen.dart';
-import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
-import 'package:tipl_app/features/navigations/user/wallets/wallet_screen.dart';
+import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
+import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigation/user/id_card.dart';
+import 'package:tipl_app/features/navigation/user/update_profile/update_profile.dart';
+import 'package:tipl_app/features/navigation/user/user_home_screen.dart';
+import 'package:tipl_app/features/navigation/user/user_profile_screen.dart';
+import 'package:tipl_app/features/navigation/user/wallets/wallet_screen.dart';
 import 'package:tipl_app/features/notification_screen.dart';
 
 

@@ -12,8 +12,9 @@ import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
-import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'add_meeting_screen.dart';
 
 
 

@@ -119,7 +119,7 @@ class WalletApiService {
   }
   
   Future<Map<String,dynamic>?> purchaseMembership(
-      {required String packageType, required double amount,required String password})async{
+      {required String packageType, required String amount,required String password})async{
     try{
       final token = Pref.instance.getString(PrefConst.TOKEN);
       final memberId = Pref.instance.getString(PrefConst.MEMBER_ID);

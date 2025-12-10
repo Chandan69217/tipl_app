@@ -15,10 +15,10 @@ import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
-import 'package:tipl_app/features/navigations/bank_details/add_bank_details.dart';
-import 'package:tipl_app/features/navigations/bank_details/view_bank_details.dart';
-import 'package:tipl_app/features/navigations/user/edit_user_profile.dart';
-import 'package:tipl_app/features/navigations/user/welcome_letter.dart';
+import 'package:tipl_app/features/navigation/bank_details/add_bank_details.dart';
+import 'package:tipl_app/features/navigation/bank_details/view_bank_details.dart';
+import 'package:tipl_app/features/navigation/user/welcome_letter.dart';
+import 'edit_user_profile.dart';
 import 'id_card.dart' show IdCardScreen;
 
 

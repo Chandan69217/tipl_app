@@ -9,7 +9,7 @@ import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
-import 'package:tipl_app/features/navigations/bank_details/view_bank_details.dart';
+
 
 
 

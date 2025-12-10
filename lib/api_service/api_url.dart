@@ -43,5 +43,14 @@ class Urls{
   static const String getMembershipDetails = '/api/wallet/my-memberships/';
   static const String updateWalletTransactionPassword = '/api/wallet/update-transaction-password';
 
+                  // Income Urls
+  static const String getAllIncomes = '/api/income/';
+  static const String getDirectIncomes = '/api/income/direct/';
+  static const String getLevelIncomes = '/api/income/level/';
+  static const String getCashbackIncomes = '/api/income/cashback/';
+  static const String getMatchingIncomes = '/api/income/matching/';
+  static const String getDailyIncomes = '/api/income/daily/';
+  static const String getSalaryIncomes = '/api/income/salary/';
+  static const String getRewardsIncomes = '/api/income/rewards/';
 
 }

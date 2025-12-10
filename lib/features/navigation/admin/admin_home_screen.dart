@@ -4,17 +4,17 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
-import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
-import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
-import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
-import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
-import 'package:tipl_app/features/navigations/genealogy/tree_view_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
+import 'package:tipl_app/features/navigation/genealogy/tree_view_screen.dart';
+import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigation/packages/pacakge_list_screen.dart';
+
 
 import 'manage_banks/bank_details_list_screen.dart';
+import 'manage_users/user_details_screen.dart';
 
 
 
@@ -91,6 +91,15 @@ class AdminHomeScreen extends StatelessWidget {
                 children: [
                   _buildMenuCard(
                     context,
+                    icon: Iconsax.box,
+                    label: "Manage Package",
+                    color: Colors.teal,
+                    onPressed: () {
+                      navigateWithAnimation(context, PackagesListScreen());
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
                     icon: Iconsax.bank,
                     label: "All Banks",
                     color: Colors.deepPurple,
@@ -141,7 +150,7 @@ class AdminHomeScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-
+          Divider(),
           // Recent Activity
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

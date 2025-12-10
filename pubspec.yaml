@@ -53,6 +53,9 @@ dependencies:
   http_parser: ^4.1.2
   url_launcher: ^6.3.2
   graphview: ^1.5.1
+  carousel_slider: ^5.1.1
+  smooth_page_indicator: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:

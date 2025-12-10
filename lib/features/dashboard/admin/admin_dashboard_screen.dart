@@ -11,12 +11,12 @@ import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
-import 'package:tipl_app/features/navigations/admin/admin_home_screen.dart';
-import 'package:tipl_app/features/navigations/admin/admin_wallet_screen.dart';
-import 'package:tipl_app/features/navigations/admin/manage_users/manage_user_screen.dart';
-import 'package:tipl_app/features/navigations/admin/reports_screen.dart';
-import 'package:tipl_app/features/navigations/admin/settings_screen.dart';
-import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
+import 'package:tipl_app/features/navigation/admin/admin_home_screen.dart';
+import 'package:tipl_app/features/navigation/admin/admin_wallet_screen.dart';
+import 'package:tipl_app/features/navigation/admin/manage_users/manage_user_screen.dart';
+import 'package:tipl_app/features/navigation/admin/reports_screen.dart';
+import 'package:tipl_app/features/navigation/admin/settings_screen.dart';
+import 'package:tipl_app/features/navigation/user/user_profile_screen.dart';
 import 'package:tipl_app/features/notification_screen.dart';
 
 

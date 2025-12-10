@@ -12,12 +12,12 @@ class ProfileAPIService {
   BuildContext? context;
   ProfileAPIService({this.context});
 
-  Future<Map<String, dynamic>?> getProfileDetailsByMemberId() async {
+  Future<Map<String, dynamic>?> getProfileDetailsByMemberId({String? id}) async {
     try {
       final token = Pref.instance.getString(PrefConst.TOKEN);
       final memberId = Pref.instance.getString(PrefConst.MEMBER_ID);
       final url = Uri.https(Urls.baseUrl, Urls.getProfile, {
-        'member_id': memberId,
+        'member_id': id??memberId,
       });
 
       final response = await get(

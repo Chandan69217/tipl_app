@@ -3,8 +3,10 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tipl_app/core/providers/genealogy_provider/genealogy_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
-import 'package:tipl_app/features/navigations/genealogy/member_card.dart';
-import 'package:tipl_app/features/navigations/genealogy/tree_view_screen.dart';
+
+import 'member_card.dart';
+import 'tree_view_screen.dart';
+
 
 
 class GenealogyScreen extends StatefulWidget {

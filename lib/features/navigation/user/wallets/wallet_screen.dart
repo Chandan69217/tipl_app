@@ -5,13 +5,13 @@ import 'package:tipl_app/core/models/wallet_transaction.dart';
 import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
-import 'package:tipl_app/features/navigations/incomes/income_screen.dart';
-import 'package:tipl_app/features/navigations/investment/investment_screen.dart';
-import 'package:tipl_app/features/navigations/user/wallets/add_fund_screen.dart';
-import 'package:tipl_app/features/navigations/user/wallets/membership_screen.dart';
-import 'package:tipl_app/features/navigations/user/wallets/top_up_screen.dart';
+import 'package:tipl_app/features/navigation/incomes/income_screen.dart';
 
 
+
+import 'add_fund_screen.dart';
+import 'membership_screen.dart';
+import 'top_up_screen.dart';
 import 'transaction_history_screen.dart';
 
 class WalletScreen extends StatefulWidget {

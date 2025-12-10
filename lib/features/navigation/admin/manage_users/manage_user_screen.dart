@@ -5,10 +5,10 @@ import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
-import 'package:tipl_app/core/widgets/snackbar_helper.dart';
-import 'package:tipl_app/features/navigations/admin/manage_users/update_user_details.dart';
-import 'package:tipl_app/features/navigations/admin/manage_users/user_details_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
+import 'package:tipl_app/features/navigation/admin/manage_users/update_user_details.dart';
+import 'package:tipl_app/features/navigation/admin/manage_users/user_details_screen.dart';
+import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
+
 
 
 

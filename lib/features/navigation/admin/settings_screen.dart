@@ -6,10 +6,12 @@ import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
-import 'package:tipl_app/features/navigations/admin/manage_banks/bank_details_list_screen.dart';
-import 'package:tipl_app/features/navigations/genealogy/genealogy_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
-import 'package:tipl_app/features/navigations/user/user_profile_screen.dart';
+import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
+import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigation/user/user_profile_screen.dart';
+
+import 'manage_banks/bank_details_list_screen.dart';
+
 
 
 

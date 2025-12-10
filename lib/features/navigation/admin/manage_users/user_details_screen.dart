@@ -9,10 +9,11 @@ import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
-import 'package:tipl_app/features/navigations/admin/manage_users/update_user_details.dart';
-import 'package:tipl_app/features/navigations/genealogy/create_genealogy_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/add_meeting_screen.dart';
-import 'package:tipl_app/features/navigations/meetings/meeting_screen.dart';
+import 'package:tipl_app/features/navigation/genealogy/create_genealogy_screen.dart';
+import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
+
+import 'update_user_details.dart';
+
 
 
 
