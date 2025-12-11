@@ -368,8 +368,8 @@ class _SignInScreenState extends State<SignInScreen> {
             Pref.instance.setString(PrefConst.SAVED_EMAIL, _emailController.text);
             Pref.instance.setString(PrefConst.SAVED_PASSWORD, _passwordController.text);
           }
-          RecallProvider(context: context);
           UserType.initialize();
+          RecallProvider(context: context);
           navigatePushReplacementWithAnimation(context, sponsor_id != null ? UserDashboardScreen() : AdminDashboardScreen());
         }else{
           CustomMessageDialog.show(context, title: 'Invalid Credentials', message: message);

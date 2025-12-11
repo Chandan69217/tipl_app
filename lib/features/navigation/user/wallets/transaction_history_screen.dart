@@ -3,6 +3,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:tipl_app/core/models/wallet_transaction.dart';
 import 'package:tipl_app/core/widgets/custom_date_picker_text_field.dart';
+import 'package:tipl_app/core/widgets/custom_dropdown.dart';
+import 'package:tipl_app/features/navigation/user/wallets/transaction_item.dart';
 
 
 
@@ -19,6 +21,8 @@ class TransactionHistoryScreen extends StatefulWidget {
 class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
   DateTime? startDate;
   DateTime? endDate;
+  String? statusFilter = "All"; // All, pending, success, failed
+
 
   List<WalletTransaction> filtered = [];
 
@@ -28,32 +32,69 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     filtered = [...widget.transactions];
   }
 
-
   void applyFilter() {
     DateTime toOnlyDate(DateTime d) => DateTime(d.year, d.month, d.day);
+
     setState(() {
       filtered = widget.transactions.where((t) {
         final tDate = toOnlyDate(t.createdAt);
         final sDate = startDate != null ? toOnlyDate(startDate!) : null;
         final eDate = endDate != null ? toOnlyDate(endDate!) : null;
 
+        // --- DATE FILTER ---
+        bool dateOk = true;
+
         if (sDate != null && eDate == null) {
-          return tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate);
+          dateOk = tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate);
         }
 
         if (sDate == null && eDate != null) {
-          return tDate.isAtSameMomentAs(eDate) || tDate.isBefore(eDate);
+          dateOk = tDate.isAtSameMomentAs(eDate) || tDate.isBefore(eDate);
         }
 
         if (sDate != null && eDate != null) {
-          return (tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate)) &&
+          dateOk = (tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate)) &&
               (tDate.isAtSameMomentAs(eDate) || tDate.isBefore(eDate));
         }
 
-        return true;
+        // --- STATUS FILTER ---
+        bool statusOk = true;
+
+        if (statusFilter != null && statusFilter != "All") {
+          statusOk = t.confirmation.toLowerCase() == statusFilter!.toLowerCase();
+        }
+
+        return dateOk && statusOk;
       }).toList();
     });
   }
+
+
+  // void applyFilter() {
+  //   DateTime toOnlyDate(DateTime d) => DateTime(d.year, d.month, d.day);
+  //   setState(() {
+  //     filtered = widget.transactions.where((t) {
+  //       final tDate = toOnlyDate(t.createdAt);
+  //       final sDate = startDate != null ? toOnlyDate(startDate!) : null;
+  //       final eDate = endDate != null ? toOnlyDate(endDate!) : null;
+  //
+  //       if (sDate != null && eDate == null) {
+  //         return tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate);
+  //       }
+  //
+  //       if (sDate == null && eDate != null) {
+  //         return tDate.isAtSameMomentAs(eDate) || tDate.isBefore(eDate);
+  //       }
+  //
+  //       if (sDate != null && eDate != null) {
+  //         return (tDate.isAtSameMomentAs(sDate) || tDate.isAfter(sDate)) &&
+  //             (tDate.isAtSameMomentAs(eDate) || tDate.isBefore(eDate));
+  //       }
+  //
+  //       return true;
+  //     }).toList();
+  //   });
+  // }
 
 
 
@@ -151,6 +192,25 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                     ),
                   ],
                 ),
+
+                const SizedBox(height: 6),
+
+                CustomDropdown<String?>(
+                    label: 'Status',
+                    items: [
+                      DropdownMenuItem(value: "All", child: Text("All")),
+                      DropdownMenuItem(value: "pending", child: Text("Pending")),
+                      DropdownMenuItem(value: "success", child: Text("Success")),
+                      DropdownMenuItem(value: "failed", child: Text("Failed")),
+                    ],
+                    value: statusFilter,
+                    onChanged: (value) {
+                      statusFilter = value;
+                      if(statusFilter == null) return;
+                      applyFilter();
+                    },
+                ),
+
               ],
             ),
           ),
@@ -181,7 +241,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                     ),
 
                     // --- Transactions under that month ---
-                    ...items.map((tx) => _transactionItem(data: tx)),
+                    ...items.map((tx) => TransactionItem(data: tx)),
                   ],
                 );
               }).toList(),
@@ -192,57 +252,5 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
     );
   }
 
-  // ---------- Your Transaction Tile ----------
-  // Widget _transactionItem({required WalletTransaction data}) {
-  //   final isCredit = data.txnType.toLowerCase() == 'credit';
-  //
-  //   return ListTile(
-  //     leading: CircleAvatar(
-  //       backgroundColor:
-  //       isCredit ? Colors.green.shade100 : Colors.red.shade100,
-  //       child: Icon(
-  //         isCredit ? Icons.arrow_downward : Icons.arrow_upward,
-  //         color: isCredit ? Colors.green : Colors.red,
-  //       ),
-  //     ),
-  //     title: Text(
-  //       data.source,
-  //       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-  //     ),
-  //     subtitle: Text(
-  //       data.formattedDate,
-  //       style: const TextStyle(fontSize: 12),
-  //     ),
-  //     trailing: Text(
-  //       '${isCredit ? '+' : '-'}${data.amount}',
-  //       style: TextStyle(
-  //         fontSize: 14,
-  //         fontWeight: FontWeight.w600,
-  //         color: isCredit ? Colors.green : Colors.red,
-  //       ),
-  //     ),
-  //   );
-  // }
 
-  Widget _transactionItem({
-    required WalletTransaction data
-  }) {
-    final isCredit = data.txnType.toLowerCase() == 'credit';
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: isCredit ? Colors.green.withValues(alpha: 0.1):Colors.red.withValues(alpha: 0.1),
-        child: Icon(
-          isCredit ? Iconsax.received : Iconsax.send,
-          color: isCredit ? Colors.green:Colors.red,
-        ),
-      ),
-      title: Text(data.source,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-      subtitle: Text(data.formattedDate, style: const TextStyle(fontSize: 12)),
-      trailing: Text('${isCredit ? '+' : '-'}'+'${data.amount}',
-          style: TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w600, color: isCredit ? Colors.green:Colors.red,)
-      ),
-    );
-  }
 }

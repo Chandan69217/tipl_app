@@ -158,43 +158,43 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
         },
       ),
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: Stack(
-            children: [
-              IconButton(
-                onPressed: () {
-                  if(mounted)
-                    setState(() {
-                      _notificationCount = 0;
-                      navigateWithAnimation(context, NotificationsScreen());
-                    });
-                },
-                icon: const Icon(Iconsax.notification_bing, size: 25,color: Colors.black,),
-              ),
-              if (_notificationCount > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '$_notificationCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(right: 8.0),
+        //   child: Stack(
+        //     children: [
+        //       IconButton(
+        //         onPressed: () {
+        //           if(mounted)
+        //             setState(() {
+        //               _notificationCount = 0;
+        //               navigateWithAnimation(context, NotificationsScreen());
+        //             });
+        //         },
+        //         icon: const Icon(Iconsax.notification_bing, size: 25,color: Colors.black,),
+        //       ),
+        //       if (_notificationCount > 0)
+        //         Positioned(
+        //           right: 8,
+        //           top: 8,
+        //           child: Container(
+        //             padding: const EdgeInsets.all(4),
+        //             decoration: const BoxDecoration(
+        //               color: Colors.red,
+        //               shape: BoxShape.circle,
+        //             ),
+        //             child: Text(
+        //               '$_notificationCount',
+        //               style: const TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 10,
+        //                 fontWeight: FontWeight.bold,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //     ],
+        //   ),
+        // ),
         if (_bottomNavIndex == 4) ...[
           PopupMenuButton<String>(
             onSelected: (value) {

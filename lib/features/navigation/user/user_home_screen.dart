@@ -134,22 +134,27 @@ class UserHomeScreen extends StatelessWidget{
 
 
           // membership
-         Padding(
-           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               Text('Purchased Packages',
-                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-               ),
-               const SizedBox(height: 10,),
-               Consumer<WalletProvider>(
+         Consumer<WalletProvider>(
+           builder: (BuildContext context, WalletProvider value, Widget? child) {
+             return child??SizedBox.shrink();
+           },
+           child: Padding(
+             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+             child: Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 Text('Purchased Packages',
+                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                 ),
+                 const SizedBox(height: 10,),
+                 Consumer<WalletProvider>(
 
-                 builder: (BuildContext context, WalletProvider value, Widget? child) {
-                   return PurchasedPlanSlider(purchasedPlan: value.memberships);
-                 },
-               ),
-             ],
+                   builder: (BuildContext context, WalletProvider value, Widget? child) {
+                     return PurchasedPlanSlider(purchasedPlan: value.memberships);
+                   },
+                 ),
+               ],
+             ),
            ),
          ),
 
@@ -233,6 +238,8 @@ class UserHomeScreen extends StatelessWidget{
           );
         },
       ),
+
+
       const SizedBox(height: 20,),
           // Chart & Transactions
           Padding(

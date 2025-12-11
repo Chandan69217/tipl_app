@@ -68,7 +68,7 @@ class _PackagesListScreenState extends State<PackagesListScreen> {
         title: const Text("Membership Packages"),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: TextButton(onPressed: (){
               navigateWithAnimation(context, CreateUpdatePackageScreen(
                 onSuccess: (){

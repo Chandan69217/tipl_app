@@ -44,32 +44,6 @@ class _PackageCardState extends State<PackageCard> {
       child: Stack(
         children: [
 
-        Positioned(
-        right: 0,
-        top: 0,
-        child: Row(
-          children: [
-            if (widget.canEdit)
-              IconButton(
-                icon: const Icon(Iconsax.edit, color: Colors.blue),
-                onPressed: widget.onEdit,
-              ),
-            if (widget.canDelete)
-              _isLoading
-                  ? CustomCircularIndicator()
-                  : IconButton(
-                icon: const Icon(Iconsax.trash, color: Colors.red),
-                onPressed: () async {
-                  setState(() => _isLoading = true);
-                  final deleted = await PackagesApiService()
-                      .deletePackage((widget.plan['id'] ?? '').toString());
-                  if (deleted) widget.onDelete?.call();
-                  setState(() => _isLoading = false);
-                },
-              ),
-          ],
-        ),
-      ),
         Container(
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(16),
@@ -186,33 +160,33 @@ class _PackageCardState extends State<PackageCard> {
 
                 // ========= ACTION BUTTONS (Edit / Delete) =========
                 // if (widget.canEdit || widget.canDelete)
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.end,
-                  //   children: [
-                  //     if (widget.canEdit)
-                  //       IconButton(
-                  //         icon: const Icon(Icons.edit, color: Colors.blue),
-                  //         onPressed: widget.onEdit,
-                  //       ),
-                  //
-                  //     if (widget.canDelete)
-                  //       _isLoading ? CustomCircularIndicator():IconButton(
-                  //         icon: const Icon(Icons.delete, color: Colors.red),
-                  //         onPressed: ()async{
-                  //           setState(() {
-                  //             _isLoading = true;
-                  //           });
-                  //           final deleted = await PackagesApiService().deletePackage((widget.plan['id']??'').toString());
-                  //           if(deleted){
-                  //             widget.onDelete?.call();
-                  //           }
-                  //           setState(() {
-                  //             _isLoading = false;
-                  //           });
-                  //         },
-                  //       ),
-                  //   ],
-                  // ),
+                //   Row(
+                //     mainAxisAlignment: MainAxisAlignment.end,
+                //     children: [
+                //       if (widget.canEdit)
+                //         IconButton(
+                //           icon: const Icon(Icons.edit, color: Colors.blue),
+                //           onPressed: widget.onEdit,
+                //         ),
+                //
+                //       if (widget.canDelete)
+                //         _isLoading ? CustomCircularIndicator():IconButton(
+                //           icon: const Icon(Icons.delete, color: Colors.red),
+                //           onPressed: ()async{
+                //             setState(() {
+                //               _isLoading = true;
+                //             });
+                //             final deleted = await PackagesApiService().deletePackage((widget.plan['id']??'').toString());
+                //             if(deleted){
+                //               widget.onDelete?.call();
+                //             }
+                //             setState(() {
+                //               _isLoading = false;
+                //             });
+                //           },
+                //         ),
+                //     ],
+                //   ),
               ],
             ),
           ),
@@ -253,6 +227,37 @@ class _PackageCardState extends State<PackageCard> {
                 ),
               ),
             ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (widget.canEdit)
+                  IconButton(
+                    icon: const Icon(Iconsax.edit, color: Colors.blue),
+                    onPressed: widget.onEdit,
+                  ),
+
+                if (widget.canDelete)
+                  _isLoading ? CustomCircularIndicator():IconButton(
+                    icon: const Icon(Iconsax.trash, color: Colors.red),
+                    onPressed: ()async{
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      final deleted = await PackagesApiService().deletePackage((widget.plan['id']??'').toString());
+                      if(deleted){
+                        widget.onDelete?.call();
+                      }
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

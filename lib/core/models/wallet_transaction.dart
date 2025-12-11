@@ -6,8 +6,11 @@ class WalletTransaction {
   final double amount;
   final String txnType;
   final String source;
-  final String? reference;
-  final String transactionPassword;
+  final String? upi;              // nullable
+  final String? utr;              // nullable
+  final String confirmation;
+  final String? reference;        // nullable
+  final String? transactionPassword;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -19,8 +22,11 @@ class WalletTransaction {
     required this.amount,
     required this.txnType,
     required this.source,
-    required this.reference,
-    required this.transactionPassword,
+    this.upi,
+    this.utr,
+    required this.confirmation,
+    this.reference,
+    this.transactionPassword,
     required this.createdAt,
     required this.updatedAt,
   }) {
@@ -28,19 +34,25 @@ class WalletTransaction {
   }
 
   factory WalletTransaction.fromJson(Map<String, dynamic> json) {
-    DateTime created = DateTime.parse(json["createdAt"]);
-    DateTime updated = DateTime.parse(json["updatedAt"]);
+    // safely parse dates
+    DateTime parseDate(String? date) {
+      if (date == null || date.isEmpty) return DateTime.now();
+      return DateTime.tryParse(date) ?? DateTime.now();
+    }
 
     return WalletTransaction(
-      id: json["id"],
-      memberId: json["member_id"],
-      amount: (json["amount"] as num).toDouble(),
-      txnType: json["txn_type"],
-      source: json["source"],
-      reference: json["reference"],
+      id: json["id"] ?? 0,
+      memberId: json["member_id"] ?? "",
+      amount: (json["amount"] ?? 0).toDouble(),
+      txnType: json["txn_type"] ?? "unknown",
+      source: json["source"] ?? "",
+      upi: json["upi"],                    // optional
+      utr: json["utr"],                    // optional
+      confirmation: json["confirmation"] ?? "pending",
+      reference: json["reference"],        // optional
       transactionPassword: json["transaction_password"],
-      createdAt: created,
-      updatedAt: updated,
+      createdAt: parseDate(json["createdAt"]),
+      updatedAt: parseDate(json["updatedAt"]),
     );
   }
 
@@ -50,7 +62,10 @@ class WalletTransaction {
     "amount": amount,
     "txn_type": txnType,
     "source": source,
+    "upi": upi,
+    "utr": utr,
     "reference": reference,
+    "confirmation": confirmation,
     "transaction_password": transactionPassword,
     "createdAt": createdAt.toIso8601String(),
     "updatedAt": updatedAt.toIso8601String(),

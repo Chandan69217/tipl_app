@@ -31,7 +31,7 @@ import 'package:tipl_app/core/models/wallet_transaction.dart';
 
 
 class WalletProvider extends ChangeNotifier {
-  double balance = 0.0;
+  var balance;
   DateFormat _dateFormat = DateFormat('dd-MMM-yyyy H:m a');
   String createdAt = 'N/A';
   String updatedAt = 'N/A';

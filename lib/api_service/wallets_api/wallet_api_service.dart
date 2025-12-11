@@ -188,7 +188,49 @@ class WalletApiService {
     return [];
   }
 
+  Future<Map<String,dynamic>?> addFund({
+    required String amount,
+    required String reference,
+    required String password,
+    required String upi,
+    required String utr,
+})async{
 
+    try{
+      final member_id = Pref.instance.getString(PrefConst.MEMBER_ID);
+      final token = Pref.instance.getString(PrefConst.TOKEN);
+      
+      final url = Uri.https(Urls.baseUrl,Urls.walletAddFund);
+
+      final body = json.encode(
+          {
+            "member_id": member_id,
+            "amount": amount,
+            "source": "Admin",
+            "reference": reference,
+            "transaction_password": password,
+            "upi": upi,
+            "utr": utr
+          }
+      );
+
+      final response = await post(url,body: body,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      });
+      printAPIResponse(response);
+      if(response.statusCode == 200 || response.statusCode == 201){
+        final value = json.decode(response.body) as Map<String,dynamic>;
+        return value;
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print(('Exception: ${exception},Trace: ${trace}'));
+    }
+
+    return null;
+  }
 
 
 }

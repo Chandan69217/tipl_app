@@ -6,6 +6,8 @@ import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigation/incomes/income_screen.dart';
+import 'package:tipl_app/features/navigation/user/wallets/transaction_confirmation.dart';
+import 'package:tipl_app/features/navigation/user/wallets/transaction_item.dart';
 
 
 
@@ -87,16 +89,18 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                       const SizedBox(height: 20),
                       Row(
                         children: [
-                          _balanceButton(
-                              label: "Withdraw",
-                              color: const Color(0xff1f3f3f),
-                              textColor: Colors.white,
-                              icon: Icons.north_east),
-                          const SizedBox(width: 10),
+                          // _balanceButton(
+                          //     label: "Withdraw",
+                          //     color: const Color(0xff1f3f3f),
+                          //     textColor: Colors.white,
+                          //     icon: Icons.north_east),
+                          // const SizedBox(width: 10),
                           _balanceButton(
                               label: "History",
-                              color: Colors.white,
-                              textColor: const Color(0xff1f3f3f),
+                              // color: Colors.white,
+                              // textColor: const Color(0xff1f3f3f),
+                              color: Color(0xff1f3f3f),
+                              textColor: Colors.white,
                               icon: Iconsax.clock,
                               border: true,
                               onTap: (){
@@ -105,19 +109,31 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                           ),
                           const SizedBox(width: 10),
                           _balanceButton(
-                              label: "",
+                              label: "Update",
                               onTap: (){
-                                if(mounted){
-                                  setState(() {
-                                    _showMore = !_showMore;
-                                  });
-                                }
+                                showChangePasswordBottomSheet(context,updateForTnx: true);
                               },
                               color: Colors.white,
                               textColor: const Color(0xff1f3f3f),
-                              icon: Icons.more_horiz,
+                              icon: Iconsax.key,
                               border: true,
-                              isIconOnly: true),
+
+                          ),
+
+                          // _balanceButton(
+                          //     label: "",
+                          //     onTap: (){
+                          //       if(mounted){
+                          //         setState(() {
+                          //           _showMore = !_showMore;
+                          //         });
+                          //       }
+                          //     },
+                          //     color: Colors.white,
+                          //     textColor: const Color(0xff1f3f3f),
+                          //     icon: Icons.more_horiz,
+                          //     border: true,
+                          //     isIconOnly: true),
                         ],
                       ),
                       AnimatedSize(
@@ -171,12 +187,12 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                   //     bgColor: const Color(0xff1f3f3f),
                   //     iconColor: Colors.white,
                   // ),
-                  _quickAction(Iconsax.add, "Top-up",
-                  onTap: (){
-                    // TopUpScreen.show(context);
-                    navigateWithAnimation(context, TopUpScreen());
-                  }
-                  ),
+                  // _quickAction(Iconsax.add, "Top-up",
+                  // onTap: (){
+                  //   // TopUpScreen.show(context);
+                  //   navigateWithAnimation(context, TopUpScreen());
+                  // }
+                  // ),
                   _quickAction(Iconsax.received, "Income",
                     onTap: (){
                     navigateWithAnimation(context, IncomeScreen());
@@ -221,11 +237,11 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
               
                       // Transaction List
                       Expanded(
-                        child: value.transaction.isEmpty ? Text("No transaction available"):ListView.builder(
+                        child: value.transaction.isEmpty ? Center(child: Text("No transaction available")):ListView.builder(
                           shrinkWrap: true,
                           itemCount: value.transaction.length < 10 ?value.transaction.length : 10,
                           itemBuilder: (BuildContext context, int index) {
-                            return _transactionItem(
+                            return TransactionItem(
                              data:  value.transaction[index]
                             );
                           },
@@ -334,27 +350,6 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
     );
   }
 
-  Widget _transactionItem({
-    required WalletTransaction data
-}) {
-    final isCredit = data.txnType.toLowerCase() == 'credit';
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: isCredit ? Colors.green.withValues(alpha: 0.1):Colors.red.withValues(alpha: 0.1),
-        child: Icon(
-          isCredit ? Iconsax.received : Iconsax.send,
-          color: isCredit ? Colors.green:Colors.red,
-        ),
-      ),
-      title: Text(data.source,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-      subtitle: Text(data.formattedDate, style: const TextStyle(fontSize: 12)),
-      trailing: Text('${isCredit ? '+' : '-'}'+'${data.amount}',
-          style: TextStyle(
-              fontSize: 14, fontWeight: FontWeight.w600, color: isCredit ? Colors.green:Colors.red,)
-      ),
-    );
-  }
 
 }
 
