@@ -155,29 +155,44 @@ import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 // }
 
 
-void showChangePasswordBottomSheet(
-    BuildContext context, {
-      bool? updateForTnx = false,
-    }) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    useSafeArea: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) => ChangePasswordScreen(updateForTnx: updateForTnx ?? false),
-  );
-}
+// void showChangePasswordBottomSheet(
+//     BuildContext context, {
+//       bool? updateForTnx = false,
+//     }) {
+//   showModalBottomSheet(
+//     context: context,
+//     isScrollControlled: true,
+//     useSafeArea: true,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+//     ),
+//     builder: (context) => ChangePasswordScreen(updateForTnx: updateForTnx ?? false),
+//   );
+// }
 
 class ChangePasswordScreen extends StatefulWidget {
   final bool updateForTnx;
+  final AdminChangingPass? isAdmin;
 
   const ChangePasswordScreen({
     Key? key,
     required this.updateForTnx,
+    this.isAdmin
   }) : super(key: key);
-
+  static   Future<String?> show(BuildContext context,
+      {bool updateForTnx = false,
+        AdminChangingPass? isAdmin = null,
+      }) async {
+    return await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => ChangePasswordScreen(updateForTnx: updateForTnx,isAdmin: isAdmin,),
+    );
+  }
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
@@ -234,7 +249,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         oldPassword: _oldPasswordController.text,
         newPassword: _newPasswordController.text,
       );
-    } else {
+    } else if(widget.isAdmin != null){
+      result = await ChangePasswordAPIService(context: context)
+          .updateUserPassword(member_id: widget.isAdmin!.member_id, password:_newPasswordController.text);
+    }else {
       //  NORMAL PASSWORD UPDATE
       result = await ChangePasswordAPIService(context: context)
           .changeTransactionPass(newPassword: _newPasswordController.text);
@@ -378,4 +396,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       ),
     );
   }
+}
+
+
+class AdminChangingPass{
+  final String member_id;
+  AdminChangingPass({
+    required this.member_id,
+});
 }

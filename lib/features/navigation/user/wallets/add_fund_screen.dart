@@ -53,7 +53,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
           CustomMessageDialog.show(
             context,
             title: 'Notice',
-            message: 'Until the previous payment is confirmed, you cannot add another transaction. Please wait for verification.',
+            message: 'Until the previous payment ${transaction[0].amount} is not confirmed, you cannot add another transaction. Please wait for verification.',
             confirmText: 'Go Back',
             onConfirm: () {
               Navigator.of(context).pop();

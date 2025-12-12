@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/core/providers/admin_provider/all_transactions_provider.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
+import 'package:tipl_app/core/providers/income_provider/income_provider.dart';
+import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
@@ -11,8 +15,7 @@ import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/genealogy/tree_view_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
 import 'package:tipl_app/features/navigation/packages/pacakge_list_screen.dart';
-
-
+import 'package:tipl_app/features/navigation/user/wallets/transaction_item.dart';
 import 'manage_banks/bank_details_list_screen.dart';
 import 'manage_users/user_details_screen.dart';
 
@@ -20,7 +23,7 @@ import 'manage_users/user_details_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key,this.onUpdate});
-  final VoidCallback? onUpdate;
+  final Function(int)? onUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +70,8 @@ class AdminHomeScreen extends StatelessWidget {
                 return _dashboardCard(Iconsax.user_remove, "Inactive Users", "${value.inactiveUser}", Colors.red);
               },),
 
-              _dashboardCard(Iconsax.wallet, "Total Income", "₹ 15,40,000", Colors.purple),
-              _dashboardCard(Iconsax.money, "Total Withdrawals", "₹ 8,20,000", Colors.orange),
+              Consumer<IncomeProvider>(builder: (context,value,child)=>_dashboardCard(Iconsax.wallet, "Total Income", "₹ ${value.totalAllIncome}", Colors.purple),),
+              Consumer<WalletProvider>(builder: (context,value,child)=>_dashboardCard(Iconsax.money, "Total Withdrawals", "₹ ${value.totalWithdrawal}", Colors.orange),),
               // _dashboardCard(Iconsax.activity, "Pending Requests", "34", Colors.teal),
             ],
           ),
@@ -161,14 +164,16 @@ class AdminHomeScreen extends StatelessWidget {
               ),
               TextButton(
                   onPressed: (){
-                onUpdate?.call();
+                onUpdate?.call(2);
               }, child: Text('View all'))
             ],
           ),
           const SizedBox(height: 12),
           Consumer<AllUserDetailsProvider>(
               builder: (context,value,child){
-                return ListView.builder(
+                return value.users.isEmpty ? Center(
+                  child: Text('No Users Registered'),
+                ):ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: value.users.length < 5 ? value.users.length : 5,
@@ -194,14 +199,37 @@ class AdminHomeScreen extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          const Text(
-            "Recent Withdrawals",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Recent Transactions",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+              TextButton(
+                  onPressed: (){
+                    onUpdate?.call(1);
+                  }, child: Text('View all'))
+            ],
           ),
           const SizedBox(height: 12),
-          _recentTile("Amit Singh", "₹ 12,000", "12 Sep 2025"),
-          _recentTile("Priya Das", "₹ 8,500", "11 Sep 2025"),
-          _recentTile("Karan Mehta", "₹ 5,000", "10 Sep 2025"),
+          Consumer<AllTransactionsProvider>(
+              builder: (context,value,child){
+                return value.allTransactions.isEmpty ? Center(
+                  child: Text('No Transaction Available'),
+                ):ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: value.allTransactions.length < 5 ? value.allTransactions.length : 5,
+                  itemBuilder: (context, index) {
+                    final transaction = value.allTransactions[index];
+
+                    return TransactionItem(data:transaction,userType: UserType.role, );
+                  },
+                );
+              }
+          ),
+
         ],
       ),
     );

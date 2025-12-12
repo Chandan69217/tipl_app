@@ -74,4 +74,39 @@ class ChangePasswordAPIService{
     }
     return false;
   }
+
+  Future<bool> updateUserPassword({
+    required String member_id,
+    required String password,
+  }) async {
+    try{
+      final token = Pref.instance.getString(PrefConst.TOKEN);
+
+      final url = Uri.https(Urls.baseUrl,'/api/wallet/reset-transaction-password');
+
+      final body = json.encode({
+        "member_id": member_id,
+        "new_password": password
+      });
+
+      final response = await post(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      },body: body);
+      printAPIResponse(response);
+      if(response.statusCode == 200 || response.statusCode == 201){
+        final value = json.decode(response.body) as Map<String,dynamic>;
+        final isSuccess = value['isSuccess']??false;
+        if(isSuccess){
+          return true;
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+    }catch(exception,trace){
+      print("Exception: ${exception}, Trace: ${trace}");
+    }
+    return false;
+  }
+
 }

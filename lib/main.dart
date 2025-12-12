@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
+import 'package:tipl_app/core/providers/admin_provider/all_transactions_provider.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/providers/genealogy_provider/genealogy_provider.dart';
 import 'package:tipl_app/core/providers/income_provider/income_provider.dart';
@@ -29,7 +30,8 @@ void main()async {
       ChangeNotifierProvider<AllUserDetailsProvider>(create: (_)=>AllUserDetailsProvider(),lazy: false,),
       ChangeNotifierProvider<GenealogyProvider>(create: (_)=>GenealogyProvider(),lazy: false,),
       ChangeNotifierProvider<WalletProvider>(create: (_)=>WalletProvider(),lazy: false,),
-      ChangeNotifierProvider<IncomeProvider>(create: (_)=>IncomeProvider(),lazy: false,)
+      ChangeNotifierProvider<IncomeProvider>(create: (_)=>IncomeProvider(),lazy: false,),
+      ChangeNotifierProvider<AllTransactionsProvider>(create: (_)=>AllTransactionsProvider(),lazy: false,)
     ],
     child: MyApp(),
     )

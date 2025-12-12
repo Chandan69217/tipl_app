@@ -221,20 +221,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                   ],
                                 ),
-                                TextButton(
-                                  onPressed: () {
-                                    navigateWithAnimation(context,ForgetScreen());
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: WidgetStatePropertyAll(
-                                        Colors.transparent
-                                    ),
-                                    foregroundColor: WidgetStatePropertyAll(
-                                      CustColors.blue,
-                                    ),
-                                  ),
-                                  child: const Text("Forgot Password?"),
-                                ),
+                                // TextButton(
+                                //   onPressed: () {
+                                //     navigateWithAnimation(context,ForgetScreen());
+                                //   },
+                                //   style: ButtonStyle(
+                                //     backgroundColor: WidgetStatePropertyAll(
+                                //         Colors.transparent
+                                //     ),
+                                //     foregroundColor: WidgetStatePropertyAll(
+                                //       CustColors.blue,
+                                //     ),
+                                //   ),
+                                //   child: const Text("Forgot Password?"),
+                                // ),
                               ],
                             ),
                             const SizedBox(height: 16),

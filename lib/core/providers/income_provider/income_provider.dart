@@ -107,4 +107,17 @@ class IncomeProvider extends ChangeNotifier {
     totalMatchingIncome = _sum(matchingIncome);
     totalSalaryIncome = _sum(salaryIncome);
   }
+
+
+  Map<int, double> get yearlyIncome {
+    Map<int, double> result = {};
+
+    for (var income in allIncome) {
+      int year = income.createdAt.year;
+      result[year] = (result[year] ?? 0) + income.amount;
+    }
+    return result;
+  }
+
+
 }

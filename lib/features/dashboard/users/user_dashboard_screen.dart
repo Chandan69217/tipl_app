@@ -199,7 +199,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'change_password') {
-                showChangePasswordBottomSheet(context);
+                ChangePasswordScreen.show(context);
               }else if('view_card' == value){
                 navigateWithAnimation(context, IdCardScreen());
               }

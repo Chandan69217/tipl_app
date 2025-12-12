@@ -39,6 +39,7 @@ class Urls{
   static const String walletAddFund = '/api/wallet/add-fund';
   static const String walletTopUp = '/api/wallet/top-up';
   static const String walletHistory = '/api/wallet/history/';
+  static const String walletAllHistory = '/api/wallet/getWalletHistoryAll/';
   static const String purchaseMembership = '/api/wallet/purchase';
   static const String getMembershipDetails = '/api/wallet/my-memberships/';
   static const String updateWalletTransactionPassword = '/api/wallet/update-transaction-password';

@@ -5,13 +5,13 @@ import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
-import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
-import 'package:tipl_app/core/widgets/snackbar_helper.dart';
+import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigation/genealogy/create_genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
-
+import 'package:tipl_app/features/navigation/user/wallets/transaction_pass_bottom_sheet.dart';
 import 'update_user_details.dart';
 
 
@@ -80,6 +80,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     }
                   );
                   break;
+                case 'change_password':
+                  ChangePasswordScreen.show(context, updateForTnx: false, isAdmin: AdminChangingPass(member_id: widget.data['member_id']??'',));
+                  break;
               }
             },
             itemBuilder: (context){
@@ -101,6 +104,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 PopupMenuItem(
                   value: isActive ? "block" : 'unblock',
                   child: Text(isActive ? "Block User": 'Unblock User'),
+                ),
+                PopupMenuItem(
+                  value: 'change_password',
+                  child: Text('Change Password'),
                 ),
 
                 // PopupMenuItem(

@@ -16,6 +16,7 @@ class AppTheme {
         statusBarBrightness: Brightness.dark,
       ),
       elevation: 0,
+      scrolledUnderElevation: 0,
       titleTextStyle: TextStyle(fontSize: 18,color: Colors.black),
     ),
     cardTheme: CardThemeData(

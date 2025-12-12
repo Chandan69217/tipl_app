@@ -111,7 +111,7 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                           _balanceButton(
                               label: "Update",
                               onTap: (){
-                                showChangePasswordBottomSheet(context,updateForTnx: true);
+                                ChangePasswordScreen.show(context,updateForTnx: true);
                               },
                               color: Colors.white,
                               textColor: const Color(0xff1f3f3f),
@@ -146,7 +146,7 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                             children: [
                               // _menuItem(Iconsax.setting, "Settings"),
                               _menuItem(Iconsax.key, "Update Transaction Password",onTap: (){
-                                showChangePasswordBottomSheet(context,updateForTnx: true);
+                                ChangePasswordScreen.show(context,updateForTnx: true);
                               }),
                             ],
                           ),

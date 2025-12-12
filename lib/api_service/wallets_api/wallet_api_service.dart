@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
 import 'package:tipl_app/core/models/wallet_transaction.dart';
-import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 
@@ -101,6 +99,35 @@ class WalletApiService {
         'Content-type' : 'application/json'
       });
 
+      if(response.statusCode == 200){
+        final body = json.decode(response.body) as Map<String,dynamic>;
+        final isSuccess = body['isSuccess']??false;
+        if(isSuccess){
+          final transaction = (body['transactions']??[])as List<dynamic>;
+          return transaction.map((e)=>WalletTransaction.fromJson(e) ).toList();
+        }
+      }else{
+        handleApiResponse(context, response);
+      }
+
+    }catch(exception,trace){
+      print(("Exception: ${exception} Trace: ${trace}"));
+    }
+    return [];
+  }
+
+
+  Future<List<WalletTransaction>> getWalletAllHistory() async{
+    try{
+      final token = Pref.instance.getString(PrefConst.TOKEN);
+
+      final url = Uri.https(Urls.baseUrl,'${Urls.walletAllHistory}');
+
+      final response = await get(url,headers: {
+        'Authorization' : 'Bearer $token',
+        'Content-type' : 'application/json'
+      });
+      printAPIResponse(response);
       if(response.statusCode == 200){
         final body = json.decode(response.body) as Map<String,dynamic>;
         final isSuccess = body['isSuccess']??false;

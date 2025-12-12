@@ -6,6 +6,8 @@ import 'package:tipl_app/core/utilities/preference.dart';
 import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
+import 'package:tipl_app/features/navigation/admin/manage_transaction/manage_transaction_screen.dart';
+import 'package:tipl_app/features/navigation/admin/terms_conditions_screen.dart';
 import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
 import 'package:tipl_app/features/navigation/user/user_profile_screen.dart';
@@ -46,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
           title: "Change Password",
           subtitle: "Update login security",
           onTap: () {
-            showChangePasswordBottomSheet(context);
+            ChangePasswordScreen.show(context);
           },
         ),
         // SwitchListTile(
@@ -119,6 +121,15 @@ class SettingsScreen extends StatelessWidget {
             navigateWithAnimation(context, GenealogyScreen(canPop: true,));
           },
         ),
+        _buildTile(
+          icon: Iconsax.briefcase,
+          iconColor: Colors.indigo,
+          title: "Manage Transactions",
+          subtitle: "verify user transactions",
+          onTap: () {
+            navigateWithAnimation(context, AllUserTransactionsScreen());
+          },
+        ),
 
         const Divider(height: 32),
 
@@ -140,7 +151,9 @@ class SettingsScreen extends StatelessWidget {
           icon: Iconsax.information,
           iconColor: Colors.brown,
           title: "Terms & Policies",
-          onTap: () {},
+          onTap: () {
+            navigateWithAnimation(context, TermsAndConditionsScreen());
+          },
         ),
         ListTile(
           leading: const Icon(Iconsax.logout, color: Colors.red),

@@ -6,6 +6,7 @@ import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 
 class UsersDetailsApi {
   final BuildContext? context;
@@ -53,11 +54,11 @@ class UsersDetailsApi {
     String? status,
     String? address,
     String? pan_number,
-}) async {
+  }) async {
     final token = Pref.instance.getString(PrefConst.TOKEN);
-    try{
-      final url = Uri.https(Urls.baseUrl,Urls.userUpdate,{
-        'member_id' : userMemberID
+    try {
+      final url = Uri.https(Urls.baseUrl, Urls.userUpdate, {
+        'member_id': userMemberID,
       });
 
       final Map<String, dynamic> body = {};
@@ -75,19 +76,23 @@ class UsersDetailsApi {
       if (status != null) body['status'] = status;
       if (pan_number != null) body['pan_number'] = pan_number;
 
-      final response = await put(url,body: json.encode(body),headers: {
-        'Authorization' : 'Bearer $token',
-        'Content-type' : 'Application/json'
-      });
+      final response = await put(
+        url,
+        body: json.encode(body),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-type': 'Application/json',
+        },
+      );
       printAPIResponse(response);
-      if(response.statusCode == 200){
-        final value = json.decode(response.body) as Map<String,dynamic>;
-        final status = value['isSuccess']??false;
+      if (response.statusCode == 200) {
+        final value = json.decode(response.body) as Map<String, dynamic>;
+        final status = value['isSuccess'] ?? false;
         return status;
-      }else{
+      } else {
         handleApiResponse(context, response);
       }
-    }catch(exception,trace){
+    } catch (exception, trace) {
       print('Exception: ${exception},Trace: ${trace}');
     }
     return false;

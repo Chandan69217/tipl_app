@@ -4,15 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/core/providers/admin_provider/all_transactions_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/auth/sign_in_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/navigation/admin/admin_home_screen.dart';
 import 'package:tipl_app/features/navigation/admin/admin_wallet_screen.dart';
+import 'package:tipl_app/features/navigation/admin/manage_transaction/manage_transaction_screen.dart';
 import 'package:tipl_app/features/navigation/admin/manage_users/manage_user_screen.dart';
 import 'package:tipl_app/features/navigation/admin/reports_screen.dart';
 import 'package:tipl_app/features/navigation/admin/settings_screen.dart';
@@ -36,20 +39,59 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    _init();
     _screens = [
-      AdminHomeScreen(onUpdate: (){
+      AdminHomeScreen(onUpdate: (index){
         WidgetsBinding.instance.addPostFrameCallback((duration){
           setState(() {
-            _bottomNavIndex = 2;
+            _bottomNavIndex = index;
           });
         });
       },),
-      AdminWalletScreen(),
+      AllUserTransactionsScreen(),
       ManageUsersScreen(),
       ReportsScreen(),
       SettingsScreen()
     ];
   }
+
+
+
+  void _init() async {
+    final transactions = Provider.of<AllTransactionsProvider>(
+      context,
+      listen: false,
+    ).allTransactions;
+
+    if (transactions.isNotEmpty) {
+      // Check if ANY transaction is pending
+      final hasPending = transactions.any(
+            (t) => t.confirmation.toLowerCase() == 'pending',
+      );
+
+      if (hasPending) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          CustomMessageDialog.show(
+            context,
+            title: 'Attention',
+            cancelText: 'Cancel',
+            onCancel: (){},
+            message: 'You have pending transactions awaiting verification. '
+                'Please review and confirm them as soon as possible.',
+            confirmText: 'Review',
+            onConfirm: () {
+              WidgetsBinding.instance.addPostFrameCallback((duration){
+                setState(() {
+                  _bottomNavIndex = 1;
+                });
+              });
+            },
+          );
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,14 +119,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         tabBuilder: (index,isActive){
           final icons = [
             Iconsax.home,
-            Iconsax.wallet,
+            Iconsax.
+            briefcase,
             Iconsax.user_edit,
             Iconsax.graph,
             Iconsax.setting
           ];
           final labels = [
             "Home",
-            'Wallet',
+            'Transactions',
             "Users",
             "Reports",
             "More"
@@ -168,12 +211,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         },
       ),
       actions: [
-        IconButton(
-            icon: const Icon(Iconsax.notification,color: Colors.black,),
-            onPressed: () {
-              navigateWithAnimation(context, NotificationsScreen());
-            }
-        ),
+        // IconButton(
+        //     icon: const Icon(Iconsax.notification,color: Colors.black,),
+        //     onPressed: () {
+        //       navigateWithAnimation(context, NotificationsScreen());
+        //     }
+        // ),
         // IconButton(
         //   icon: const Icon(Iconsax.logout, color: Colors.redAccent),
         //   onPressed: () {

@@ -5,6 +5,7 @@ import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
+import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigation/admin/manage_users/update_user_details.dart';
 import 'package:tipl_app/features/navigation/admin/manage_users/user_details_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
@@ -121,6 +122,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                               break;
                                 case 'meeting_schedule':
                                   AddMeetingScreen.show(context,meeting_id: user['member_id'],);
+                                  break;
+                                case 'change_password':
+                                  ChangePasswordScreen.show(context, updateForTnx: false, isAdmin: AdminChangingPass(member_id: user['member_id']??'',));
+                                  break;
                               }
                             },
                             itemBuilder: (context){
@@ -138,6 +143,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                 PopupMenuItem(
                                   value: isActive ? "block" : 'unblock',
                                   child: Text(isActive ? "Block User": 'Unblock User'),
+                                ),
+                                PopupMenuItem(
+                                  value: 'change_password',
+                                  child: Text('Change Password'),
                                 ),
                                 // PopupMenuItem(
                                 //   value: "delete",
