@@ -20,7 +20,7 @@ import 'package:tipl_app/features/navigation/admin/manage_users/manage_user_scre
 import 'package:tipl_app/features/navigation/admin/reports_screen.dart';
 import 'package:tipl_app/features/navigation/admin/settings_screen.dart';
 import 'package:tipl_app/features/navigation/user/user_profile_screen.dart';
-import 'package:tipl_app/features/notification_screen.dart';
+
 
 
 
@@ -48,7 +48,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           });
         });
       },),
-      AllUserTransactionsScreen(),
+      ManageTransactionScreen(),
       ManageUsersScreen(),
       ReportsScreen(),
       SettingsScreen()

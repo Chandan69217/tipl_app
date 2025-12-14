@@ -39,8 +39,13 @@ class WalletProvider extends ChangeNotifier {
   var totalWithdrawal = 0.0;
   List<dynamic> memberships = [];
 
+  bool _isLoading = false;
+
 
   Future<void> initialized() async {
+    if(_isLoading) return;
+    _isLoading = true;
+
     try {
 
       // ------- RUN ALL CALLS IN PARALLEL -------
@@ -75,8 +80,11 @@ class WalletProvider extends ChangeNotifier {
     } catch (e, t) {
       print("Wallet Load Error: $e");
       print(t);
+    }finally{
+      _isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
+
   }
 
 

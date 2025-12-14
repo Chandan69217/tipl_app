@@ -3,9 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/core/models/wallet_transaction.dart';
 import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
-import 'package:tipl_app/core/widgets/custom_button.dart';
-import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
-import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/navigation/user/wallets/transaction_confirmation.dart';
 
@@ -36,6 +33,63 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
     selectedStatus = widget.data.confirmation;
     setStatus = widget.data.confirmation;
   }
+
+  Widget _userStatusMessage() {
+    if (widget.userType == UserRole.admin) return const SizedBox();
+
+    final status = setStatus.toLowerCase();
+
+    String message;
+    Color color;
+    IconData icon;
+
+    switch (status) {
+      case 'pending':
+        message =
+        "Please wait while your transaction is being verified by the Neural Pool team.";
+        color = Colors.orange;
+        icon = Icons.hourglass_top;
+        break;
+
+      case 'failed':
+        message =
+        "Your transaction is invalid. Please contact our team for further assistance.";
+        color = Colors.red;
+        icon = Icons.support_agent;
+        break;
+
+      default:
+        return const SizedBox(); // No message for success
+    }
+
+    return Container(
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 22),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +142,9 @@ class _TransactionDetailsScreenState extends State<TransactionDetailsScreen> {
             ),
 
             _statusTag(setStatus),
+
+            _userStatusMessage(),
+
 
             const SizedBox(height: 20),
 

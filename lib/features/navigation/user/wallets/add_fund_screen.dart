@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
 import 'package:tipl_app/api_service/packages_api/packages_api.dart';
 import 'package:tipl_app/api_service/wallets_api/wallet_api_service.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
@@ -180,6 +181,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
                               if(response != null ){
                                 final isSuccess = response['isSuccess']??false;
                                 if(isSuccess){
+                                  RecallProvider(context: context);
                                   CustomMessageDialog.show(
                                     context,
                                     title: 'Success',

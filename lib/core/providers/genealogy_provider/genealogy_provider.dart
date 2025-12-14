@@ -21,26 +21,47 @@ class GenealogyProvider extends ChangeNotifier{
   int activeLeft = 0;
   int activeRight = 0 ;
 
+  bool _isLoading = false;
+
   void initialized()async{
-    allTeams = await GenealogyAPIService().getGenealogyAllTeam();
-    allDirectTeams = await GenealogyAPIService().getGenealogyDirectMember();
-    inactiveTeams = await GenealogyAPIService().getGenealogyInactiveTeam();
-    activeTeams = await GenealogyAPIService().getGenealogyActiveTeam();
-    filterAllTeams = allTeams;
-    filterDirectTeams = allDirectTeams;
-    filterInactiveTeams = inactiveTeams;
-    filterActiveTeams = activeTeams;
-    final treeView = await GenealogyAPIService().getGenealogyTree();
-    if(treeView != null){
-      associate = treeView['associate']??{};
-      totalLeft = treeView['totalLeft']??0;
-      totalRight = treeView['totalRight']??0;
-      activeLeft = treeView['activeLeft']??0;
-      activeRight = treeView['activeRight']??0;
-      leftMembers = treeView['leftMembers']??[];
-      rightMembers = treeView['rightMembers']??[];
+    if(_isLoading) return;
+    _isLoading = true;
+
+    try{
+
+      final result = await Future.wait([
+        GenealogyAPIService().getGenealogyAllTeam(),
+        GenealogyAPIService().getGenealogyDirectMember(),
+        GenealogyAPIService().getGenealogyInactiveTeam(),
+        GenealogyAPIService().getGenealogyActiveTeam()
+      ]);
+      allTeams = result[0] ;
+      allDirectTeams = result[1] ;
+      inactiveTeams = result[2] ;
+      activeTeams = result[3] ;
+
+      filterAllTeams = allTeams;
+      filterDirectTeams = allDirectTeams;
+      filterInactiveTeams = inactiveTeams;
+      filterActiveTeams = activeTeams;
+      final treeView = await GenealogyAPIService().getGenealogyTree();
+      if(treeView != null){
+        associate = treeView['associate']??{};
+        totalLeft = treeView['totalLeft']??0;
+        totalRight = treeView['totalRight']??0;
+        activeLeft = treeView['activeLeft']??0;
+        activeRight = treeView['activeRight']??0;
+        leftMembers = treeView['leftMembers']??[];
+        rightMembers = treeView['rightMembers']??[];
+      }
+    }catch(e,t){
+      debugPrint("Genealogy Exception $e");
+      debugPrintStack(stackTrace: t);
+    }finally{
+      _isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
+
   }
 
   _clearSearch(){

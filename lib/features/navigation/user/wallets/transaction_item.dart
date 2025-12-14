@@ -162,13 +162,19 @@ class TransactionItem extends StatelessWidget {
   Widget _buildStatusTag(TransactionStatus status) {
     switch (status) {
       case TransactionStatus.pending:
-        return Text(
-          "Pending",
-          style: TextStyle(
-            color: Colors.orange.shade700,
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-          ),
+        return Row(
+          children: [
+            Icon(Icons.history, color: Colors.orange.shade700, size: 16),
+            const SizedBox(width: 3),
+            Text(
+              "Pending",
+              style: TextStyle(
+                color: Colors.orange.shade700,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         );
 
       case TransactionStatus.failed:
@@ -188,7 +194,20 @@ class TransactionItem extends StatelessWidget {
         );
 
       case TransactionStatus.success:
-        return const SizedBox();
+        return Row(
+          children: [
+            Icon(Icons.verified, color: Colors.green.shade700, size: 16),
+            const SizedBox(width: 3),
+            Text(
+              "Success",
+              style: TextStyle(
+                color: Colors.green.shade700,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        );
     }
   }
 

@@ -127,7 +127,7 @@ class SettingsScreen extends StatelessWidget {
           title: "Manage Transactions",
           subtitle: "verify user transactions",
           onTap: () {
-            navigateWithAnimation(context, AllUserTransactionsScreen());
+            navigateWithAnimation(context, ManageTransactionScreen());
           },
         ),
 

@@ -6,11 +6,23 @@ class UserProfileProvider extends ChangeNotifier{
   UserProfile data = UserProfile.fromJson({});
   final BuildContext? context;
   UserProfileProvider({this.context});
+  bool _isLoading = false;
 
   void initialized()async{
-    final value = await ProfileAPIService(context: context).getUserProfileUpdate();
-    data = UserProfile.fromJson(value??{});
-    notifyListeners();
+    if(_isLoading) return;
+    _isLoading = true;
+    try{
+      final value = await ProfileAPIService(context: context).getUserProfileUpdate();
+      data = UserProfile.fromJson(value??{});
+    }catch(e,t){
+      debugPrint("User Profile Provider Exception: $e");
+      debugPrintStack(stackTrace: t);
+    }finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+
+
   }
 
   Future<UserProfile> updateProfile(UserProfile details)async{

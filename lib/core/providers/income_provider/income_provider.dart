@@ -65,32 +65,44 @@ class IncomeProvider extends ChangeNotifier {
   double totalMatchingIncome = 0.0;
   double totalSalaryIncome = 0.0;
 
+  bool _isLoading = false;
+
   Future<void> initialized() async {
-    final api = IncomeApiService();
+    if(_isLoading) return;
+    _isLoading = true;
 
-    final results = await Future.wait([
-      api.getAllIncome(),
-      api.getCashbackIncome(),
-      api.getDailyIncome(),
-      api.getRewardsIncome(),
-      api.getLevelIncome(),
-      api.getDirectIncome(),
-      api.getMatchingIncome(),
-      api.getSalaryIncome(),
-    ]);
+    try{
+      final api = IncomeApiService();
 
-    allIncome = results[0];
-    cashbackIncome = results[1];
-    dailyIncome = results[2];
-    rewardsIncome = results[3];
-    levelIncome = results[4];
-    directIncome = results[5];
-    matchingIncome = results[6];
-    salaryIncome = results[7];
+      final results = await Future.wait([
+        api.getAllIncome(),
+        api.getCashbackIncome(),
+        api.getDailyIncome(),
+        api.getRewardsIncome(),
+        api.getLevelIncome(),
+        api.getDirectIncome(),
+        api.getMatchingIncome(),
+        api.getSalaryIncome(),
+      ]);
 
-    _calculateAllTotals();
+      allIncome = results[0];
+      cashbackIncome = results[1];
+      dailyIncome = results[2];
+      rewardsIncome = results[3];
+      levelIncome = results[4];
+      directIncome = results[5];
+      matchingIncome = results[6];
+      salaryIncome = results[7];
 
-    notifyListeners();
+      _calculateAllTotals();
+    }catch(e,t){
+      debugPrint("Income Provider Exception: ${e}");
+      debugPrintStack(stackTrace: t);
+    }finally{
+      _isLoading = false;
+      notifyListeners();
+    }
+
   }
 
   // ------------------ CALCULATE TOTALS ------------------

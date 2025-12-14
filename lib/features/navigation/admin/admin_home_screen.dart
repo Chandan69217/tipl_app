@@ -11,6 +11,7 @@ import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_card.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
+import 'package:tipl_app/features/navigation/admin/manage_transaction/manage_transaction_screen.dart';
 import 'package:tipl_app/features/navigation/genealogy/genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/genealogy/tree_view_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/meeting_screen.dart';
@@ -99,6 +100,31 @@ class AdminHomeScreen extends StatelessWidget {
                     color: Colors.teal,
                     onPressed: () {
                       navigateWithAnimation(context, PackagesListScreen());
+                    },
+                  ),
+                  Consumer<AllTransactionsProvider>(
+                    builder: (context,value,child){
+                      return _buildMenuCard(
+                        context,
+                        icon: Iconsax.timer,
+                        label: "Pending Transaction",
+                        color: Colors.red,
+                        value: value.totalPendingTransaction,
+                        onPressed: () {
+                          navigateWithAnimation(context, ManageTransactionScreen(
+                            statusFilter: 'pending',
+                          ));
+                        },
+                      );
+                    },
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Iconsax.briefcase,
+                    label: "All Transactions",
+                    color: Colors.purpleAccent,
+                    onPressed: () {
+                      navigateWithAnimation(context, ManageTransactionScreen());
                     },
                   ),
                   _buildMenuCard(
@@ -240,45 +266,66 @@ class AdminHomeScreen extends StatelessWidget {
         required IconData icon,
         required String label,
         required Color color,
+        int? value,
         required VoidCallback onPressed,
       }) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Circular colored background for icon
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 30,
-            ),
-          ),
-          const SizedBox(height: 6),
-          // Label
-          Flexible(
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: Colors.black87,
-              ),
-            ),
-          ),
+    return Stack(
+      alignment: AlignmentGeometry.center,
+      children: [
+        if(value != null && value != 0)...[
+          Positioned(
+            top: 0,
+              right: value > 99 ? 18 : 28,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6,vertical: 0.0),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Text(value > 99 ?'${99}+' :'${value}',style: TextStyle(color: Colors.white),),
+              )
+          )
         ],
-      ),
+
+        InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Circular colored background for icon
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: 6),
+              // Label
+              Flexible(
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]
     );
   }
 

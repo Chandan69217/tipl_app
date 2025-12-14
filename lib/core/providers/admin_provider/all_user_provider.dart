@@ -6,6 +6,7 @@ class AllUserDetailsProvider extends ChangeNotifier {
   int inactiveUser = 0;
   int activeUser = 0;
   int totalUser = 0;
+  bool _isLoading = false;
 
   List<Map<String, dynamic>> users = [];
   List<Map<String, dynamic>> filteredUsers = [];
@@ -17,6 +18,9 @@ class AllUserDetailsProvider extends ChangeNotifier {
   AllUserDetailsProvider({this.context});
 
   Future<void> initialized() async {
+    if (_isLoading) return;
+    _isLoading = true;
+
     try {
       users = List<Map<String, dynamic>>.from(
         await UsersDetailsApi(context: context).getAllUsers(),
@@ -27,9 +31,11 @@ class AllUserDetailsProvider extends ChangeNotifier {
       inactiveUser = totalUser - activeUser;
 
       filteredUsers = List.from(users);
-      notifyListeners();
     } catch (e) {
       debugPrint("Error loading users: $e");
+    }finally{
+      _isLoading = false;
+      notifyListeners();
     }
 
   }
