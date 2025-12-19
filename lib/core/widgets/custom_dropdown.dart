@@ -36,6 +36,7 @@ class CustomDropdown<T> extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<T>(
+          menuMaxHeight: 300,
           initialValue: value,
           isExpanded: true,
           onChanged: onChanged,

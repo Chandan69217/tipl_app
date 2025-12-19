@@ -116,6 +116,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                 isRequired: true,
                                 prefixIcon: Icon(Iconsax.directbox_send),
                                 label: "Email",
+                                fieldType: FieldType.email,
                                 controller: _emailController,
                               ),
                               const SizedBox(height: 32),

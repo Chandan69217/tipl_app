@@ -205,6 +205,20 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
                       child: CustomTextField(
                         controller: monthlyCtrl,
                         label: 'Monthly ROI %',
+                        validate: (value){
+                          if(value == null) return null;
+                          final percent = double.tryParse(value);
+
+                          if (percent == null) {
+                            return 'Please enter a valid number';
+                          }
+
+                          if (percent <= 0 || percent > 100) {
+                            return 'Percentage must be between 0 and 100';
+                          }
+
+                          return null;
+                        },
                         textInputType: TextInputType.number,
                         isRequired: true,
                       ),
@@ -216,6 +230,20 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
                         controller: halfYearCtrl,
                         textInputType: TextInputType.number,
                         isRequired: true,
+                        validate: (value){
+                          if(value == null) return null;
+                          final percent = double.tryParse(value);
+
+                          if (percent == null) {
+                            return 'Please enter a valid number';
+                          }
+
+                          if (percent <= 0 || percent > 100) {
+                            return 'Percentage must be between 0 and 100';
+                          }
+
+                          return null;
+                        },
                       ),
                     ),
                   ],
@@ -226,6 +254,20 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
                 CustomTextField(
                   controller: yearlyCtrl,
                   label: 'Yearly ROI %',
+                  validate: (value){
+                    if(value == null) return null;
+                    final percent = double.tryParse(value);
+
+                    if (percent == null) {
+                      return 'Please enter a valid number';
+                    }
+
+                    if (percent <= 0 || percent > 100) {
+                      return 'Percentage must be between 0 and 100';
+                    }
+
+                    return null;
+                  },
                   textInputType: TextInputType.number,
                   isRequired: true,
                 ),

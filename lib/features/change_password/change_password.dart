@@ -334,6 +334,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       label: 'Old Password',
                       controller: _oldPasswordController,
                       obscureText: _obscureOld,
+                      isRequired: true,
+                      fieldType: FieldType.password,
                       prefixIcon: const Icon(Iconsax.lock),
                       validate: (value) {
                         if (value == null || value.isEmpty) {
@@ -353,7 +355,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     : "New Password",
                 controller: _newPasswordController,
                 obscureText: _obscureNew,
+                fieldType: FieldType.password,
                 prefixIcon: const Icon(Iconsax.lock),
+                isRequired: true,
                 validate: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter a new password';
@@ -370,6 +374,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 label: 'Confirm Password',
                 controller: _confirmPasswordController,
                 obscureText: _obscureConfirm,
+                isRequired: true,
+                fieldType: FieldType.password,
                 prefixIcon: const Icon(Iconsax.lock),
                 validate: (value) {
                   if (value == null || value.isEmpty) {

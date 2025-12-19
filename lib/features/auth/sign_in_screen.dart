@@ -24,6 +24,7 @@ import 'package:tipl_app/features/auth/forget_screen.dart';
 import 'package:tipl_app/features/auth/sign_up_screen.dart';
 import 'package:tipl_app/features/dashboard/admin/admin_dashboard_screen.dart';
 import 'package:tipl_app/features/dashboard/users/user_dashboard_screen.dart';
+import 'package:tipl_app/features/terms_conditions/terms_condition_screen.dart';
 import '../../core/widgets/custom_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 
@@ -74,14 +75,15 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        body: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: MediaQuery.of(context).size.height,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: Stack(
+            children: [
+              ListView(
+              // shrinkWrap: true,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisSize: MainAxisSize.max,
               children: [
                 Column(
                   children: [
@@ -99,6 +101,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             // Center(
                             //   child:Image.asset('assets/logo/logo.webp') ,
                             // ),
+                            const SizedBox(height: 60,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -113,10 +116,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                           .textTheme
                                           .headlineLarge!
                                           .copyWith(
-                                            color: CustColors.white,
-                                            fontWeight: FontWeight.w900,
-                                            letterSpacing: -1.0,
-                                          ),
+                                        color: CustColors.white,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: -1.0,
+                                      ),
                                     ),
                                     Text(
                                       'MICRO MINI FINANCE.',
@@ -124,9 +127,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                           .textTheme
                                           .bodySmall!
                                           .copyWith(
-                                            color: CustColors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                        color: CustColors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -151,14 +154,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: "Sign Up",
-                                    style: TextStyle(
-                                      color: CustColors.blue,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    recognizer: TapGestureRecognizer()..onTap = (){
-                                      navigateWithAnimation(context, SignUpScreen());
-                                    }
+                                      text: "Sign Up",
+                                      style: TextStyle(
+                                        color: CustColors.blue,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      recognizer: TapGestureRecognizer()..onTap = (){
+                                        navigateWithAnimation(context, SignUpScreen());
+                                      }
                                   ),
                                 ],
                               ),
@@ -180,6 +183,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               isRequired: true,
                               prefixIcon: Icon(Iconsax.personalcard),
                               label: "Email ID",
+                              fieldType: FieldType.email,
                               controller: _emailController,
                             ),
                             const SizedBox(height: 16),
@@ -240,10 +244,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             const SizedBox(height: 16),
 
                             // Login Button
-                          _isLoading ? CustomCircularIndicator() : CustomButton(
-                            iconData: Iconsax.login,
-                            text: "Sign In", onPressed:_onSignIn,
-                          ),
+                            _isLoading ? CustomCircularIndicator() : CustomButton(
+                              iconData: Iconsax.login,
+                              text: "Sign In", onPressed:_onSignIn,
+                            ),
                             const SizedBox(height: 24),
                           ],
                         ),
@@ -252,57 +256,290 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
 
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(40.0, 12, 40, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 14,
-                            ),
-                            children: [
-                              const TextSpan(
-                                text: 'By signing up, you agree to the ',
-                              ),
-                              TextSpan(
-                                text: 'Terms of Service',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // Handle Terms of Service tap
-                                  },
-                              ),
-                              const TextSpan(text: ' and '),
-                              TextSpan(
-                                text: 'Data Processing Agreement',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // Handle DPA tap
-                                  },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Spacer(),
+
               ],
             ),
+
+              Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(40.0, 12, 40, 10),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 14,
+                        ),
+                        children: [
+                          const TextSpan(
+                            text: 'By signing in, you agree to the ',
+                          ),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                navigateWithAnimation(context, TermsAndConditionsScreen());
+                              },
+                          ),
+                          // const TextSpan(text: ' and '),
+                          // TextSpan(
+                          //   text: 'Data Processing Agreement',
+                          //   style: const TextStyle(
+                          //     fontWeight: FontWeight.bold,
+                          //     color: Colors.black,
+                          //   ),
+                          //   recognizer: TapGestureRecognizer()
+                          //     ..onTap = () {
+                          //       // Handle DPA tap
+                          //     },
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),)
+                  ]
           ),
         ),
+        // body: SingleChildScrollView(
+        //   child: ConstrainedBox(
+        //     constraints: BoxConstraints(
+        //       minHeight: MediaQuery.of(context).size.height,
+        //     ),
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       mainAxisSize: MainAxisSize.max,
+        //       children: [
+        //         Column(
+        //           children: [
+        //             Container(
+        //               width: double.infinity,
+        //               padding: const EdgeInsets.symmetric(
+        //                 horizontal: 24,
+        //                 vertical: 32,
+        //               ),
+        //               decoration: BoxDecoration(color: CustColors.background1,gradient: CustColors.darkGradient),
+        //               child: SafeArea(
+        //                 child: Column(
+        //                   crossAxisAlignment: CrossAxisAlignment.start,
+        //                   children: [
+        //                     // Center(
+        //                     //   child:Image.asset('assets/logo/logo.webp') ,
+        //                     // ),
+        //                     Row(
+        //                       mainAxisAlignment: MainAxisAlignment.center,
+        //                       children: [
+        //                         Image.asset('assets/logo/only_logo.webp',width: 50.0,),
+        //                         SizedBox(width: 8.0,),
+        //                         Column(
+        //                           crossAxisAlignment: CrossAxisAlignment.start,
+        //                           children: [
+        //                             Text(
+        //                               'NEURAL',
+        //                               style: Theme.of(context)
+        //                                   .textTheme
+        //                                   .headlineLarge!
+        //                                   .copyWith(
+        //                                     color: CustColors.white,
+        //                                     fontWeight: FontWeight.w900,
+        //                                     letterSpacing: -1.0,
+        //                                   ),
+        //                             ),
+        //                             Text(
+        //                               'MICRO MINI FINANCE.',
+        //                               style: Theme.of(context)
+        //                                   .textTheme
+        //                                   .bodySmall!
+        //                                   .copyWith(
+        //                                     color: CustColors.white,
+        //                                     fontWeight: FontWeight.bold,
+        //                                   ),
+        //                             ),
+        //                           ],
+        //                         ),
+        //                       ],
+        //                     ),
+        //                     SizedBox(height: 24),
+        //                     Text(
+        //                       "Sign in to your\nAccount",
+        //                       style: TextStyle(
+        //                         color: Colors.white,
+        //                         fontWeight: FontWeight.bold,
+        //                         fontSize: 28,
+        //                       ),
+        //                     ),
+        //                     SizedBox(height: 8),
+        //                     Text.rich(
+        //                       TextSpan(
+        //                         text: "Don’t have an account? ",
+        //                         style: TextStyle(
+        //                           color: Colors.white70,
+        //                           fontSize: 12,
+        //                         ),
+        //                         children: [
+        //                           TextSpan(
+        //                             text: "Sign Up",
+        //                             style: TextStyle(
+        //                               color: CustColors.blue,
+        //                               fontWeight: FontWeight.w600,
+        //                             ),
+        //                             recognizer: TapGestureRecognizer()..onTap = (){
+        //                               navigateWithAnimation(context, SignUpScreen());
+        //                             }
+        //                           ),
+        //                         ],
+        //                       ),
+        //                     ),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ),
+        //             Form(
+        //               key: _formKey,
+        //               child: Padding(
+        //                 padding: const EdgeInsets.symmetric(
+        //                   horizontal: 24,
+        //                   vertical: 32,
+        //                 ),
+        //                 child: Column(
+        //                   children: [
+        //                     CustomTextField(
+        //                       isRequired: true,
+        //                       prefixIcon: Icon(Iconsax.personalcard),
+        //                       label: "Email ID",
+        //                       fieldType: FieldType.email,
+        //                       controller: _emailController,
+        //                     ),
+        //                     const SizedBox(height: 16),
+        //                     CustomTextField(
+        //                       isRequired: true,
+        //                       prefixIcon: Icon(Iconsax.password_check),
+        //                       label: "Password",
+        //                       controller: _passwordController,
+        //                       obscureText: obscurePassword,
+        //                     ),
+        //                     const SizedBox(height: 16),
+        //
+        //                     // Remember + Forgot
+        //                     Row(
+        //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //                       children: [
+        //                         Row(
+        //                           children: [
+        //                             Checkbox(
+        //                               value: _isRemember,
+        //                               onChanged: (v) {
+        //                                 if (mounted) {
+        //                                   setState(() {
+        //                                     _isRemember = !_isRemember;
+        //                                   });
+        //                                   if(_isRemember){
+        //                                     Pref.instance.setString(PrefConst.SAVED_EMAIL, _emailController.text);
+        //                                     Pref.instance.setString(PrefConst.SAVED_PASSWORD, _passwordController.text);
+        //                                   }else{
+        //                                     Pref.instance.remove(PrefConst.SAVED_EMAIL);
+        //                                     Pref.instance.remove(PrefConst.SAVED_PASSWORD);
+        //                                   }
+        //                                 }
+        //                               },
+        //                             ),
+        //                             const Text(
+        //                               "Remember me",
+        //                               style: TextStyle(fontSize: 12),
+        //                             ),
+        //                           ],
+        //                         ),
+        //                         // TextButton(
+        //                         //   onPressed: () {
+        //                         //     navigateWithAnimation(context,ForgetScreen());
+        //                         //   },
+        //                         //   style: ButtonStyle(
+        //                         //     backgroundColor: WidgetStatePropertyAll(
+        //                         //         Colors.transparent
+        //                         //     ),
+        //                         //     foregroundColor: WidgetStatePropertyAll(
+        //                         //       CustColors.blue,
+        //                         //     ),
+        //                         //   ),
+        //                         //   child: const Text("Forgot Password?"),
+        //                         // ),
+        //                       ],
+        //                     ),
+        //                     const SizedBox(height: 16),
+        //
+        //                     // Login Button
+        //                   _isLoading ? CustomCircularIndicator() : CustomButton(
+        //                     iconData: Iconsax.login,
+        //                     text: "Sign In", onPressed:_onSignIn,
+        //                   ),
+        //                     const SizedBox(height: 24),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //
+        //         SafeArea(
+        //           child: Padding(
+        //             padding: const EdgeInsets.fromLTRB(40.0, 12, 40, 10),
+        //             child: Column(
+        //               crossAxisAlignment: CrossAxisAlignment.start,
+        //               children: [
+        //                 RichText(
+        //                   textAlign: TextAlign.center,
+        //                   text: TextSpan(
+        //                     style: TextStyle(
+        //                       color: Colors.grey.shade500,
+        //                       fontSize: 14,
+        //                     ),
+        //                     children: [
+        //                       const TextSpan(
+        //                         text: 'By signing in, you agree to the ',
+        //                       ),
+        //                       TextSpan(
+        //                         text: 'Terms of Service',
+        //                         style: const TextStyle(
+        //                           fontWeight: FontWeight.bold,
+        //                           color: Colors.black,
+        //                         ),
+        //                         recognizer: TapGestureRecognizer()
+        //                           ..onTap = () {
+        //                             navigateWithAnimation(context, TermsAndConditionsScreen());
+        //                           },
+        //                       ),
+        //                       // const TextSpan(text: ' and '),
+        //                       // TextSpan(
+        //                       //   text: 'Data Processing Agreement',
+        //                       //   style: const TextStyle(
+        //                       //     fontWeight: FontWeight.bold,
+        //                       //     color: Colors.black,
+        //                       //   ),
+        //                       //   recognizer: TapGestureRecognizer()
+        //                       //     ..onTap = () {
+        //                       //       // Handle DPA tap
+        //                       //     },
+        //                       // ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ],
+        //             ),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }

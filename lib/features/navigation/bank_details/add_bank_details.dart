@@ -148,6 +148,7 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                 CustomTextField(
                     prefixIcon: Icon(Iconsax.card),
                     label:"Account Number",
+                    fieldType: FieldType.bankAccount,
                     controller: accountNumberController,
                     textInputType: TextInputType.number,
                   isRequired: true,
@@ -173,6 +174,7 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                     prefixIcon:Icon(Iconsax.code),
                     label: "IFSC Code",
                     controller: ifscController,
+                    fieldType: FieldType.ifsc,
                     textInputType: TextInputType.text,
                   textInputFormatter: [UpperCaseTextFormatter()],
                   isRequired: true,
@@ -185,6 +187,7 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                 const SizedBox(height: 16,),
                 CustomTextField(prefixIcon:Icon(Iconsax.document),
                     label: "PAN Number",
+                    fieldType: FieldType.pan,
                     controller: panNumberController,
                     textInputType: TextInputType.text,
                   maxLength: 10,

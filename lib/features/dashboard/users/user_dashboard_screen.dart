@@ -46,6 +46,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     UpdateProfile.show(context);
     _isUpdateProfileOpened = true;
     }
+
     ConnectivityService().isConnected.addListener(() async {
       if (!ConnectivityService().isConnected.value) {
         if (!await ProfileAPIService(context: context).isProfileCompleted() && !_isUpdateProfileOpened) {

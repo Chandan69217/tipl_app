@@ -273,8 +273,9 @@ class _UpdateUserDetailsScreenState extends State<UpdateUserDetailsScreen> {
                       CustomDatePickerTextField(
                         label: 'Date Of Birth',
                         initialDate: _selectedDOB,
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2500),
+                        fieldType: FieldType.dateOfBirth,
+                        firstDate: DateTime(1925),
+                        lastDate: DateTime.now(),
                         onChanged: (selected) {
                           _selectedDOB = selected;
                         },
@@ -284,7 +285,7 @@ class _UpdateUserDetailsScreenState extends State<UpdateUserDetailsScreen> {
                       CustomTextField(
                         label: 'Pan Number',
                         controller: _panNumberController,
-                        isRequired: true,
+                        fieldType: FieldType.pan,
                         textInputFormatter: [
                           UpperCaseTextFormatter()
                         ],
@@ -316,6 +317,7 @@ class _UpdateUserDetailsScreenState extends State<UpdateUserDetailsScreen> {
                         label: 'Pin Code',
                         controller: _pinCodeController,
                         isRequired: true,
+                        fieldType: FieldType.pincode,
                         textInputType: TextInputType.number,
                         maxLength: 6,
                       ),
@@ -323,6 +325,7 @@ class _UpdateUserDetailsScreenState extends State<UpdateUserDetailsScreen> {
                       CustomTextField(
                         label: 'Address',
                         isRequired: true,
+                        fieldType: FieldType.address,
                         textAlignVertical: TextAlignVertical.center,
                         textInputType: TextInputType.streetAddress,
                         controller: _addressController,

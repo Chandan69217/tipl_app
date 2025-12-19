@@ -9,6 +9,7 @@ class CustomDatePickerTextField extends StatefulWidget {
   final DateTime? initialDate;
   final ValueChanged<DateTime?> onChanged;
   final bool  isRequired;
+  final FieldType? fieldType;
 
 
   const CustomDatePickerTextField({
@@ -17,6 +18,7 @@ class CustomDatePickerTextField extends StatefulWidget {
     required this.firstDate,
     required this.lastDate,
     this.initialDate,
+    this.fieldType,
     this.isRequired = false,
     required this.onChanged,
   });
@@ -58,12 +60,34 @@ class _CustomDatePickerTextFieldState extends State<CustomDatePickerTextField> {
                   ? ""
                   : "${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}",
             ),
+            validate: (_){
+              if(widget.fieldType == FieldType.dateOfBirth && _selectedDate != null){
+                final today = DateTime.now();
+                final dob = _selectedDate!;
+                int age = today.year - dob.year;
+
+                if (today.month < dob.month ||
+                    (today.month == dob.month && today.day < dob.day)) {
+                  age--;
+                }
+
+                if (age < 18) {
+                  return "You must be at least 18 years old";
+                }
+              }
+              return null;
+            },
             label: widget.label,
             isRequired: widget.isRequired,
             suffixIcon: Icon(Iconsax.calendar_edit),
           )
       ),
     );
-   
+
   }
 }
+
+
+
+
+

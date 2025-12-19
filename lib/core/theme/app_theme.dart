@@ -35,7 +35,24 @@ class AppTheme {
       ),
       position: PopupMenuPosition.under,
     ),
-    inputDecorationTheme: InputDecorationTheme(
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          maximumSize: WidgetStatePropertyAll(
+            const Size.fromHeight(300),
+          ),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          elevation: WidgetStatePropertyAll(6),
+        ),
+        textStyle: const TextStyle(
+          fontSize: 14,
+          color: Colors.black,
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.grey),

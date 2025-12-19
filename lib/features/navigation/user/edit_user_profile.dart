@@ -11,6 +11,7 @@ import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/TextFieldFormatter/uppercase_formatter.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
+import 'package:tipl_app/core/utilities/constants.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
@@ -38,6 +39,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _stateController = TextEditingController();
+  String? _selectedState;
   final TextEditingController _districtController = TextEditingController();
   // dropdown selection
 
@@ -181,8 +183,10 @@ class _EditUserProfileState extends State<EditUserProfile> {
                     CustomDatePickerTextField(
                       label: 'Date Of Birth',
                       initialDate: _selectedDOB,
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2500),
+                      isRequired: true,
+                      fieldType: FieldType.dateOfBirth,
+                      firstDate: DateTime(1925),
+                      lastDate: DateTime.now(),
                       onChanged: (selected) {
                         _selectedDOB = selected;
                       },
@@ -191,11 +195,22 @@ class _EditUserProfileState extends State<EditUserProfile> {
                     Row(
                       children: [
                         Expanded(
-                          child: CustomTextField(
-                            label: 'State',
-                            isRequired: true,
-                            controller: _stateController,
+                          child: CustomDropdown(
+                              label: "State",
+                              items: Constants.indianStates.map((e)=>DropdownMenuItem(child: Text(e),value: e,)).toList(),
+                              value: _selectedState,
+                              isRequired: true,
+                              onChanged: (state){
+                                setState(() {
+                                  _selectedState = state;
+                                });
+                              }
                           ),
+                          // child: CustomTextField(
+                          //   label: 'State',
+                          //   isRequired: true,
+                          //   controller: _stateController,
+                          // ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -213,6 +228,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
                       label: 'Pin Code',
                       controller: _pinCodeController,
                       isRequired: true,
+                      fieldType: FieldType.pincode,
                       textInputType: TextInputType.number,
                       maxLength: 6,
                     ),
@@ -220,6 +236,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
                     CustomTextField(
                       label: 'Address',
                       isRequired: true,
+                      fieldType: FieldType.address,
                       textAlignVertical: TextAlignVertical.center,
                       textInputType: TextInputType.streetAddress,
                       controller: _addressController,
@@ -286,7 +303,8 @@ class _EditUserProfileState extends State<EditUserProfile> {
           mobileNo: _mobileIdController.text,
           email: _emailController.text,
           gender: _selectedGender??'N/A',
-          state: _stateController.text,
+          // state: _stateController.text,
+          state: _selectedState??'',
           district: _districtController.text,
           status: 'N/A',
           pinCode: _pinCodeController.text,

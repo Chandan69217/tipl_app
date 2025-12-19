@@ -187,8 +187,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                     label: 'Date Of Birth',
                                     isRequired: true,
                                     initialDate: dateOfBirth,
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2500),
+                                    fieldType: FieldType.dateOfBirth,
+                                    firstDate: DateTime(1925),
+                                    lastDate: DateTime.now(),
                                     onChanged: (selected) {
                                       dateOfBirth = selected;
                                     },

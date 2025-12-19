@@ -10,7 +10,9 @@ import 'package:tipl_app/api_service/handle_reposone.dart';
 import 'package:tipl_app/api_service/log_api_response.dart';
 import 'package:tipl_app/core/utilities/TextFieldFormatter/uppercase_formatter.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
+import 'package:tipl_app/core/utilities/constants.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_date_picker_text_field.dart';
@@ -18,6 +20,8 @@ import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
+import 'package:tipl_app/features/navigation/admin/terms_conditions_screen.dart';
+import 'package:tipl_app/features/terms_conditions/terms_condition_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({super.key,this.canPop = false});
@@ -273,6 +277,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               CustomTextField(
                                 prefixIcon: Icon(Iconsax.mobile),
                                 label: 'Mobile',
+                                fieldType: FieldType.mobileNo,
                                 textInputType: TextInputType.phone,
                                 controller: _mobileIdController,
                                 maxLength: 10,
@@ -282,6 +287,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               CustomTextField(
                                 prefixIcon: Icon(Iconsax.directbox_send),
                                 label: "Email",
+                                fieldType: FieldType.email,
                                 isRequired: true,
                                 controller: _emailController,
                                 textInputType: TextInputType.emailAddress,
@@ -298,12 +304,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: CustomTextField(
-                                      label: 'State',
-                                      isRequired: true,
-                                      controller: _stateController,
-                                    ),
-                                  ),
+                                    child: CustomDropdown(
+                                        label: "State",
+                                        items: Constants.indianStates.map((e)=>DropdownMenuItem(child: Text(e),value: e,)).toList(),
+                                        value: _selectedState,
+                                        isRequired: true,
+                                        onChanged: (state){
+                                          setState(() {
+                                            _selectedState = state;
+                                          });
+                                        }
+                                    ),),
+                                  // Expanded(
+                                  //   child: CustomTextField(
+                                  //     label: 'State',
+                                  //     isRequired: true,
+                                  //     controller: _stateController,
+                                  //   ),
+                                  // ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: CustomTextField(
@@ -341,6 +359,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               CustomTextField(
                                 label: 'Pin Code',
                                 controller: _pinCodeController,
+                                fieldType: FieldType.pincode,
                                 isRequired: true,
                                 maxLength: 6,
                               ),
@@ -348,6 +367,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               CustomTextField(
                                 label: 'Address',
                                 isRequired: true,
+                                fieldType: FieldType.address,
                                 textAlignVertical: TextAlignVertical.center,
                                 textInputType: TextInputType.streetAddress,
                                 controller: _addressController,
@@ -384,10 +404,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             },
                                           ),
                                           const SizedBox(width: 6),
-                                          Text(
-                                            'I Agree Terms And Conditions.',
-                                            style: TextStyle(
-                                              color: CustColors.grey,
+                                          GestureDetector(
+                                            onTap:(){
+                                              navigateWithAnimation(context, TermsAndConditionsScreen(
+                                                onAccepted: (){
+                                                  state.didChange(true);
+                                                },
+                                              ));
+                                            },
+                                            child: Text(
+                                              'I Agree Terms And Conditions.',
+                                              style: TextStyle(
+                                                color: CustColors.grey,
+                                              ),
                                             ),
                                           ),
                                           // RichText(
@@ -511,7 +540,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         "gender": _selectedGender,
         "mobile_no": _mobileIdController.text,
         "email": _emailController.text,
-        "state": _stateController.text,
+        // "state": _stateController.text,
+        "state": _selectedState,
         "district": _districtController.text,
         "address": _addressController.text,
         "pin_code": _pinCodeController.text,
