@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:tipl_app/api_service/packages_api/packages_api.dart';
 import 'package:tipl_app/api_service/wallets_api/wallet_api_service.dart';
 import 'package:tipl_app/core/providers/recall_provider.dart';
@@ -18,10 +19,6 @@ import 'package:tipl_app/features/navigation/packages/package_card.dart';
 import 'package:tipl_app/features/navigation/user/wallets/transaction_pass_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
-
-
-
-
 
 class AddFundScreen extends StatefulWidget {
   @override
@@ -46,15 +43,19 @@ class _AddFundScreenState extends State<AddFundScreen> {
   }
 
   void _init() async {
-    final transaction = Provider.of<WalletProvider>(context,listen: false).transaction;
-    if(transaction.isNotEmpty){
+    final transaction = Provider.of<WalletProvider>(
+      context,
+      listen: false,
+    ).transaction;
+    if (transaction.isNotEmpty) {
       final status = transaction[0].confirmation.toLowerCase() == 'pending';
-      if(status){
-        WidgetsBinding.instance.addPostFrameCallback((duration){
+      if (status) {
+        WidgetsBinding.instance.addPostFrameCallback((duration) {
           CustomMessageDialog.show(
             context,
             title: 'Notice',
-            message: 'Until the previous payment ${transaction[0].amount} is not confirmed, you cannot add another transaction. Please wait for verification.',
+            message:
+                'Until the previous payment ${transaction[0].amount} is not confirmed, you cannot add another transaction. Please wait for verification.',
             confirmText: 'Go Back',
             onConfirm: () {
               Navigator.of(context).pop();
@@ -87,39 +88,42 @@ class _AddFundScreenState extends State<AddFundScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Wallet banner
-                    Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF1B1B1D),
-                      borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: Color(0xFFFFD700), width: 1.5),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Add Funds",
-                          style: TextStyle(
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF1B1B1D),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
                             color: Color(0xFFFFD700),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            width: 1.5,
                           ),
                         ),
-                        SizedBox(height: 6),
-                        Text(
-                          "Enter the details to add money to user wallet",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Add Funds",
+                              style: TextStyle(
+                                color: Color(0xFFFFD700),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              "Enter the details to add money to user wallet",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
 
-                    SizedBox(height: 20),
-                
+                      SizedBox(height: 20),
+
                       CustomDropdown<int?>(
                         label: 'Select Package',
                         items: _packages_list
@@ -149,62 +153,83 @@ class _AddFundScreenState extends State<AddFundScreen> {
                       ),
                       if (selected_package != null) ...[
                         const SizedBox(height: 10),
-                        PaymentPackageScreen(package: selected_package!,
+                        PaymentPackageScreen(
+                          package: selected_package!,
                           // formKey: _formKey,
                           upiController: upiController,
                           utrController: utrController,
                         ),
                         const SizedBox(height: 10),
                       ],
-                
+
                       SizedBox(height: 20),
 
-                      if(selected_package != null)...[
+                      if (selected_package != null) ...[
                         // Add Fund Button
-                        _btnLoading ? CustomCircularIndicator() :CustomButton(
-                          color: Colors.black,
-                          text: "Continue",
-                          onPressed: () async{
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _btnLoading = true;
-                              });
-                              final pass = await TransactionPasswordSheet.showTransactionPasswordSheet(context);
-                              final response = await WalletApiService(context: context).addFund(
-                                  amount: '${selected_package?['amount']}',
-                                  reference: '${selected_package?['package_name']}',
-                                  password: pass??'',
-                                  upi: upiController.text,
-                                  utr: utrController.text
-                              );
+                        _btnLoading
+                            ? CustomCircularIndicator()
+                            : CustomButton(
+                                color: Colors.black,
+                                text: "Continue",
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _btnLoading = true;
+                                    });
+                                    final pass =
+                                        await TransactionPasswordSheet.showTransactionPasswordSheet(
+                                          context,
+                                        );
+                                    final response =
+                                        await WalletApiService(
+                                          context: context,
+                                        ).addFund(
+                                          amount:
+                                              '${selected_package?['amount']}',
+                                          reference:
+                                              '${selected_package?['package_name']}',
+                                          password: pass ?? '',
+                                          upi: upiController.text,
+                                          utr: utrController.text,
+                                        );
 
-                              if(response != null ){
-                                final isSuccess = response['isSuccess']??false;
-                                if(isSuccess){
-                                  RecallProvider(context: context);
-                                  CustomMessageDialog.show(
-                                    context,
-                                    title: 'Success',
-                                    message: 'Add fund request submitted successfully. Please wait for verification by our team within 48 hours.',
-                                    onConfirm: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  );
-                                }else{
-                                  CustomMessageDialog.show(context, title: "Failed", message: response['message']);
-                                }
-                              }else{
-                                CustomMessageDialog.show(context, title: 'Error', message: 'Something went wrong !');
-                              }
+                                    if (response != null) {
+                                      final isSuccess =
+                                          response['isSuccess'] ?? false;
+                                      if (isSuccess) {
+                                        RecallProvider(context: context);
+                                        CustomMessageDialog.show(
+                                          context,
+                                          title: 'Success',
+                                          message:
+                                              'Add fund request submitted successfully. Please wait for verification by our team within 48 hours.',
+                                          onConfirm: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        );
+                                      } else {
+                                        CustomMessageDialog.show(
+                                          context,
+                                          title: "Failed",
+                                          message: response['message'],
+                                        );
+                                      }
+                                    } else {
+                                      CustomMessageDialog.show(
+                                        context,
+                                        title: 'Error',
+                                        message: 'Something went wrong !',
+                                      );
+                                    }
 
-                              setState(() {
-                                _btnLoading = false;
-                              });
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 10,)
-                      ]
+                                    setState(() {
+                                      _btnLoading = false;
+                                    });
+                                  }
+                                },
+                              ),
+                        const SizedBox(height: 10),
+                      ],
                     ],
                   ),
                 ),
@@ -212,7 +237,6 @@ class _AddFundScreenState extends State<AddFundScreen> {
             ),
     );
   }
-  
 }
 
 class PaymentPackageScreen extends StatefulWidget {
@@ -221,14 +245,19 @@ class PaymentPackageScreen extends StatefulWidget {
   final TextEditingController upiController;
   final TextEditingController utrController;
 
-  const PaymentPackageScreen({super.key, required this.package,this.formKey,required this.upiController,required this.utrController});
+  const PaymentPackageScreen({
+    super.key,
+    required this.package,
+    this.formKey,
+    required this.upiController,
+    required this.utrController,
+  });
 
   @override
   State<PaymentPackageScreen> createState() => _PaymentPackageScreenState();
 }
 
 class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
-
   bool showPaymentFields = false;
 
   @override
@@ -239,14 +268,11 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
     });
   }
 
-
   void _showInfoPopup() {
     showDialog(
       context: context,
       builder: (_) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
@@ -256,7 +282,6 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
               // 📝 Title
               Text(
                 "Important Notice",
@@ -272,9 +297,9 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
               // 📌 Body Message
               Text(
                 "Please pay the package amount only to the QR code shown.\n\n"
-                    "After completing the payment, enter your UPI ID and UTR number "
-                    "to proceed with the purchase.\n\n"
-                    "⚠ Be careful and enter the correct details.",
+                "After completing the payment, enter your UPI ID and UTR number "
+                "to proceed with the purchase.\n\n"
+                "⚠ Be careful and enter the correct details.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -284,7 +309,6 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
               ),
 
               const SizedBox(height: 18),
-
             ],
           ),
         ),
@@ -292,12 +316,33 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
     );
   }
 
+  // Future<void> _openUPIPayment({
+  //   required String qr_data
+  // }) async {
+  //   final uri = Uri.parse(
+  //     qr_data,
+  //   );
+  //
+  //   if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+  //     throw "Could not open UPI app";
+  //   }
+  // }
 
   Future<void> _openUPIPayment({
-    required String qr_data
+    required String upiId,
+    required double amount,
+    String payeeName = "Neural Finance",
+    String transactionNote = "Payment",
   }) async {
     final uri = Uri.parse(
-      qr_data,
+      Uri.encodeFull(
+        "upi://pay"
+        "?pa=$upiId"
+        "&pn=$payeeName"
+        "&am=${amount.toStringAsFixed(2)}"
+        "&tn=$transactionNote"
+        "&cu=INR",
+      ),
     );
 
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
@@ -305,30 +350,45 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
     }
   }
 
-  Future<void> _downloadAndOpenQR() async {
-    try {
-      final String baseUrl = "https://api.neuralpool.in";
-      String url = baseUrl + widget.package["qr_image"];
-
-      final response = await get(Uri.parse(url));
-      final dir = await getTemporaryDirectory();
-      final file = File("${dir.path}/qr.png");
-
-      await file.writeAsBytes(response.bodyBytes);
-      final qrData = await QrCodeToolsPlugin.decodeFrom(file.path);
-
-      if (qrData != null && qrData.isNotEmpty) {
-        print("QR Data: $qrData");
-        _openUPIPayment(qr_data: qrData);
-      } else {
-        print("No QR code found in the image.");
-      }
-
-    } catch (e) {
-      print("Error downloading QR: $e");
-    }
+  String buildUpiQrData({
+    required String upiId,
+    required double amount,
+    String payeeName = "Neural Finance",
+    String transactionNote = "Payment",
+  }) {
+    return Uri.encodeFull(
+      "upi://pay"
+      "?pa=$upiId"
+      "&pn=$payeeName"
+      "&am=${amount.toStringAsFixed(2)}"
+      "&tn=$transactionNote"
+      "&cu=INR",
+    );
   }
 
+  // Future<void> _downloadAndOpenQR() async {
+  //   try {
+  //     final String baseUrl = "https://api.neuralpool.in";
+  //     String url = baseUrl + widget.package["qr_image"];
+  //
+  //     final response = await get(Uri.parse(url));
+  //     final dir = await getTemporaryDirectory();
+  //     final file = File("${dir.path}/qr.png");
+  //
+  //     await file.writeAsBytes(response.bodyBytes);
+  //     final qrData = await QrCodeToolsPlugin.decodeFrom(file.path);
+  //
+  //     if (qrData != null && qrData.isNotEmpty) {
+  //       print("QR Data: $qrData");
+  //       _openUPIPayment(qr_data: qrData);
+  //     } else {
+  //       print("No QR code found in the image.");
+  //     }
+  //
+  //   } catch (e) {
+  //     print("Error downloading QR: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -362,11 +422,10 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(width: 8),
-            // ℹ️ INFO ICON ADDED HERE
             InkWell(
               onTap: _showInfoPopup,
               child: const Icon(Iconsax.info_circle, color: Colors.blue),
-            )
+            ),
           ],
         ),
 
@@ -376,51 +435,73 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
         Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: CachedNetworkImage(
-              imageUrl: 'https://api.neuralpool.in${data["qr_image"] ?? ''}',
-              height: 250,
-              width: 250,
-              fit: BoxFit.cover,
-
-              placeholder: (context, url) => Container(
-                height: 250,
-                width: 250,
-                padding: const EdgeInsets.all(16),
-                color: Colors.grey.shade200,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
-
-              errorWidget: (context, url, error) => Container(
-                height: 250,
-                width: 250,
-                color: Colors.grey.shade300,
-                child: const Icon(
-                  Icons.broken_image,
-                  size: 60,
-                  color: Colors.redAccent,
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(12),
+              child: QrImageView(
+                gapless: false,
+                data: buildUpiQrData(
+                  upiId: widget.package['upi_id']??'',
+                  amount: double.tryParse(widget.package['amount']) ?? 0,
+                  payeeName: "Neural Finance",
+                  transactionNote: "Package Payment of ${widget.package['package_name']}",
                 ),
+                size: 220,
+                backgroundColor: Colors.white,
               ),
             ),
           ),
         ),
 
-
+        // Center(
+        //   child: ClipRRect(
+        //     borderRadius: BorderRadius.circular(12),
+        //     child: CachedNetworkImage(
+        //       imageUrl: 'https://api.neuralpool.in${data["qr_image"] ?? ''}',
+        //       height: 250,
+        //       width: 250,
+        //       fit: BoxFit.cover,
+        //
+        //       placeholder: (context, url) => Container(
+        //         height: 250,
+        //         width: 250,
+        //         padding: const EdgeInsets.all(16),
+        //         color: Colors.grey.shade200,
+        //         child: const Center(child: CircularProgressIndicator()),
+        //       ),
+        //
+        //       errorWidget: (context, url, error) => Container(
+        //         height: 250,
+        //         width: 250,
+        //         color: Colors.grey.shade300,
+        //         child: const Icon(
+        //           Icons.broken_image,
+        //           size: 60,
+        //           color: Colors.redAccent,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         const SizedBox(height: 5),
 
         // PAY BUTTON
-
         Center(
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)
+                borderRadius: BorderRadius.circular(20),
               ),
               elevation: 2,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               backgroundColor: Colors.green,
             ),
             onPressed: () async {
-              await _downloadAndOpenQR();
+              // await _downloadAndOpenQR();
+              await _openUPIPayment(
+                upiId: widget.package['upi_id']??'',
+                amount: double.tryParse(widget.package['amount']) ?? 0,
+              );
             },
             child: const Text("Pay Now", style: TextStyle(fontSize: 16)),
           ),
@@ -452,11 +533,8 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
               isRequired: true,
             ),
           ],
-        )
+        ),
       ],
     );
   }
-
-
 }
-

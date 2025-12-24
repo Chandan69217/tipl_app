@@ -92,12 +92,13 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
   Future<void> submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (imageFile == null && !widget.isEdit) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select an image")),
-      );
-      return;
-    }
+    // if (imageFile == null && !widget.isEdit) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text("Please select an image")),
+    //   );
+    //   return;
+    // }
+
     setState(() {
       _isLoading = true;
     });
@@ -121,7 +122,7 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
       halfyearly_roi_percent: parseOrNull<int>(halfYearCtrl.text, int.parse),
       yearly_roi_percent: parseOrNull<int>(yearlyCtrl.text, int.parse),
 
-      imageFile: imageFile, // if null → API gets null
+      // imageFile: imageFile, // if null → API gets null
     )
         : await PackagesApiService().createPackage(
       packageName: nameCtrl.text.trim(),
@@ -131,7 +132,7 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
       monthly_roi_percent: int.parse(monthlyCtrl.text),
       halfyearly_roi_percent: int.parse(halfYearCtrl.text),
       yearly_roi_percent: int.parse(yearlyCtrl.text),
-      imageFile: imageFile??File(''),
+      // imageFile: imageFile??File(''),
     );
 
 
@@ -272,111 +273,111 @@ class _CreateUpdatePackageScreenState extends State<CreateUpdatePackageScreen> {
                   isRequired: true,
                 ),
           
-                const SizedBox(height: 20),
-          
-                // IMAGE PICKER
-              FormField<File>(
-                validator: (value) {
-                  if (!widget.isEdit && imageFile == null) {
-                    return "Please select an image";
-                  }
-                  return null;
-                },
-                builder: (field) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-          
-                      GestureDetector(
-                        onTap: () async {
-                          await pickImage();
-                          field.didChange(imageFile);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: field.hasError ? Colors.red : Colors.grey.shade400,
-                              width: 1.2,
-                            ),
-                            color: Colors.grey.shade100,
-                          ),
-                          child: Row(
-                            children: [
-                              // Thumbnail preview
-                              Container(
-                                width: 52,
-                                height: 52,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.grey.shade300,
-                                  image: imageFile != null
-                                      ? DecorationImage(
-                                    image: FileImage(imageFile!),
-                                    fit: BoxFit.cover,
-                                  )
-                                      : null,
-                                ),
-                                child: imageFile == null
-                                    ? const Icon(Icons.image, color: Colors.grey, size: 28)
-                                    : null,
-                              ),
-          
-                              const SizedBox(width: 14),
-          
-                              // File info
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      imageFile == null
-                                          ? "Upload QR Image"
-                                          : imageFile!.path.split('/').last,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: imageFile == null
-                                            ? Colors.grey.shade600
-                                            : Colors.black87,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-          
-                                    const SizedBox(height: 4),
-          
-                                    Text(
-                                      "Tap to select (.jpg .jpeg .png .webp)",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey.shade600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-          
-                              const Icon(Icons.upload_rounded,
-                                  size: 30, color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      ),
-          
-                      // ❌ Error Message
-                      if (field.hasError)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: Text(
-                            field.errorText!,
-                            style: const TextStyle(color: Colors.red, fontSize: 12),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
+              //   const SizedBox(height: 20),
+              //
+              //   // IMAGE PICKER
+              // FormField<File>(
+              //   validator: (value) {
+              //     if (!widget.isEdit && imageFile == null) {
+              //       return "Please select an image";
+              //     }
+              //     return null;
+              //   },
+              //   builder: (field) {
+              //     return Column(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       children: [
+              //
+              //         GestureDetector(
+              //           onTap: () async {
+              //             await pickImage();
+              //             field.didChange(imageFile);
+              //           },
+              //           child: Container(
+              //             padding: const EdgeInsets.all(14),
+              //             decoration: BoxDecoration(
+              //               borderRadius: BorderRadius.circular(14),
+              //               border: Border.all(
+              //                 color: field.hasError ? Colors.red : Colors.grey.shade400,
+              //                 width: 1.2,
+              //               ),
+              //               color: Colors.grey.shade100,
+              //             ),
+              //             child: Row(
+              //               children: [
+              //                 // Thumbnail preview
+              //                 Container(
+              //                   width: 52,
+              //                   height: 52,
+              //                   decoration: BoxDecoration(
+              //                     borderRadius: BorderRadius.circular(10),
+              //                     color: Colors.grey.shade300,
+              //                     image: imageFile != null
+              //                         ? DecorationImage(
+              //                       image: FileImage(imageFile!),
+              //                       fit: BoxFit.cover,
+              //                     )
+              //                         : null,
+              //                   ),
+              //                   child: imageFile == null
+              //                       ? const Icon(Icons.image, color: Colors.grey, size: 28)
+              //                       : null,
+              //                 ),
+              //
+              //                 const SizedBox(width: 14),
+              //
+              //                 // File info
+              //                 Expanded(
+              //                   child: Column(
+              //                     crossAxisAlignment: CrossAxisAlignment.start,
+              //                     children: [
+              //                       Text(
+              //                         imageFile == null
+              //                             ? "Upload QR Image"
+              //                             : imageFile!.path.split('/').last,
+              //                         style: TextStyle(
+              //                           fontSize: 15,
+              //                           fontWeight: FontWeight.w600,
+              //                           color: imageFile == null
+              //                               ? Colors.grey.shade600
+              //                               : Colors.black87,
+              //                         ),
+              //                         overflow: TextOverflow.ellipsis,
+              //                       ),
+              //
+              //                       const SizedBox(height: 4),
+              //
+              //                       Text(
+              //                         "Tap to select (.jpg .jpeg .png .webp)",
+              //                         style: TextStyle(
+              //                           fontSize: 12,
+              //                           color: Colors.grey.shade600,
+              //                         ),
+              //                       ),
+              //                     ],
+              //                   ),
+              //                 ),
+              //
+              //                 const Icon(Icons.upload_rounded,
+              //                     size: 30, color: Colors.grey),
+              //               ],
+              //             ),
+              //           ),
+              //         ),
+              //
+              //         // ❌ Error Message
+              //         if (field.hasError)
+              //           Padding(
+              //             padding: const EdgeInsets.only(top: 6),
+              //             child: Text(
+              //               field.errorText!,
+              //               style: const TextStyle(color: Colors.red, fontSize: 12),
+              //             ),
+              //           ),
+              //       ],
+              //     );
+              //   },
+              // ),
           
               const SizedBox(height: 30),
           

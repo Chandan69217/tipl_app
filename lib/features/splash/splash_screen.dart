@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
 
-  final String _text = "NEURAL POOl";
+  final String _text = "NEURAL FINANCE";
   String _visibleText = "";
 
 

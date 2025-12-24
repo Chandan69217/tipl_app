@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:tipl_app/api_service/profile_api_service.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
@@ -25,8 +27,8 @@ class UserProfileProvider extends ChangeNotifier{
 
   }
 
-  Future<UserProfile> updateProfile(UserProfile details)async{
-    final value = await ProfileAPIService(context: context).getUserProfileUpdate(details: details);
+  Future<UserProfile> updateProfile(UserProfile details, {File? profile})async{
+    final value = await ProfileAPIService(context: context).getUserProfileUpdate(details: details,photo: profile);
     data = UserProfile.fromJson(value??{});
     notifyListeners();
     return data;

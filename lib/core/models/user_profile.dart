@@ -45,7 +45,7 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json){
     return UserProfile(
       memberId: json["member_id"] ?? "N/A",
-      profile: json["profile"] ?? "",
+      profile: json["photo"] ?? "",
       maritalStatus: json["marital_status"] ?? "N/A",
       packageType: json["package_type"] ?? "N/A",
       dob: json["date_of_birth"] ?? "N/A",

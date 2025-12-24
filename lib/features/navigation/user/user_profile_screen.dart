@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/bank_service_api.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
@@ -92,6 +93,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 return Consumer<UserProfileProvider>(
                     builder: (context,value,child){
                       final user = value.data;
+
                       return SingleChildScrollView(
                         padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20,),
                         child: Column(
@@ -103,9 +105,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      // const SizedBox(height: 16,),
+                                      const SizedBox(height: 16,),
+
                                       CustomNetworkImage(
-                                        imageUrl: user.profile,
+                                        imageUrl:'https://${Urls.baseUrl}${user.profile}',
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
@@ -120,16 +123,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         user.email,
                                         style: TextStyle(color: Colors.grey, height: 0),
                                       ),
-                                      const SizedBox(height: 4,),
-                                      Container(
-                                        margin: EdgeInsets.only(right: 8.0),
-                                        padding: EdgeInsets.symmetric(horizontal: 12.0,vertical: 4),
-                                        decoration: BoxDecoration(
-                                            color: user.status.toString().toLowerCase() == 'active'? Colors.green.withValues(alpha: 0.7):Colors.red.withValues(alpha: 0.7),
-                                            borderRadius: BorderRadius.circular(20)
-                                        ),
-                                        child: Text(user.status,style: TextStyle(color: Colors.white),),
-                                      ),
+                                      // const SizedBox(height: 4,),
+                                      // Container(
+                                      //   margin: EdgeInsets.only(right: 8.0),
+                                      //   padding: EdgeInsets.symmetric(horizontal: 12.0,vertical: 4),
+                                      //   decoration: BoxDecoration(
+                                      //       color: user.status.toString().toLowerCase() == 'active'? Colors.green.withValues(alpha: 0.7):Colors.red.withValues(alpha: 0.7),
+                                      //       borderRadius: BorderRadius.circular(20)
+                                      //   ),
+                                      //   child: Text(user.status,style: TextStyle(color: Colors.white),),
+                                      // ),
                                       const SizedBox(height: 20),
                                       GridView.count(
                                         physics: NeverScrollableScrollPhysics(),

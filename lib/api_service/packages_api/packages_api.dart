@@ -133,18 +133,16 @@ class PackagesApiService {
   Future<bool> createPackage({
     required String packageName,
     required String desc,
+    String upi_id = 'MAB.037135057460015@axisbank',
     required double amount,
     required int duration,
     required int monthly_roi_percent,
     required int halfyearly_roi_percent,
     required int yearly_roi_percent,
-    required File imageFile,
+    File? imageFile,
   }) async {
     try {
       final url = Uri.https(Urls.baseUrl, '/api/packages');
-
-      // ---------- COMPRESS IMAGE ----------
-      File compressedFile = await compressImage(imageFile);
 
       var request = http.MultipartRequest('POST', url);
 
@@ -155,13 +153,19 @@ class PackagesApiService {
       request.fields['monthly_roi_percent'] = monthly_roi_percent.toString();
       request.fields['halfyearly_roi_percent'] = halfyearly_roi_percent.toString();
       request.fields['yearly_roi_percent'] = yearly_roi_percent.toString();
+      request.fields['upi_id'] = upi_id;
 
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'qr_image',
-          compressedFile.path,
-        ),
-      );
+      if(imageFile != null ){
+        // ---------- COMPRESS IMAGE ----------
+        File compressedFile = await compressImage(imageFile);
+
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'qr_image',
+            compressedFile.path,
+          ),
+        );
+      }
 
       request.headers['Content-Type'] = 'multipart/form-data';
 

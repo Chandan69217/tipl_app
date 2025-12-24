@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/profile_api_service.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
@@ -141,7 +142,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                 child: CustomNetworkImage(
                   width: 36,
                   height: 36,
-                  imageUrl: data.profile,
+                  imageUrl: 'https://${Urls.baseUrl}${data.profile}',
                 ),
               ),
               const SizedBox(width: 12),

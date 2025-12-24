@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_transactions_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
@@ -165,6 +166,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   AppBar _appBar() {
+
     return AppBar(
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
@@ -185,7 +187,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 child: CustomNetworkImage(
                   width: 36,
                   height: 36,
-                  imageUrl: value.data.profile,
+                  imageUrl: 'https://${Urls.baseUrl}${value.data.profile}',
                 ),
               ),
               // CircleAvatar(

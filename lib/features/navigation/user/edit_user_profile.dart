@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -20,6 +21,7 @@ import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
+import 'package:tipl_app/core/widgets/profile_image_picker/profile_image_picker.dart';
 import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 
 class EditUserProfile extends StatefulWidget {
@@ -47,6 +49,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
   String? _selectedMaritalStatus;
   DateTime? _selectedDOB;
   String? _selectedProfUrl;
+  File? _selectedProfile;
 
   bool _isLoading = false;
 
@@ -61,6 +64,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
     _selectedMaritalStatus = widget.data.maritalStatus != 'N/A'? widget.data.maritalStatus.toLowerCase():null;
     _selectedDOB = widget.data.dob != 'N/A' ? DateTime.tryParse(widget.data.dob) : null;
     _selectedProfUrl = widget.data.profile;
+    _selectedState = widget.data.state;
     _fullNameController.text = widget.data.fullName != 'N/A'
         ? widget.data.fullName
         : '';
@@ -104,7 +108,15 @@ class _EditUserProfileState extends State<EditUserProfile> {
                 padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
                 child: Column(
                   children: [
-                    CustomNetworkImage(),
+                    // CustomNetworkImage(),
+                    const SizedBox(height: 16,),
+                    ProfileImagePicker(
+                      imageUrl: 'https://${Urls.baseUrl}${widget.data.profile}',
+                      name: widget.data.fullName,
+                      onImageSelected: (image){
+                        _selectedProfile = image;
+                      },
+                    ),
                     CustomTextField(
                       label: 'Full Name',
                       controller: _fullNameController,
@@ -170,14 +182,16 @@ class _EditUserProfileState extends State<EditUserProfile> {
                       maxLength: 10,
                       isRequired: true,
                     ),
-                    const SizedBox(height: 16),
-                    CustomTextField(
-                      prefixIcon: Icon(Iconsax.directbox_send),
-                      label: "Email",
-                      isRequired: true,
-                      controller: _emailController,
-                      textInputType: TextInputType.emailAddress,
-                    ),
+                    // const SizedBox(height: 16),
+                    // CustomTextField(
+                    //   prefixIcon: Icon(Iconsax.directbox_send),
+                    //   label: "Email",
+                    //   isRequired: true,
+                    //   fieldType: FieldType.email,
+                    //   readOnly: true,
+                    //   controller: _emailController,
+                    //   textInputType: TextInputType.emailAddress,
+                    // ),
                     const SizedBox(height: 16),
 
                     CustomDatePickerTextField(
@@ -312,7 +326,7 @@ class _EditUserProfileState extends State<EditUserProfile> {
           createdAt: DateTime.now()
       );
 
-      await Provider.of<UserProfileProvider>(context,listen: false).updateProfile(updatedData);
+      await Provider.of<UserProfileProvider>(context,listen: false).updateProfile(updatedData,profile: _selectedProfile);
       CustomMessageDialog.show(context, title: 'Profile Updated', message: 'Your changes have been saved.',onConfirm: (){
         Navigator.of(context).pop();
       });
