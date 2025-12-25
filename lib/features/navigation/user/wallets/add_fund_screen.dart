@@ -197,7 +197,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
                                       final isSuccess =
                                           response['isSuccess'] ?? false;
                                       if (isSuccess) {
-                                        RecallProvider(context: context);
+                                        RecallProvider(context: context).recallAll();
                                         CustomMessageDialog.show(
                                           context,
                                           title: 'Success',

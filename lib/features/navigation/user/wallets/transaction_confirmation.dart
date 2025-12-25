@@ -161,7 +161,7 @@ class _TransactionConfirmationState extends State<TransactionConfirmation> {
            context,
            message: 'Status updated successfully',
          );
-         RecallProvider(context: context);
+         RecallProvider(context: context).recallAll();
        }
       }else{
         handleApiResponse(context, response);

@@ -193,7 +193,7 @@ class _TopUpScreenState extends State<TopUpScreen> {
                 );
 
                 if(values != null){
-                  RecallProvider(context: context);
+                  RecallProvider(context: context).recallAll();
                   final message = values['message'];
                   CustomMessageDialog.show(context, title: 'Wallet TopUp', message: message,onConfirm: (){
                     Navigator.pop(context,);

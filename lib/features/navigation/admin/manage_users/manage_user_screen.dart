@@ -1,6 +1,9 @@
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
@@ -95,11 +98,17 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                             navigateWithAnimation(context,  UserDetailsScreen(data: user));
                           },
                           contentPadding: EdgeInsets.only(left: 16,top: 4,bottom: 4),
-                          leading: CircleAvatar(
-                            backgroundColor:
-                            isActive ? Colors.green : Colors.red,
-                            child: const Icon(Icons.person, color: Colors.white),
+                          leading: ProfilePicture(
+                            name: user["full_name"]??'',
+                            radius: 24,
+                            fontsize: 18,
+                            count: 2,
                           ),
+                          // leading: CircleAvatar(
+                          //   backgroundColor:
+                          //   isActive ? Colors.green : Colors.red,
+                          //   child: const Icon(Icons.person, color: Colors.white),
+                          // ),
                           title: Text(
                             user["full_name"]??'N/A',
                             style: const TextStyle(fontWeight: FontWeight.w600),

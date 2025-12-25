@@ -302,7 +302,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                     if (isSuccess) {
                                       setState(() {
                                       });
-                                      RecallProvider(context: context);
+                                      RecallProvider(context: context).recallAll();
                                     }
                                   }
                                 }

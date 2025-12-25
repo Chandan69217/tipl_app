@@ -46,7 +46,6 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    RecallProvider(context: context);
     return MaterialApp(
       scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'Sign In',

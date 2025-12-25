@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/core/models/user_profile.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_user_provider.dart';
 import 'package:tipl_app/core/providers/recall_provider.dart';
@@ -76,7 +77,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       widget.data['sponsor_id'] = value['sponsor_id'];
                       widget.data['position'] = value['position'];
                     });
-                    RecallProvider(context: context);
+                    RecallProvider(context: context).recallAll();
                     }
                   );
                   break;
@@ -128,7 +129,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
               children: [
                 // const SizedBox(height: 16),
                 CustomNetworkImage(
-                  imageUrl: widget.data['photo'],
+                  imageUrl: 'https://${Urls.baseUrl}${widget.data['photo']}',
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -143,41 +144,41 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   widget.data["email"] ?? "N/A",
                   style: const TextStyle(color: Colors.grey, height: 1.5),
                 ),
-                const SizedBox(height: 8.0,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 8.0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: isActive
-                            ? Colors.green.withValues(alpha: 0.7)
-                            : Colors.red.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        status,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    widget.data['package_type'] != null ?
-                    Container(
-                      margin: const EdgeInsets.only(right: 8.0),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.orangeAccent.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        widget.data['package_type']??'',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ) : SizedBox.shrink()
-                  ],
-                ),
+                // const SizedBox(height: 8.0,),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Container(
+                //       margin: const EdgeInsets.only(right: 8.0),
+                //       padding: const EdgeInsets.symmetric(
+                //           horizontal: 12.0, vertical: 4),
+                //       decoration: BoxDecoration(
+                //         color: isActive
+                //             ? Colors.green.withValues(alpha: 0.7)
+                //             : Colors.red.withValues(alpha: 0.7),
+                //         borderRadius: BorderRadius.circular(20),
+                //       ),
+                //       child: Text(
+                //         status,
+                //         style: const TextStyle(color: Colors.white),
+                //       ),
+                //     ),
+                //     widget.data['package_type'] != null ?
+                //     Container(
+                //       margin: const EdgeInsets.only(right: 8.0),
+                //       padding: const EdgeInsets.symmetric(
+                //           horizontal: 12.0, vertical: 4),
+                //       decoration: BoxDecoration(
+                //         color: Colors.orangeAccent.withValues(alpha: 0.7),
+                //         borderRadius: BorderRadius.circular(20),
+                //       ),
+                //       child: Text(
+                //         widget.data['package_type']??'',
+                //         style: const TextStyle(color: Colors.white),
+                //       ),
+                //     ) : SizedBox.shrink()
+                //   ],
+                // ),
                 const SizedBox(height: 20),
                 GridView.count(
                   physics: const NeverScrollableScrollPhysics(),

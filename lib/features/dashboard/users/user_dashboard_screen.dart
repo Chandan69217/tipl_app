@@ -6,6 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/api_service/profile_api_service.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
 import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
@@ -39,6 +40,9 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   @override
   void initState() {
     super.initState();
+    ConnectivityService().addOnReconnectListener((){
+      RecallProvider(context: context).recallAll();
+    });
     checkProfileCompleted();
   }
 

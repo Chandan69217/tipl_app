@@ -10,3 +10,25 @@
 
 # Keep service provider classes (SPI)
 -keep class **.spi.** { *; }
+
+
+
+
+
+
+# --- OkHttp ---
+-keep class okhttp3.** { *; }
+-dontwarn okhttp3.**
+
+# --- uCrop ---
+-keep class com.yalantis.ucrop.** { *; }
+-dontwarn com.yalantis.ucrop.**
+
+
+
+# Gson
+-keep class com.google.gson.** { *; }
+
+# Lifecycle
+-keep class androidx.lifecycle.** { *; }
+

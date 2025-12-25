@@ -6,7 +6,9 @@ import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:tipl_app/api_service/api_url.dart';
 import 'package:tipl_app/core/providers/admin_provider/all_transactions_provider.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/user_provider/user_profile_provider.dart';
+import 'package:tipl_app/core/utilities/connectivity/connectivity_service.dart';
 import 'package:tipl_app/core/utilities/cust_colors.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
@@ -41,6 +43,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   void initState() {
     super.initState();
     _init();
+    ConnectivityService().addOnReconnectListener((){
+      RecallProvider(context: context).recallAll();
+    });
     _screens = [
       AdminHomeScreen(onUpdate: (index){
         WidgetsBinding.instance.addPostFrameCallback((duration){

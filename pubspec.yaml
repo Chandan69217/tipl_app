@@ -60,6 +60,7 @@ dependencies:
   qr_flutter: ^4.1.0
   lucide_icons: ^0.257.0
   circular_profile_avatar: ^2.0.5
+  flutter_profile_picture: ^2.0.0
   flex_color_scheme: ^8.4.0
 
 

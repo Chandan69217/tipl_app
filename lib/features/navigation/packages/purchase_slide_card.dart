@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -49,7 +51,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
         widget.purchasedPlan.isEmpty ? _buildNoMembershipMessage()
             :
         SizedBox(
-          height: 220,
+          height: 230,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.purchasedPlan.length,
@@ -58,9 +60,12 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
               final plan = widget.purchasedPlan[index];
 
               final formatter = DateFormat("dd MMM yyyy");
-              final createdDate = DateTime.tryParse(plan['createdAt'] ?? '');
-              final createdDateFormatted =
-              createdDate != null ? formatter.format(createdDate) : 'N/A';
+              final startDate = DateTime.tryParse(plan['start_date'] ?? '');
+              final endDate = DateTime.tryParse(plan['end_date'] ?? '');
+              final startDateFormatted =
+              startDate != null ? formatter.format(startDate) : 'N/A';
+              final endDateFormatted =
+              endDate != null ? formatter.format(endDate) : 'N/A';
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8,vertical: 10),
                 decoration: BoxDecoration(
@@ -97,12 +102,12 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                       child: Opacity(
                         opacity: 0.25,
                         child: Container(
-                          height: 90,
+                          height: 110,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             gradient: LinearGradient(
                               colors: [
-                                Colors.white.withOpacity(0.4),
+                                Colors.white.withValues(alpha: 0.4),
                                 Colors.transparent,
                               ],
                               begin: Alignment.topLeft,
@@ -113,28 +118,30 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                       ),
                     ),
 
-                    // Positioned(
-                    //   top: 0,
-                    //   left: 0,
-                    //   right: 0,
-                    //   bottom: 0,
-                    //   child: Container(
-                    //     height: 110,
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(24),
-                    //       gradient: LinearGradient(
-                    //         begin: Alignment.topLeft,
-                    //         end: Alignment.bottomRight,
-                    //         stops: const [0.0, 0.30, 1.0],
-                    //         colors: [
-                    //           Colors.white.withOpacity(0.55),       // intense glossy reflection
-                    //           Colors.white.withOpacity(0.18),       // fade
-                    //           Colors.transparent,                   // blend
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    Positioned(
+                      top: 12,
+                        right: 12,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 6,vertical: 2),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.transparent,
+                                Colors.white.withValues(alpha: 0.4),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                      child: Text('Active',
+                      style: TextStyle(
+                        color:  Color(0xFFFFD54F),
+                        fontWeight: FontWeight.bold
+                      ),
+                      ),
+                    )),
+
 
                     // -------- Content --------
                     Padding(
@@ -148,7 +155,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: const Color(0xFFE8C46A).withOpacity(0.2),
+                                  color: const Color(0xFFE8C46A).withValues(alpha: 0.2),
                                 ),
                                 child: const Icon(
                                   Icons.workspace_premium_rounded,
@@ -180,35 +187,51 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _goldDetail("Start", startDateFormatted),
+                                        _goldDetail("Expires", endDateFormatted),
+                                      ],
+                                    ),
                                   ],
                                 ),
                               )
                             ],
                           ),
 
-                          const SizedBox(height: 14),
-
-                          // ------------ Details Row 1 ------------
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              _goldDetail("Status", plan["status"] ?? "N/A"),
-                              _goldDetail("Amount", "₹${plan["amount"] ?? '0'}"),
-                            ],
+                          const SizedBox(height: 18),
+                          PackageProgressBar(
+                            durationInDays: plan['durationInDays']??0,
+                            progressDay: plan['progress_day']??0,
+                            totalAmount: (plan['amount']??0 as num).toDouble(),
+                            usedAmount: (plan['usedAmount']??0 as num).toDouble(),
+                            perDayAmount: (plan['perDayAmount']??0 as num).toDouble(),
                           ),
 
-                          const SizedBox(height: 6),
+                          // const SizedBox(height: 14),
+                          //
+                          // // ------------ Details Row 1 ------------
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: [
+                          //     _goldDetail("Status", plan["status"] ?? "N/A"),
+                          //     _goldDetail("Amount", "₹${plan["amount"] ?? '0'}"),
+                          //   ],
+                          // ),
 
-                          // ------------ Details Row 2 ------------
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                _goldDetail("Start", createdDateFormatted),
-                                _goldDetail("Expires", plan["expiry_date"] ?? "N/A"),
-                              ],
-                            ),
-                          ),
+                          // const SizedBox(height: 6),
+                          //
+                          // // ------------ Details Row 2 ------------
+                          // Expanded(
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //     children: [
+                          //       _goldDetail("Start", startDateFormatted),
+                          //       _goldDetail("Expires", endDateFormatted),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -218,67 +241,6 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                 ),
               );
 
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.green.shade600, Colors.green.shade400],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    /// ---------- HEADER ----------
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Colors.white.withOpacity(0.2),
-                          child: const Icon(Iconsax.verify5,
-                              color: Colors.white, size: 28),
-                        ),
-                        const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Active Membership",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              plan["package_type"] ?? 'N/A',
-                              style: const TextStyle(
-                                  color: Colors.white70, fontSize: 14),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-
-                    const SizedBox(height: 18),
-
-                    /// ---------- DETAILS ----------
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _detailItem("Status", plan["status"] ?? 'N/A'),
-                        _detailItem("Amount", "₹${plan["amount"] ?? '0'}"),
-                        _detailItem("Start", createdDateFormatted),
-                        _detailItem("Expires", plan["expiry_date"] ?? 'N/A'),
-                      ],
-                    ),
-                  ],
-                ),
-              );
             },
           ),
         ),
@@ -340,6 +302,95 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
           value,
           style: const TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+class PackageProgressBar extends StatelessWidget {
+  final int durationInDays;
+  final int progressDay;
+  final double totalAmount;
+  final double usedAmount;
+  final double perDayAmount;
+
+  const PackageProgressBar({
+    super.key,
+    required this.durationInDays,
+    required this.progressDay,
+    required this.totalAmount,
+    required this.usedAmount,
+    required this.perDayAmount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final progress =
+    (progressDay / durationInDays).clamp(0.0, 1.0);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Amount Text
+        Text(
+          "₹${usedAmount.toStringAsFixed(2)} / ₹${totalAmount.toStringAsFixed(2)}",
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFEEDFB5)
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        // Progress Bar
+        Stack(
+          children: [
+            Container(
+              height: 12,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            FractionallySizedBox(
+              widthFactor: min(progress, 1),
+              child: Container(
+                height: 12,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: const LinearGradient(
+                    colors: [
+                      Colors.red,
+                      Colors.orange,
+                      Colors.green,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 6),
+
+        // Footer Info
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "₹${perDayAmount.toStringAsFixed(2)} / day",
+              style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
+            ),
+            Text(
+              "$progressDay / $durationInDays days",
+              style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
+            ),
+          ],
         ),
       ],
     );

@@ -606,7 +606,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Pref.instance.setString(PrefConst.SAVED_PASSWORD, _passwordController.text);
           }
           UserType.initialize();
-          RecallProvider(context: context);
+          await RecallProvider(context: context).recallAll();
           navigatePushReplacementWithAnimation(context, sponsor_id != null ? UserDashboardScreen() : AdminDashboardScreen());
         }else{
           CustomMessageDialog.show(context, title: 'Invalid Credentials', message: message);

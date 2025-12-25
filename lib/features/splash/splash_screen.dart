@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/preference.dart';
+import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/features/dashboard/admin/admin_dashboard_screen.dart';
 import 'package:tipl_app/features/dashboard/users/user_dashboard_screen.dart';
 import '../auth/sign_in_screen.dart';
@@ -37,11 +39,6 @@ import '../auth/sign_in_screen.dart';
 //   }
 // }
 
-
-
-
-
-
 import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -62,6 +59,7 @@ class _SplashScreenState extends State<SplashScreen>
   final String _text = "NEURAL FINANCE";
   String _visibleText = "";
 
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -90,7 +88,6 @@ class _SplashScreenState extends State<SplashScreen>
       ),
       TweenSequenceItem(tween: ConstantTween(1.0), weight: 30),
     ]).animate(_beatController);
-
 
     _controller = AnimationController(
       vsync: this,
@@ -121,8 +118,14 @@ class _SplashScreenState extends State<SplashScreen>
       });
     }
     await Future.delayed(const Duration(milliseconds: 200));
+    setState(() {
+      _isLoading = true;
+    });
+    await RecallProvider(context: context).recallAll();
+    setState(() {
+      _isLoading = false;
+    });
     _navigate();
-
   }
 
   void _navigate() {
@@ -140,16 +143,14 @@ class _SplashScreenState extends State<SplashScreen>
             opacity: animation,
             child: isLogin
                 ? isAdmin
-                ? const AdminDashboardScreen()
-                : const UserDashboardScreen()
+                      ? const AdminDashboardScreen()
+                      : const UserDashboardScreen()
                 : const SignInScreen(),
           );
         },
       ),
     );
   }
-
-
 
   @override
   void dispose() {
@@ -230,7 +231,6 @@ class _SplashScreenState extends State<SplashScreen>
                     //             ),
                     //           ),
                     //         ),
-
                     Text(
                       _visibleText,
                       style: GoogleFonts.creepster(
@@ -250,6 +250,19 @@ class _SplashScreenState extends State<SplashScreen>
                         color: Colors.black.withValues(alpha: 0.75),
                       ),
                     ),
+
+                    if (_isLoading)...[
+                      const SizedBox(height: 6,),
+                      CustomCircularIndicator(
+                        colors: [
+                          Color(0xFFE6D8A3),
+                          Color(0xFFB59A30),
+                          Color(0xFF7A5C12),
+                          Color(0xFFD4AF37),
+                        ],
+                      ),
+                    ]
+
                   ],
                 ),
               ],
@@ -259,6 +272,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-
 }
-

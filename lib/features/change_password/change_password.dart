@@ -337,12 +337,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       isRequired: true,
                       fieldType: FieldType.password,
                       prefixIcon: const Icon(Iconsax.lock),
-                      validate: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter your old password';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -358,14 +352,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 fieldType: FieldType.password,
                 prefixIcon: const Icon(Iconsax.lock),
                 isRequired: true,
-                validate: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter a new password';
-                  } else if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
@@ -410,4 +396,5 @@ class AdminChangingPass{
   AdminChangingPass({
     required this.member_id,
 });
+
 }

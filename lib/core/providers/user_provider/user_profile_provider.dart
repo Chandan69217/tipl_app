@@ -10,7 +10,7 @@ class UserProfileProvider extends ChangeNotifier{
   UserProfileProvider({this.context});
   bool _isLoading = false;
 
-  void initialized()async{
+  Future<void> initialized()async{
     if(_isLoading) return;
     _isLoading = true;
     try{
