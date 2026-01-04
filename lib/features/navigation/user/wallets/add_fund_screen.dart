@@ -1,7 +1,6 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_upi_india/flutter_upi_india.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
@@ -10,15 +9,19 @@ import 'package:tipl_app/api_service/packages_api/packages_api.dart';
 import 'package:tipl_app/api_service/wallets_api/wallet_api_service.dart';
 import 'package:tipl_app/core/providers/recall_provider.dart';
 import 'package:tipl_app/core/providers/wallet_provider/Wallet_Provider.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_button.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/core/widgets/custom_dropdown.dart';
 import 'package:tipl_app/core/widgets/custom_message_dialog.dart';
 import 'package:tipl_app/core/widgets/custom_text_field.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 import 'package:tipl_app/features/navigation/packages/package_card.dart';
 import 'package:tipl_app/features/navigation/user/wallets/transaction_pass_bottom_sheet.dart';
+import 'package:tipl_app/features/navigation/user/wallets/upi_payment.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'package:flutter_upi_india/flutter_upi_india.dart';
 
 class AddFundScreen extends StatefulWidget {
   @override
@@ -186,8 +189,8 @@ class _AddFundScreenState extends State<AddFundScreen> {
                                         ).addFund(
                                           amount:
                                               '${selected_package?['amount']}',
-                                          reference:
-                                              '${selected_package?['package_name']}',
+                                          package_id:
+                                              '${selected_package?['id']??''}',
                                           password: pass ?? '',
                                           upi: upiController.text,
                                           utr: utrController.text,
@@ -238,6 +241,9 @@ class _AddFundScreenState extends State<AddFundScreen> {
     );
   }
 }
+
+
+
 
 class PaymentPackageScreen extends StatefulWidget {
   final Map<String, dynamic> package;
@@ -297,9 +303,9 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
               // 📌 Body Message
               Text(
                 "Please pay the package amount only to the QR code shown.\n\n"
-                "After completing the payment, enter your UPI ID and UTR number "
-                "to proceed with the purchase.\n\n"
-                "⚠ Be careful and enter the correct details.",
+                    "After completing the payment, enter your UPI ID and UTR number "
+                    "to proceed with the purchase.\n\n"
+                    "⚠ Be careful and enter the correct details.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -316,17 +322,6 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
     );
   }
 
-  // Future<void> _openUPIPayment({
-  //   required String qr_data
-  // }) async {
-  //   final uri = Uri.parse(
-  //     qr_data,
-  //   );
-  //
-  //   if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-  //     throw "Could not open UPI app";
-  //   }
-  // }
 
   Future<void> _openUPIPayment({
     required String upiId,
@@ -334,21 +329,15 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
     String payeeName = "Neural Finance",
     String transactionNote = "Payment",
   }) async {
-    final uri = Uri.parse(
-      Uri.encodeFull(
-        "upi://pay"
-        "?pa=$upiId"
-        "&pn=$payeeName"
-        "&am=${amount.toStringAsFixed(2)}"
-        "&tn=$transactionNote"
-        "&cu=INR",
-      ),
-    );
+    await Clipboard.setData(ClipboardData(text: upiId));
+    SnackBarHelper.show(context, message: 'UPI ID copied to clipboard');
+    UPIPayment.show(context);
 
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      throw "Could not open UPI app";
-    }
   }
+
+
+
+
 
   String buildUpiQrData({
     required String upiId,
@@ -358,37 +347,15 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
   }) {
     return Uri.encodeFull(
       "upi://pay"
-      "?pa=$upiId"
-      "&pn=$payeeName"
-      "&am=${amount.toStringAsFixed(2)}"
-      "&tn=$transactionNote"
-      "&cu=INR",
+          "?pa=$upiId"
+          "&pn=$payeeName"
+          "&am=${amount.toStringAsFixed(2)}"
+          "&tn=$transactionNote"
+          "&cu=INR",
     );
   }
 
-  // Future<void> _downloadAndOpenQR() async {
-  //   try {
-  //     final String baseUrl = "https://api.neuralpool.in";
-  //     String url = baseUrl + widget.package["qr_image"];
-  //
-  //     final response = await get(Uri.parse(url));
-  //     final dir = await getTemporaryDirectory();
-  //     final file = File("${dir.path}/qr.png");
-  //
-  //     await file.writeAsBytes(response.bodyBytes);
-  //     final qrData = await QrCodeToolsPlugin.decodeFrom(file.path);
-  //
-  //     if (qrData != null && qrData.isNotEmpty) {
-  //       print("QR Data: $qrData");
-  //       _openUPIPayment(qr_data: qrData);
-  //     } else {
-  //       print("No QR code found in the image.");
-  //     }
-  //
-  //   } catch (e) {
-  //     print("Error downloading QR: $e");
-  //   }
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -429,7 +396,7 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
           ],
         ),
 
-        const SizedBox(height: 10),
+        // const SizedBox(height: 10),
 
         // QR IMAGE WITH LOADER + ERROR WIDGET
         Center(
@@ -452,50 +419,33 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
             ),
           ),
         ),
-
-        // Center(
-        //   child: ClipRRect(
-        //     borderRadius: BorderRadius.circular(12),
-        //     child: CachedNetworkImage(
-        //       imageUrl: 'https://api.neuralpool.in${data["qr_image"] ?? ''}',
-        //       height: 250,
-        //       width: 250,
-        //       fit: BoxFit.cover,
-        //
-        //       placeholder: (context, url) => Container(
-        //         height: 250,
-        //         width: 250,
-        //         padding: const EdgeInsets.all(16),
-        //         color: Colors.grey.shade200,
-        //         child: const Center(child: CircularProgressIndicator()),
-        //       ),
-        //
-        //       errorWidget: (context, url, error) => Container(
-        //         height: 250,
-        //         width: 250,
-        //         color: Colors.grey.shade300,
-        //         child: const Icon(
-        //           Icons.broken_image,
-        //           size: 60,
-        //           color: Colors.redAccent,
-        //         ),
-        //       ),
-        //     ),
+        // PAY BUTTON
+        Center(child: Text('UPI: ${widget.package['upi_id']??''}',style: TextStyle(color: Colors.grey),)),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //     children: [
+        //       Text('UPI: ${widget.package['upi_id']??''}'),
+        //       IconButton(onPressed: ()async{
+        //         await Clipboard.setData(ClipboardData(text: widget.package['upi_id']??''));
+        //         SnackBarHelper.show(context, message: 'UPI ID copied to clipboard');
+        //       }, icon: Icon(Iconsax.copy))
+        //     ],
         //   ),
         // ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 10,),
 
-        // PAY BUTTON
         Center(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 2,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              backgroundColor: Colors.green,
-            ),
+          child: TextButton.icon(
+            // style: ElevatedButton.styleFrom(
+            //   shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(20),
+            //   ),
+            //   elevation: 2,
+            //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            //   backgroundColor: Colors.green,
+            // ),
             onPressed: () async {
               // await _downloadAndOpenQR();
               await _openUPIPayment(
@@ -503,7 +453,9 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
                 amount: double.tryParse(widget.package['amount']) ?? 0,
               );
             },
-            child: const Text("Pay Now", style: TextStyle(fontSize: 16)),
+            icon: Icon(Iconsax.copy),
+            label: Text('Copy & Pay'),
+            // child: const Text("Pay Now", style: TextStyle(fontSize: 16)),
           ),
         ),
         //
@@ -537,4 +489,296 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
       ],
     );
   }
+
 }
+
+
+// class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
+//   bool showPaymentFields = false;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       _showInfoPopup();
+//     });
+//   }
+//
+//   void _showInfoPopup() {
+//     showDialog(
+//       context: context,
+//       builder: (_) => Dialog(
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         child: Container(
+//           padding: const EdgeInsets.all(14),
+//           decoration: BoxDecoration(
+//             color: Colors.yellow.shade100,
+//             borderRadius: BorderRadius.circular(20),
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               // 📝 Title
+//               Text(
+//                 "Important Notice",
+//                 style: TextStyle(
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                   color: Colors.teal.shade800,
+//                 ),
+//               ),
+//
+//               const SizedBox(height: 12),
+//
+//               // 📌 Body Message
+//               Text(
+//                 "Please pay the package amount only to the QR code shown.\n\n"
+//                 "After completing the payment, enter your UPI ID and UTR number "
+//                 "to proceed with the purchase.\n\n"
+//                 "⚠ Be careful and enter the correct details.",
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(
+//                   fontSize: 14,
+//                   height: 1.4,
+//                   color: Colors.grey.shade800,
+//                 ),
+//               ),
+//
+//               const SizedBox(height: 18),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // Future<void> _openUPIPayment({
+//   //   required String qr_data
+//   // }) async {
+//   //   final uri = Uri.parse(
+//   //     qr_data,
+//   //   );
+//   //
+//   //   if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+//   //     throw "Could not open UPI app";
+//   //   }
+//   // }
+//
+//   Future<void> _openUPIPayment({
+//     required String upiId,
+//     required double amount,
+//     String payeeName = "Neural Finance",
+//     String transactionNote = "Payment",
+//   }) async {
+//     final uri = Uri.parse(
+//       Uri.encodeFull(
+//         "upi://pay"
+//         "?pa=$upiId"
+//         "&pn=$payeeName"
+//         "&am=${amount.toStringAsFixed(2)}"
+//         "&tn=$transactionNote"
+//         "&cu=INR",
+//       ),
+//     );
+//
+//     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+//       throw "Could not open UPI app";
+//     }
+//   }
+//
+//
+//
+//
+//
+//   String buildUpiQrData({
+//     required String upiId,
+//     required double amount,
+//     String payeeName = "Neural Finance",
+//     String transactionNote = "Payment",
+//   }) {
+//     return Uri.encodeFull(
+//       "upi://pay"
+//       "?pa=$upiId"
+//       "&pn=$payeeName"
+//       "&am=${amount.toStringAsFixed(2)}"
+//       "&tn=$transactionNote"
+//       "&cu=INR",
+//     );
+//   }
+//
+//   // Future<void> _downloadAndOpenQR() async {
+//   //   try {
+//   //     final String baseUrl = "https://api.neuralpool.in";
+//   //     String url = baseUrl + widget.package["qr_image"];
+//   //
+//   //     final response = await get(Uri.parse(url));
+//   //     final dir = await getTemporaryDirectory();
+//   //     final file = File("${dir.path}/qr.png");
+//   //
+//   //     await file.writeAsBytes(response.bodyBytes);
+//   //     final qrData = await QrCodeToolsPlugin.decodeFrom(file.path);
+//   //
+//   //     if (qrData != null && qrData.isNotEmpty) {
+//   //       print("QR Data: $qrData");
+//   //       _openUPIPayment(qr_data: qrData);
+//   //     } else {
+//   //       print("No QR code found in the image.");
+//   //     }
+//   //
+//   //   } catch (e) {
+//   //     print("Error downloading QR: $e");
+//   //   }
+//   // }
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final data = widget.package;
+//
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         const SizedBox(height: 8),
+//
+//         Text(
+//           'Package Details',
+//           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//         ),
+//
+//         const SizedBox(height: 8),
+//
+//         PackageCard(
+//           plan: widget.package,
+//           color: Colors.pinkAccent,
+//           isSelected: true,
+//         ),
+//
+//         const SizedBox(height: 10),
+//
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             const Text(
+//               "Scan & Pay",
+//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(width: 8),
+//             InkWell(
+//               onTap: _showInfoPopup,
+//               child: const Icon(Iconsax.info_circle, color: Colors.blue),
+//             ),
+//           ],
+//         ),
+//
+//         const SizedBox(height: 10),
+//
+//         // QR IMAGE WITH LOADER + ERROR WIDGET
+//         Center(
+//           child: ClipRRect(
+//             borderRadius: BorderRadius.circular(12),
+//             child: Container(
+//               color: Colors.white,
+//               padding: const EdgeInsets.all(12),
+//               child: QrImageView(
+//                 gapless: false,
+//                 data: buildUpiQrData(
+//                   upiId: widget.package['upi_id']??'',
+//                   amount: double.tryParse(widget.package['amount']) ?? 0,
+//                   payeeName: "Neural Finance",
+//                   transactionNote: "Package Payment of ${widget.package['package_name']}",
+//                 ),
+//                 size: 220,
+//                 backgroundColor: Colors.white,
+//               ),
+//             ),
+//           ),
+//         ),
+//
+//         // Center(
+//         //   child: ClipRRect(
+//         //     borderRadius: BorderRadius.circular(12),
+//         //     child: CachedNetworkImage(
+//         //       imageUrl: 'https://api.neuralpool.in${data["qr_image"] ?? ''}',
+//         //       height: 250,
+//         //       width: 250,
+//         //       fit: BoxFit.cover,
+//         //
+//         //       placeholder: (context, url) => Container(
+//         //         height: 250,
+//         //         width: 250,
+//         //         padding: const EdgeInsets.all(16),
+//         //         color: Colors.grey.shade200,
+//         //         child: const Center(child: CircularProgressIndicator()),
+//         //       ),
+//         //
+//         //       errorWidget: (context, url, error) => Container(
+//         //         height: 250,
+//         //         width: 250,
+//         //         color: Colors.grey.shade300,
+//         //         child: const Icon(
+//         //           Icons.broken_image,
+//         //           size: 60,
+//         //           color: Colors.redAccent,
+//         //         ),
+//         //       ),
+//         //     ),
+//         //   ),
+//         // ),
+//         const SizedBox(height: 5),
+//
+//         // PAY BUTTON
+//         Center(
+//           child: ElevatedButton(
+//             style: ElevatedButton.styleFrom(
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(20),
+//               ),
+//               elevation: 2,
+//               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//               backgroundColor: Colors.green,
+//             ),
+//             onPressed: () async {
+//               // await _downloadAndOpenQR();
+//               await _openUPIPayment(
+//                 upiId: widget.package['upi_id']??'',
+//                 amount: double.tryParse(widget.package['amount']) ?? 0,
+//               );
+//             },
+//             child: const Text("Pay Now", style: TextStyle(fontSize: 16)),
+//           ),
+//         ),
+//         //
+//         const SizedBox(height: 20),
+//
+//         Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             const Text(
+//               "After Payment, Enter Details",
+//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 10),
+//
+//             CustomTextField(
+//               label: 'Enter Your UPI ID',
+//               controller: widget.upiController,
+//               isRequired: true,
+//             ),
+//
+//             const SizedBox(height: 15),
+//
+//             CustomTextField(
+//               label: 'Enter UTR / Transaction Number',
+//               controller: widget.utrController,
+//               textInputType: TextInputType.number,
+//               isRequired: true,
+//             ),
+//           ],
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+
+

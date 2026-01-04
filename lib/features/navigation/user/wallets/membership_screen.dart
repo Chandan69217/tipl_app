@@ -71,13 +71,15 @@ class _MembershipScreenState extends State<MembershipScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(title: const Text("Join Membership")),
+      appBar: AppBar(title: const Text("Your Purchase")),
       body: Consumer<WalletProvider>(
         builder: (context, value, child) {
           if (!userAlreadyPurchased) {
             if (value.memberships.isEmpty) {
-              _showNoMembershipDialog();
+              WidgetsBinding.instance.addPostFrameCallback((duration){
+                _showNoMembershipDialog();
+                userAlreadyPurchased = true;
+              });
             } else {
               WidgetsBinding.instance.addPostFrameCallback((duration) {
                 setState(() {
@@ -95,25 +97,35 @@ class _MembershipScreenState extends State<MembershipScreen> {
             const SizedBox(height: 10),
 
             // Show purchased card OR message
-            if (userAlreadyPurchased)
-              PurchasedPlanSlider(purchasedPlan: purchasedPlan)
-            else
-              _buildNoMembershipMessage(),
-
-            const SizedBox(height: 24),
-
-            // Membership Options List
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
               child: Text(
-                "Membership Packages",
+                "Purchased Packages",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            const SizedBox(height: 8,),
+            if (userAlreadyPurchased)
+              PurchasedPlanSlider(purchasedPlan: purchasedPlan)
+            else
+              _buildNoMembershipMessage(),
+
+            const SizedBox(height: 12),
+
+            // Membership Options List
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Text(
+                "All Packages",
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            // const SizedBox(height: 8,),
             Expanded(
               child: isLoading ? CustomCircularIndicator():membershipPlans.isEmpty ? Center(child: Text('No Packages Available')):ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -125,7 +137,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   return PackageCard(
                     plan: p,
                     color: color,
-                    canSelect: true,
+                    canSelect: false,
                     isSelected: selectedPlan == p["package_name"],
                     onSelect: () {
                       setState(() => selectedPlan = p["package_name"]);
@@ -134,8 +146,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                 },
               ),
             ),
-            if(membershipPlans.isNotEmpty)
-            _buildBottomPayBar(),
+            // if(membershipPlans.isNotEmpty)
+            // _buildBottomPayBar(),
           ],
         ),
       ),

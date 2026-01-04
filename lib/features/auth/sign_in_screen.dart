@@ -589,6 +589,14 @@ class _SignInScreenState extends State<SignInScreen> {
         final message = value['message'];
         if(status){
           final data = value['data'] as Map<String,dynamic>;
+          final isInActive = (data['status']??'').toString().toLowerCase() == 'inactive';
+          if(isInActive){
+            CustomMessageDialog.show(context, title: 'Account Inactive', message: 'Your account is currently inactive. Please contact our support team for assistance.',icon: Icons.support_agent,iconColor: Colors.blue);
+            setState(() {
+              _isLoading = false;
+            });
+            return;
+          }
           final member_id = data['member_id']??'';
           final sponsor_id = data['sponsor_id'];
           final token = data['token']??'';

@@ -52,7 +52,7 @@ class ProfileAPIService {
       final data = await getProfileDetailsByMemberId();
       if (data == null) return false;
       for (var entry in data.entries) {
-        if (entry.value == null) {
+        if (entry.value == null && entry.key != 'pan_number') {
           return false;
         }
       }

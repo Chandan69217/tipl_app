@@ -124,10 +124,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                   navigateWithAnimation(context,  UpdateUserDetailsScreen(data: UserProfile.fromJson(user)));
                                   break;
                                 case "block":
-                                  userProvider.blockAndUnblockUser(userMemberID: user['member_id']??'');
+                                  userProvider.blockAndUnblockUser(ctx: context,userMemberID: user['member_id']??'');
                                   break;
                                 case 'unblock':
-                                userProvider.blockAndUnblockUser(block: false,userMemberID: user['member_id']??'');
+                                userProvider.blockAndUnblockUser(ctx:context,block: false,userMemberID: user['member_id']??'');
                               break;
                                 case 'meeting_schedule':
                                   AddMeetingScreen.show(context,meeting_id: user['member_id'],);

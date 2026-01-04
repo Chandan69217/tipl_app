@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tipl_app/api_service/admin_api/users_details_api.dart';
+import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 
 
 class AllUserDetailsProvider extends ChangeNotifier {
@@ -87,13 +88,19 @@ class AllUserDetailsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> blockAndUnblockUser({required String userMemberID,bool? block = true})async{
-    final isUpdated = await UsersDetailsApi(context: context).updateUser(userMemberID: userMemberID,status: block! ? 'Inactive':'Active');
+  Future<bool> blockAndUnblockUser({required BuildContext ctx,required String userMemberID,bool block = true})async{
+    final isUpdated = await UsersDetailsApi(context: context).updateUser(userMemberID: userMemberID,status: block ? 'Inactive':'Active');
     if(isUpdated){
       initialized();
       _applyFilters();
       notifyListeners();
     }
+    SnackBarHelper.show(
+      ctx,
+      message: block
+          ? 'User has been deactivated successfully'
+          : 'User has been activated successfully',
+    );
     return isUpdated;
   }
 

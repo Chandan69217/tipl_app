@@ -134,9 +134,10 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                               end: Alignment.bottomRight,
                             ),
                           ),
-                      child: Text('Active',
+                      child: Text(plan['status']??'',
                       style: TextStyle(
                         color:  Color(0xFFFFD54F),
+                        fontSize: 10,
                         fontWeight: FontWeight.bold
                       ),
                       ),
@@ -150,6 +151,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+
                             children: [
                               Container(
                                 padding: const EdgeInsets.all(12),
@@ -171,7 +173,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "${plan["package_type"] ?? "N/A"} Membership",
+                                      "${plan["package_type"] ?? "N/A"}",
                                       style: TextStyle(
                                         color: Color(0xFFEEDFB5),
                                         fontSize: 18,
@@ -180,7 +182,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                                       ),
                                     ),
                                     Text(
-                                      plan["package_type"] ?? "N/A",
+                                      '₹ ${plan["amount"] ?? "0.0"}',
                                       style: const TextStyle(
                                         color: Color(0xFFD6C48B),
                                         fontSize: 12,
@@ -200,13 +202,13 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
                             ],
                           ),
 
-                          const SizedBox(height: 18),
+                          const SizedBox(height: 20),
                           PackageProgressBar(
-                            durationInDays: plan['durationInDays']??0,
-                            progressDay: plan['progress_day']??0,
-                            totalAmount: (plan['amount']??0 as num).toDouble(),
-                            usedAmount: (plan['usedAmount']??0 as num).toDouble(),
-                            perDayAmount: (plan['perDayAmount']??0 as num).toDouble(),
+                            durationInDays: plan['total_membership_days']??0,
+                            progressDay: plan['elapsed_days']??0,
+                            // totalAmount: (plan['amount']??0 as num).toDouble(),
+                            usedAmount: (plan['daily_roi_monthly']??0 as num).toDouble(),
+                            perDayAmount: (plan['total_monthly_roi']??0 as num).toDouble(),
                           ),
 
                           // const SizedBox(height: 14),
@@ -314,7 +316,7 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
 class PackageProgressBar extends StatelessWidget {
   final int durationInDays;
   final int progressDay;
-  final double totalAmount;
+  // final double totalAmount;
   final double usedAmount;
   final double perDayAmount;
 
@@ -322,7 +324,7 @@ class PackageProgressBar extends StatelessWidget {
     super.key,
     required this.durationInDays,
     required this.progressDay,
-    required this.totalAmount,
+    // required this.totalAmount,
     required this.usedAmount,
     required this.perDayAmount,
   });
@@ -331,7 +333,7 @@ class PackageProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final progress =
     (progressDay / durationInDays).clamp(0.0, 1.0);
-
+    final totalAmount = perDayAmount * durationInDays;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

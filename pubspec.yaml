@@ -63,6 +63,8 @@ dependencies:
   flutter_profile_picture: ^2.0.0
   flex_color_scheme: ^8.4.0
 
+  flutter_upi_india: ^1.0.1
+
 
 
 dev_dependencies:

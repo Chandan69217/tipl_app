@@ -217,7 +217,7 @@ class WalletApiService {
 
   Future<Map<String,dynamic>?> addFund({
     required String amount,
-    required String reference,
+    required String package_id,
     required String password,
     required String upi,
     required String utr,
@@ -234,7 +234,7 @@ class WalletApiService {
             "member_id": member_id,
             "amount": amount,
             "source": "Admin",
-            "reference": reference,
+            "packageType_id": package_id,
             "transaction_password": password,
             "upi": upi,
             "utr": utr

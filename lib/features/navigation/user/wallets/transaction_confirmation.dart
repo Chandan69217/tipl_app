@@ -140,7 +140,12 @@ class _TransactionConfirmationState extends State<TransactionConfirmation> {
             "reference": widget.data.reference,
             "upi": widget.data.upi,
             "utr": widget.data.utr,
-            "confirmation": selectedStatus
+            "confirmation": selectedStatus,
+
+            // Temp code
+
+            // "packageType_id":17,
+            // "start_date": "2025-01-01"
           }
       );
 

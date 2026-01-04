@@ -48,7 +48,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   navigatePushReplacementWithAnimation(context,  UpdateUserDetailsScreen(data: UserProfile.fromJson(widget.data)));
                   break;
                 case "block":
-                  final isBlocked =  await Provider.of<AllUserDetailsProvider>(context,listen: false).blockAndUnblockUser(userMemberID: widget.data['member_id']??'');
+                  final isBlocked =  await Provider.of<AllUserDetailsProvider>(context,listen: false).blockAndUnblockUser(ctx: context,userMemberID: widget.data['member_id']??'');
                   if(isBlocked){
                     setState(() {
                       widget.data['status'] = 'Inactive';
@@ -56,7 +56,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   }
                   break;
                 case 'unblock':
-                  final isUnblocked = await Provider.of<AllUserDetailsProvider>(context,listen: false).blockAndUnblockUser(block: false,userMemberID: widget.data['member_id']??'');
+                  final isUnblocked = await Provider.of<AllUserDetailsProvider>(context,listen: false).blockAndUnblockUser(ctx:context,block: false,userMemberID: widget.data['member_id']??'');
                   if(isUnblocked){
                     setState(() {
                       widget.data['status'] = 'Active';

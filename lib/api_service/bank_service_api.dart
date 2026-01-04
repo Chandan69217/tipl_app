@@ -246,7 +246,7 @@ class BankServiceAPI {
           return data;
         }
       } else {
-        handleApiResponse(context, response);
+        handleApiResponse(null,response);
       }
     } catch (exception, trace) {
       print("Exception: $exception,Trace: $trace");

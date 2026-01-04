@@ -39,6 +39,7 @@ class _PackageCardState extends State<PackageCard> {
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: widget.canSelect ? widget.onSelect : null,
       child: Stack(
@@ -48,7 +49,7 @@ class _PackageCardState extends State<PackageCard> {
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: widget.color.withOpacity(0.10),
+              color: widget.color.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: widget.isSelected ? widget.color : Colors.transparent,
@@ -62,7 +63,7 @@ class _PackageCardState extends State<PackageCard> {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: widget.color.withOpacity(0.2),
+                      backgroundColor: widget.color.withValues(alpha: 0.2),
                       child: Icon(Icons.workspace_premium,
                           size: 32, color: widget.color),
                     ),

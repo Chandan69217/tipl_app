@@ -172,7 +172,7 @@ class _WalletScreenState extends State<WalletScreen>  with SingleTickerProviderS
                 children: [
                   _quickAction(
                       Iconsax.crown,
-                      "Membership",
+                      "Purchased",
                     onTap: (){
                         navigateWithAnimation(context, MembershipScreen());
                     }
