@@ -32,7 +32,7 @@ class _AddFundScreenState extends State<AddFundScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController upiController = TextEditingController();
   final TextEditingController utrController = TextEditingController();
-
+  String? selectedBillCycle;
   String? selectedSource = "Admin";
   List<dynamic> _packages_list = [];
   Map<String, dynamic>? selected_package = null;
@@ -160,6 +160,9 @@ class _AddFundScreenState extends State<AddFundScreen> {
                           package: selected_package!,
                           // formKey: _formKey,
                           upiController: upiController,
+                          selectedBillCycle: (bill_cycle){
+                            selectedBillCycle = bill_cycle.name;
+                          },
                           utrController: utrController,
                         ),
                         const SizedBox(height: 10),
@@ -192,8 +195,10 @@ class _AddFundScreenState extends State<AddFundScreen> {
                                           package_id:
                                               '${selected_package?['id']??''}',
                                           password: pass ?? '',
+                                          billCycle: selectedBillCycle,
                                           upi: upiController.text,
                                           utr: utrController.text,
+
                                         );
 
                                     if (response != null) {
@@ -243,11 +248,16 @@ class _AddFundScreenState extends State<AddFundScreen> {
 }
 
 
-
+enum BillingCycle {
+  monthly,
+  halfYearly,
+  yearly,
+}
 
 class PaymentPackageScreen extends StatefulWidget {
   final Map<String, dynamic> package;
   final GlobalKey<FormState>? formKey;
+  final Function(BillingCycle) selectedBillCycle;
   final TextEditingController upiController;
   final TextEditingController utrController;
 
@@ -255,6 +265,7 @@ class PaymentPackageScreen extends StatefulWidget {
     super.key,
     required this.package,
     this.formKey,
+    required this.selectedBillCycle,
     required this.upiController,
     required this.utrController,
   });
@@ -265,7 +276,7 @@ class PaymentPackageScreen extends StatefulWidget {
 
 class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
   bool showPaymentFields = false;
-
+  BillingCycle? selected_bill_cycle = BillingCycle.monthly;
   @override
   void initState() {
     super.initState();
@@ -356,7 +367,6 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
   }
 
 
-
   @override
   Widget build(BuildContext context) {
     final data = widget.package;
@@ -371,6 +381,7 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
 
+
         const SizedBox(height: 8),
 
         PackageCard(
@@ -379,7 +390,37 @@ class _PaymentPackageScreenState extends State<PaymentPackageScreen> {
           isSelected: true,
         ),
 
-        const SizedBox(height: 10),
+        // const SizedBox(height: 8),
+        CustomDropdown<BillingCycle?>(
+          label: 'Bill Cycle',
+          items: BillingCycle.values
+              .map(
+                (e) => DropdownMenuItem<BillingCycle>(
+              value: e,
+              child: Text(
+                e.name == 'monthly'
+                    ? 'Monthly'
+                    : e.name == 'halfYearly'
+                    ? 'Half Yearly'
+                    : 'Yearly',
+              ),
+            ),
+          )
+              .toList(),
+          value: selected_bill_cycle,
+          isRequired: true,
+          onChanged: (value) {
+            setState(() {
+              selected_bill_cycle = value;
+              if(selected_bill_cycle != null){
+                widget.selectedBillCycle.call(selected_bill_cycle!);
+              }
+            });
+          },
+        ),
+
+        const SizedBox(height: 16),
+
 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

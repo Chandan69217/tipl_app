@@ -117,8 +117,10 @@ class _UpdateUserDetailsScreenState extends State<UpdateUserDetailsScreen> {
                   padding: EdgeInsets.only(left: 24, right: 24, bottom: 24),
                   child: Column(
                     children: [
-                      CustomNetworkImage(),
-                      const SizedBox(height: 40,),
+                      CustomNetworkImage(
+                        imageUrl: widget.data.profile,
+                      ),
+                      const SizedBox(height: 20,),
                       Row(
                         children: [
                           Expanded(

@@ -40,7 +40,7 @@ dependencies:
   iconsax: ^0.0.8
   fl_chart: ^1.1.0
   animated_bottom_navigation_bar: ^1.4.0
-  haptic_feedback: ^0.5.1+1
+  haptic_feedback: ^0.6.4+3
   image_picker: ^1.2.0
   image_cropper: ^11.0.0
   connectivity_plus: ^7.0.0

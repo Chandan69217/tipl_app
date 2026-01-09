@@ -189,10 +189,10 @@ class WalletApiService {
   }
 
 
-  Future<List<dynamic>> getMembershipDetails()async{
+  Future<List<dynamic>> getMembershipDetails({String? memberID})async{
     try{
       final token = Pref.instance.getString(PrefConst.TOKEN);
-      final memberId = Pref.instance.getString(PrefConst.MEMBER_ID);
+      final memberId = memberID ??Pref.instance.getString(PrefConst.MEMBER_ID);
 
       final url = Uri.https(Urls.baseUrl, '${Urls.getMembershipDetails}${memberId}');
 
@@ -219,6 +219,7 @@ class WalletApiService {
     required String amount,
     required String package_id,
     required String password,
+    required String? billCycle,
     required String upi,
     required String utr,
 })async{
@@ -234,6 +235,7 @@ class WalletApiService {
             "member_id": member_id,
             "amount": amount,
             "source": "Admin",
+            'bill_cycle' : billCycle,
             "packageType_id": package_id,
             "transaction_password": password,
             "upi": upi,

@@ -10,8 +10,10 @@ import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
+import 'package:tipl_app/features/navigation/admin/manage_users/purchase_plan_list_screen.dart';
 import 'package:tipl_app/features/navigation/genealogy/create_genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
+import 'package:tipl_app/features/navigation/user/wallets/membership_screen.dart';
 import 'package:tipl_app/features/navigation/user/wallets/transaction_pass_bottom_sheet.dart';
 import 'update_user_details.dart';
 
@@ -227,6 +229,17 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                profileListTile(
+                  onTap: (){
+                    navigateWithAnimation(context, PurchasedPlanListScreen(
+                      memberID:  widget.data['member_id']??'N/A',
+                    ));
+                  },
+                  icon: Iconsax.crown,
+                  title: "Package Purchased",
+                  value: 'Tap to view packages',
+                  iconColor: Colors.blue,
+                ),
                 profileListTile(
                   icon: Iconsax.key,
                   title: "Member ID",

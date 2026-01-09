@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:tipl_app/api_service/packages_api/packages_api.dart';
+import 'package:tipl_app/core/utilities/dashboard_type/dashboard_type.dart';
 import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
+
 
 
 class PackageCard extends StatefulWidget {
@@ -37,6 +39,13 @@ class PackageCard extends StatefulWidget {
 class _PackageCardState extends State<PackageCard> {
   bool _isLoading = false;
 
+
+
+  int calculateMonthsFromDays(int days) {
+    return (days / 30).round();
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -47,7 +56,7 @@ class _PackageCardState extends State<PackageCard> {
 
         Container(
             margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(left: 16,right: 16,top: 16),
             decoration: BoxDecoration(
               color: widget.color.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(20),
@@ -87,7 +96,7 @@ class _PackageCardState extends State<PackageCard> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: Text(
-                                  "${widget.plan["duration_in_days"]} Days",
+                                  "${calculateMonthsFromDays(widget.plan["duration_in_days"])} Months",
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: Colors.black87,
@@ -131,7 +140,7 @@ class _PackageCardState extends State<PackageCard> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
-                        "${widget.plan["duration_in_days"]} Days",
+                        "${calculateMonthsFromDays(widget.plan["duration_in_days"])} Months",
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.black87,
@@ -141,7 +150,8 @@ class _PackageCardState extends State<PackageCard> {
                   ],
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: 2),
+
 
                 Padding(
                   padding: const EdgeInsets.only(right: 24.0),
@@ -156,8 +166,23 @@ class _PackageCardState extends State<PackageCard> {
                     ],
                   ),
                 ),
-
-                const SizedBox(height: 10),
+                if(UserRole.user == UserType.role)...[
+                  const SizedBox(height: 4,),
+                  Text(
+                    'Payout is calculated on the principal amount along with applicable ROI in accordance with the billing cycle.',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.black,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w600
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8,)
+                ]else...[
+                  const SizedBox(height: 16)
+                ],
+                // const SizedBox(height: 10),
 
                 // ========= ACTION BUTTONS (Edit / Delete) =========
                 // if (widget.canEdit || widget.canDelete)
@@ -264,7 +289,8 @@ class _PackageCardState extends State<PackageCard> {
     );
   }
 
-  Widget _roiRow(String label, String value) {
+
+Widget _roiRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(

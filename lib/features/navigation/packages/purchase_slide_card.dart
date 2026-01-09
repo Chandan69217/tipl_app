@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:tipl_app/core/utilities/capitalize_first.dart';
+import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/features/navigation/packages/package_transaction_screen.dart';
+import 'package:tipl_app/features/navigation/user/wallets/add_fund_screen.dart';
 
 class PurchasedPlanSlider extends StatefulWidget {
   final List<dynamic> purchasedPlan;
@@ -58,191 +62,14 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
             padEnds: false,
             itemBuilder: (context, index) {
               final plan = widget.purchasedPlan[index];
-
-              final formatter = DateFormat("dd MMM yyyy");
-              final startDate = DateTime.tryParse(plan['start_date'] ?? '');
-              final endDate = DateTime.tryParse(plan['end_date'] ?? '');
-              final startDateFormatted =
-              startDate != null ? formatter.format(startDate) : 'N/A';
-              final endDateFormatted =
-              endDate != null ? formatter.format(endDate) : 'N/A';
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8,vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF1A1A1A),
-                      Color(0xFF3D3D3D),
-                      Color(0xFF8B6A29), // Dark gold shade
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFE8C46A), // Soft gold border
-                    width: 1.8,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-
-                    // -------- Glossy Shine Overlay --------
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: Opacity(
-                        opacity: 0.25,
-                        child: Container(
-                          height: 110,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white.withValues(alpha: 0.4),
-                                Colors.transparent,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Positioned(
-                      top: 12,
-                        right: 12,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6,vertical: 2),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.white.withValues(alpha: 0.4),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                      child: Text(plan['status']??'',
-                      style: TextStyle(
-                        color:  Color(0xFFFFD54F),
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold
-                      ),
-                      ),
-                    )),
-
-
-                    // -------- Content --------
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFFE8C46A).withValues(alpha: 0.2),
-                                ),
-                                child: const Icon(
-                                  Icons.workspace_premium_rounded,
-                                  color: Color(0xFFE8C46A),
-                                  size: 32,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-
-                              // Title + Plan
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${plan["package_type"] ?? "N/A"}",
-                                      style: TextStyle(
-                                        color: Color(0xFFEEDFB5),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0.5,
-                                      ),
-                                    ),
-                                    Text(
-                                      '₹ ${plan["amount"] ?? "0.0"}',
-                                      style: const TextStyle(
-                                        color: Color(0xFFD6C48B),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        _goldDetail("Start", startDateFormatted),
-                                        _goldDetail("Expires", endDateFormatted),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-
-                          const SizedBox(height: 20),
-                          PackageProgressBar(
-                            durationInDays: plan['total_membership_days']??0,
-                            progressDay: plan['elapsed_days']??0,
-                            // totalAmount: (plan['amount']??0 as num).toDouble(),
-                            usedAmount: (plan['daily_roi_monthly']??0 as num).toDouble(),
-                            perDayAmount: (plan['total_monthly_roi']??0 as num).toDouble(),
-                          ),
-
-                          // const SizedBox(height: 14),
-                          //
-                          // // ------------ Details Row 1 ------------
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     _goldDetail("Status", plan["status"] ?? "N/A"),
-                          //     _goldDetail("Amount", "₹${plan["amount"] ?? '0'}"),
-                          //   ],
-                          // ),
-
-                          // const SizedBox(height: 6),
-                          //
-                          // // ------------ Details Row 2 ------------
-                          // Expanded(
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //     children: [
-                          //       _goldDetail("Start", startDateFormatted),
-                          //       _goldDetail("Expires", endDateFormatted),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ),
-
-
-                  ],
-                ),
+              return GestureDetector(
+                onTap: (){
+                  navigateWithAnimation(context, PackageTransactionScreen(
+                    plan: plan,
+                  ));
+                },
+                  child: PurchasedPlanCard(plan: plan)
               );
-
             },
           ),
         ),
@@ -265,6 +92,181 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
     );
   }
 
+
+}
+
+
+
+
+class PurchasedPlanCard extends StatelessWidget {
+  final Map<String, dynamic> plan;
+
+  const PurchasedPlanCard({super.key, required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+
+    final formatter = DateFormat("dd MMM yyyy");
+    final startDate = DateTime.tryParse(plan['start_date'] ?? '');
+    final endDate = DateTime.tryParse(plan['end_date'] ?? '');
+
+    final startDateFormatted =
+    startDate != null ? formatter.format(startDate) : 'N/A';
+    final endDateFormatted =
+    endDate != null ? formatter.format(endDate) : 'N/A';
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF1A1A1A),
+            Color(0xFF3D3D3D),
+            Color(0xFF8B6A29),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: const Color(0xFFE8C46A),
+          width: 1.8,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          /// -------- Glossy Overlay --------
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Opacity(
+              opacity: 0.25,
+              child: Container(
+                height: 110,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white.withValues(alpha: 0.4),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          /// -------- Status Badge --------
+          Positioned(
+            top: 12,
+            right: 12,
+            child: Container(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.white.withValues(alpha: 0.4),
+                  ],
+                ),
+              ),
+              child: Text(
+                plan['status'] ?? '',
+                style: const TextStyle(
+                  color: Color(0xFFFFD54F),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+
+          /// -------- Content --------
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color:
+                        const Color(0xFFE8C46A).withValues(alpha: 0.2),
+                      ),
+                      child: const Icon(
+                        Icons.workspace_premium_rounded,
+                        color: Color(0xFFE8C46A),
+                        size: 32,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            capitalizeFirst(plan["package_type"] ?? "N/A"),
+                            style: const TextStyle(
+                              color: Color(0xFFEEDFB5),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            '₹ ${plan["amount"] ?? "0.0"}',
+                            style: const TextStyle(
+                              color: Color(0xFFD6C48B),
+                              fontSize: 12,
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              _goldDetail("Start", startDateFormatted),
+                              _goldDetail("Expires", endDateFormatted),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                PackageProgressBar(
+                  durationInDays: plan['total_membership_days'] ?? 0,
+                  progressDay: plan['elapsed_days'] ?? 0,
+                  billCycle: plan['bill_cycle']??'',
+                  totalMonthlyAmount:  (plan['total_monthly_roi'] ?? 0 as num).toDouble(),
+                  totalHalfYearlyAmount:  (plan['total_halfyearly_roi'] ?? 0 as num).toDouble(),
+                  totalYearlyAmount:  (plan['total_yearly_roi'] ?? 0 as num).toDouble(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _goldDetail(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +276,6 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
           style: const TextStyle(
             color: Color(0xFFD8C07A),
             fontSize: 11,
-            fontWeight: FontWeight.w400,
           ),
         ),
         const SizedBox(height: 3),
@@ -289,62 +290,95 @@ class _PurchasedPlanSliderState extends State<PurchasedPlanSlider> {
       ],
     );
   }
-
-
-
-  Widget _detailItem(String title, String value) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-        ),
-      ],
-    );
-  }
 }
-
-
 
 
 class PackageProgressBar extends StatelessWidget {
   final int durationInDays;
   final int progressDay;
-  // final double totalAmount;
-  final double usedAmount;
-  final double perDayAmount;
+  final String billCycle;
+  final double totalMonthlyAmount;
+  final double totalHalfYearlyAmount;
+  final double totalYearlyAmount;
 
   const PackageProgressBar({
     super.key,
     required this.durationInDays,
     required this.progressDay,
-    // required this.totalAmount,
-    required this.usedAmount,
-    required this.perDayAmount,
+    required this.totalMonthlyAmount,
+    required this.totalHalfYearlyAmount,
+    required this.totalYearlyAmount,
+    required this.billCycle,
   });
 
+  double _getTotalAmount(String billCycle){
+    
+    switch(billCycle){
+      case 'monthly':
+        return totalMonthlyAmount;
+        break;
+      case 'halfYearly':
+        return totalHalfYearlyAmount;
+        break;
+      case 'yearly':
+        return totalYearlyAmount;
+        break;
+      default: return 0;
+    }
+    
+  }
+
+  String _getBillCycleName(String billCycle){
+
+    switch(billCycle){
+      case 'monthly':
+        return 'Monthly';
+
+      case 'halfYearly':
+        return 'Half Yearly';
+
+      case 'yearly':
+        return 'Yearly';
+
+      default: return '';
+    }
+
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     final progress =
     (progressDay / durationInDays).clamp(0.0, 1.0);
-    final totalAmount = perDayAmount * durationInDays;
+    final totalAmount = _getTotalAmount(billCycle);
+    final perDayAmount = totalAmount/ durationInDays;
+    final paidAmount = perDayAmount * progressDay;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Amount Text
-        Text(
-          "₹${usedAmount.toStringAsFixed(2)} / ₹${totalAmount.toStringAsFixed(2)}",
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFEEDFB5)
-          ),
+        
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "₹${paidAmount.toStringAsFixed(2)} / ₹${totalAmount.toStringAsFixed(2)}",
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFEEDFB5)
+              ),
+            ),
+            
+            Text(
+                _getBillCycleName(billCycle),
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFFEEDFB5)
+              ),
+            )
+          ],
         ),
 
         const SizedBox(height: 8),
