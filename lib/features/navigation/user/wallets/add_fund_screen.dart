@@ -28,11 +28,12 @@ class AddFundScreen extends StatefulWidget {
   _AddFundScreenState createState() => _AddFundScreenState();
 }
 
+
 class _AddFundScreenState extends State<AddFundScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController upiController = TextEditingController();
   final TextEditingController utrController = TextEditingController();
-  String? selectedBillCycle;
+  String? selectedBillCycle = 'monthly';
   String? selectedSource = "Admin";
   List<dynamic> _packages_list = [];
   Map<String, dynamic>? selected_package = null;

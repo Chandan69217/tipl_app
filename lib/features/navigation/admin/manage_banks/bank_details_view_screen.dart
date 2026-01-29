@@ -18,7 +18,7 @@ class BankDetailsViewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final String? panPhoto = data['pan_card_photo'];
     final String? bankPhoto = data['bank_account_photo'];
-    final String baseUrl = "https://${Urls.baseUrl}/";
+    final String baseUrl = "https://${Urls.baseUrl}";
     return Scaffold(
       appBar: AppBar(
         title: const Text("Bank Details"),
@@ -60,8 +60,14 @@ class BankDetailsViewScreen extends StatelessWidget {
                 data['bank_name'],
                 trailing: IconButton(
                   icon: const Icon(Iconsax.eye, size: 20, color: Colors.teal),
-                  onPressed: () {
+                  onPressed: bankPhoto !=null ? () {
                     navigateWithAnimation(context, ImageViewerScreen(imageUrl: baseUrl + (bankPhoto??'')));
+                  }:(){
+                    SnackBarHelper.show(
+                      context,
+                      message: 'Bank passbook has not been provided.',
+                    );
+
                   },
                 ),
               ),
@@ -97,8 +103,14 @@ class BankDetailsViewScreen extends StatelessWidget {
                 data['pan_number'],
                 trailing: IconButton(
                   icon: const Icon(Iconsax.eye, size: 20, color: Colors.blue),
-                  onPressed: () {
+                  onPressed: panPhoto != null ? () {
                     navigateWithAnimation(context, ImageViewerScreen(imageUrl: baseUrl + (panPhoto??'')));
+                  }:(){
+                    SnackBarHelper.show(
+                      context,
+                      message: 'PAN photo has not been provided.',
+                    );
+
                   },
                 ),
               ),

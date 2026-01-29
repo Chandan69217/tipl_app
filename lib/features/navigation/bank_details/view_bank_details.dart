@@ -221,7 +221,8 @@ import 'package:tipl_app/core/widgets/snackbar_helper.dart';
 // }
 
 class ViewBankDetailsScreen extends StatefulWidget {
-  const ViewBankDetailsScreen({super.key,});
+  const ViewBankDetailsScreen({super.key,this.memberId});
+  final String? memberId;
 
   @override
   State<ViewBankDetailsScreen> createState() => _ViewBankDetailsScreenState();
@@ -257,7 +258,7 @@ class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
       ),
 
       body: FutureBuilder<Map<String,dynamic>?>(
-        future: BankServiceAPI(context: context).getBankDetails(),
+        future: widget.memberId != null ?  BankServiceAPI(context: context).getBankDetailsByMemberId(member_id: widget.memberId!):BankServiceAPI(context: context).getBankDetails(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
             return CustomCircularIndicator();
@@ -354,7 +355,7 @@ class _ViewBankDetailsScreenState extends State<ViewBankDetailsScreen> {
             );
           }else{
             return Center(
-              child: Text('Something went wrong !'),
+              child: Text('No Bank Details Available'),
             );
           }
         },
@@ -469,8 +470,9 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
   late TextEditingController _ifscCodeController;
   late TextEditingController _panNumberController;
 
-  dynamic _panCardPhoto;
-  dynamic _bankAccountPhoto;
+  Object? _panCardPhoto;
+  Object? _bankAccountPhoto;
+
   String? accountType;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -479,7 +481,7 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
   void initState() {
     super.initState();
     _accountNameController = TextEditingController(text: widget.data["account_name"]??'');
-    _accountNumberController = TextEditingController(text: widget.data["account_number"]??'');
+    _accountNumberController = TextEditingController(text: widget.data["account_no"]??'');
     _bankNameController = TextEditingController(text: widget.data["bank_name"]??'');
     _branchNameController = TextEditingController(text: widget.data["branch_name"]??'');
     _ifscCodeController = TextEditingController(text: widget.data["ifsc_code"]??'');
@@ -489,36 +491,178 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
     _bankAccountPhoto = widget.data["bank_account_photo"];
   }
 
-  void _saveDetails()async {
-    if((_formKey.currentState?.validate()??false)){
+  Future<void> _saveDetails() async {
+
+    if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
+
+
     setState(() {
       _isLoading = true;
     });
 
-    final updatedData = await BankServiceAPI(context: context).getBankDetails(
-      account_name: _accountNameController.text.trim(),
-      account_no: _accountNumberController.text.trim(),
-      bank_name:  _bankNameController.text.trim(),
-    branch_name: _branchNameController.text.trim(),
-    ifsc_code: _ifscCodeController.text.trim(),
-    pan_number: _panNumberController.text.trim(),
-    pan_img: _panCardPhoto is File ? _panCardPhoto :null,
-    accoune_type: accountType,
-    bank_acc_img: _bankAccountPhoto is File ? _bankAccountPhoto : null
-    );
+    try {
+      final updatedData = await BankServiceAPI(context: context).getBankDetails(
+        memberId: widget.data['member_id'],
+        account_name: _accountNameController.text.trim(),
+        account_no: _accountNumberController.text.trim(),
+        bank_name: _bankNameController.text.trim(),
+        branch_name: _branchNameController.text.trim(),
+        ifsc_code: _ifscCodeController.text.trim(),
+        pan_number: _panNumberController.text.trim(),
+        accoune_type: accountType,
 
-    if(updatedData != null){
-      Navigator.pop(context,true);
+        pan_img: _panCardPhoto is File ? _panCardPhoto as File : null,
+        bank_acc_img:
+        _bankAccountPhoto is File ? _bankAccountPhoto as File : null,
+      );
+
+      if (updatedData != null && mounted) {
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      SnackBarHelper.show(
+        context,
+        message: 'Something went wrong. Please try again.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildImagePicker(
+      String title,
+      Object? image,
+      VoidCallback onTap,
+      ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: _imageView(image),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _imageView(Object? image) {
+    if (image == null) {
+      return _imagePlaceholder();
     }
 
-    setState(() {
-      if(mounted){
-        _isLoading = false;
-      }
-    });
+    // NETWORK IMAGE
+    if (image is String && image.startsWith('http')) {
+      return CachedNetworkImage(
+        imageUrl: image,
+        width: double.infinity,
+        height: 180,
+        fit: BoxFit.cover,
+        placeholder: (_, __) => const SizedBox(
+          height: 180,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        errorWidget: (_, __, ___) => _imagePlaceholder(),
+      );
+    }
 
+    // LOCAL IMAGE
+    if (image is File) {
+      return Image.file(
+        image,
+        width: double.infinity,
+        height: 180,
+        fit: BoxFit.cover,
+      );
+    }
+
+    return _imagePlaceholder();
+  }
+
+  Widget _imagePlaceholder() {
+    return Container(
+      width: double.infinity,
+      height: 160,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black26),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Text(
+        "Tap to Upload",
+        style: TextStyle(color: Colors.black54),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(bool isPan) async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Iconsax.camera),
+                title: const Text("Take Photo"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                    imageQuality: 85,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      isPan
+                          ? _panCardPhoto = File(picked.path)
+                          : _bankAccountPhoto = File(picked.path);
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Iconsax.gallery),
+                title: const Text("Choose from Gallery"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final picked = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                    imageQuality: 85,
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      isPan
+                          ? _panCardPhoto = File(picked.path)
+                          : _bankAccountPhoto = File(picked.path);
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -526,7 +670,6 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Bank Details"),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -536,8 +679,8 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
             child: Column(
               children: [
                 CustomTextField(
-                    label: 'Account Name',
-                    controller: _accountNameController,
+                  label: 'Account Name',
+                  controller: _accountNameController,
                   textInputType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   isRequired: true,
@@ -593,7 +736,7 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
                   label: 'PAN Number',
                   controller: _panNumberController,
                   textInputType: TextInputType.text,
-                  fieldType: FieldType.pan,
+                  // fieldType: FieldType.pan,
                   textInputFormatter: [UpperCaseTextFormatter()],
                   textInputAction: TextInputAction.next,
                   prefixIcon: Icon(Iconsax.document),
@@ -616,152 +759,6 @@ class _EditBankDetailsScreenState extends State<EditBankDetailsScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildImagePicker(String title, dynamic imagePath,VoidCallback onTap) {
-    final bool hasImage = imagePath != null && imagePath is! File;
-    final bool isNetworkImage = hasImage && imagePath.startsWith('http');
-
-    bool isValidLocalFile(String path) {
-      try {
-        final file = File(path);
-        return file.existsSync();
-      } catch (_) {
-        return false;
-      }
-    }
-
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          if (imagePath != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: isNetworkImage
-                  ? CachedNetworkImage(
-                imageUrl: imagePath,
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  height: 180,
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(color: Colors.teal),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  height: 180,
-                  alignment: Alignment.center,
-                  color: Colors.grey.shade200,
-                  child: const Icon(Icons.broken_image, color: Colors.grey),
-                ),
-              )
-                  : isValidLocalFile(imagePath) ? Image.file(
-                imagePath,
-                width: double.infinity,
-                height: 180,
-                fit: BoxFit.cover,
-              ):Container(
-                width: double.infinity,
-                height: 160,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black26),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  "Tap to Uploaded",
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-            )
-          else
-            Container(
-              width: double.infinity,
-              height: 160,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black26),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Text(
-                "Tap to Uploaded",
-                style: TextStyle(color: Colors.black54),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-
-  Future<void> _pickImage(bool isPan) async {
-
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Iconsax.camera, color: Colors.teal),
-                title: const Text("Take Photo"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final pickedFile = await ImagePicker().pickImage(
-                    source: ImageSource.camera,
-                    imageQuality: 85, // Compress image
-                  );
-                  if (pickedFile != null) {
-                    setState(() {
-                      if (isPan) {
-                        _panCardPhoto = File(pickedFile.path);
-                      } else {
-                        _bankAccountPhoto = File(pickedFile.path);
-                      }
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                leading: const Icon(Iconsax.gallery, color: Colors.teal),
-                title: const Text("Choose from Gallery"),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final pickedFile = await ImagePicker().pickImage(
-                    source: ImageSource.gallery,
-                    imageQuality: 85,
-                  );
-                  if (pickedFile != null) {
-                    setState(() {
-                      if (isPan) {
-                        _panCardPhoto = File(pickedFile.path);
-                      } else {
-                        _bankAccountPhoto = File(pickedFile.path);
-                      }
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 

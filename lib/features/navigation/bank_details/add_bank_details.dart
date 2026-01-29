@@ -111,8 +111,8 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
         account_name: accountNameController.text,
         account_no: accountNumberController.text,
         pan_number: panNumberController.text,
-        pan_img: panCardPhoto!,
-        bank_acc_img: bankAccountPhoto!
+        pan_img: panCardPhoto,
+        bank_acc_img: bankAccountPhoto
     );
     if(addSuccessfully){
       widget.onSuccess?.call();
@@ -187,7 +187,7 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                 const SizedBox(height: 16,),
                 CustomTextField(prefixIcon:Icon(Iconsax.document),
                     label: "PAN Number",
-                    fieldType: FieldType.pan,
+                    // fieldType: FieldType.pan,
                     controller: panNumberController,
                     textInputType: TextInputType.text,
                   maxLength: 10,
@@ -203,6 +203,7 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
                     onTap: () => _pickImage(true)),
                 const SizedBox(height: 16),
                 _buildImagePicker(
+                  isRequired: true,
                     label: "Bank Account Photo",
                     icon: Iconsax.gallery,
                     file: bankAccountPhoto,
@@ -227,15 +228,16 @@ class _AddBankDetailsScreenState extends State<AddBankDetailsScreen> {
     required String label,
     required IconData icon,
     required File? file,
+    bool isRequired = false,
     required Future<void> Function() onTap,
   }) {
     return FormField<File>(
-      validator: (value) {
+      validator: isRequired ? (value) {
         if (file == null) {
           return "Please upload $label";
         }
         return null;
-      },
+      }:null,
       builder: (FormFieldState<File> field) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

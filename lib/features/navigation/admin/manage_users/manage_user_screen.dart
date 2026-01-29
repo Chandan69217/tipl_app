@@ -86,9 +86,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                 )
                     : ListView.builder(
                   itemCount: users.length,
+                  shrinkWrap: true,
                   itemBuilder: (context, index) {
                     final user = users[index];
                     final isActive = user["status"] == "Active";
+                    String name = user["full_name"] ?? "N/A";
+                    int count = name.trim().contains(" ") ? 2 : 1;
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -98,11 +101,16 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                             navigateWithAnimation(context,  UserDetailsScreen(data: user));
                           },
                           contentPadding: EdgeInsets.only(left: 16,top: 4,bottom: 4),
-                          leading: ProfilePicture(
-                            name: user["full_name"]??'',
-                            radius: 24,
-                            fontsize: 18,
-                            count: 2,
+                          leading: SizedBox(
+                            width: 48,
+                            height: 48,
+                            child: ProfilePicture(
+                              name: name,
+                              radius: 24,
+                              fontsize: 18,
+                              count: count,
+                              random: true,
+                            ),
                           ),
                           // leading: CircleAvatar(
                           //   backgroundColor:
@@ -110,10 +118,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                           //   child: const Icon(Icons.person, color: Colors.white),
                           // ),
                           title: Text(
-                            user["full_name"]??'N/A',
+                            name,
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          subtitle: Text(user["email"]!),
+                          subtitle: Text(user["email"]??'N/A'),
                           trailing: PopupMenuButton<String>(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),

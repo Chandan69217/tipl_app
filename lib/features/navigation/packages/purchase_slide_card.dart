@@ -255,6 +255,9 @@ class PurchasedPlanCard extends StatelessWidget {
                   durationInDays: plan['total_membership_days'] ?? 0,
                   progressDay: plan['elapsed_days'] ?? 0,
                   billCycle: plan['bill_cycle']??'',
+                  startDate: startDate,
+                  endDate: endDate,
+                  totalPaidAmount:  (plan['total_payout_received'] ?? 0 as num).toDouble(),
                   totalMonthlyAmount:  (plan['total_monthly_roi'] ?? 0 as num).toDouble(),
                   totalHalfYearlyAmount:  (plan['total_halfyearly_roi'] ?? 0 as num).toDouble(),
                   totalYearlyAmount:  (plan['total_yearly_roi'] ?? 0 as num).toDouble(),
@@ -298,6 +301,9 @@ class PackageProgressBar extends StatelessWidget {
   final int progressDay;
   final String billCycle;
   final double totalMonthlyAmount;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final double totalPaidAmount;
   final double totalHalfYearlyAmount;
   final double totalYearlyAmount;
 
@@ -307,25 +313,30 @@ class PackageProgressBar extends StatelessWidget {
     required this.progressDay,
     required this.totalMonthlyAmount,
     required this.totalHalfYearlyAmount,
+    required this.endDate,
+    required this.totalPaidAmount,
     required this.totalYearlyAmount,
     required this.billCycle,
+    required this.startDate,
   });
+
 
   double _getTotalAmount(String billCycle){
     
     switch(billCycle){
       case 'monthly':
         return totalMonthlyAmount;
-        break;
       case 'halfYearly':
         return totalHalfYearlyAmount;
-        break;
       case 'yearly':
         return totalYearlyAmount;
-        break;
       default: return 0;
     }
     
+  }
+
+  int convertDaysIntoMonths(int days) {
+    return (days / 30).round();
   }
 
   String _getBillCycleName(String billCycle){
@@ -344,15 +355,78 @@ class PackageProgressBar extends StatelessWidget {
     }
 
   }
-  
-  
+
+  String _getBillNextBillCycleDate(
+      DateTime? startDate,
+      String billCycle,
+      DateTime? endDate,
+      ) {
+    if (startDate == null || endDate == null) return 'Expired';
+
+    final today = DateTime.now();
+
+    int intervalMonths;
+
+    switch (billCycle) {
+      case 'monthly':
+        intervalMonths = 1;
+        break;
+      case 'halfYearly':
+        intervalMonths = 6;
+        break;
+      case 'yearly':
+        intervalMonths = 12;
+        break;
+      default:
+        return 'Expired';
+    }
+
+    DateTime nextDate = startDate;
+
+    /// Move forward cycle-by-cycle until we reach future
+    while (!nextDate.isAfter(today)) {
+      nextDate = _safeAddMonths(nextDate, intervalMonths);
+    }
+
+    /// 🔥 If next cycle exceeds endDate → use endDate
+    if (nextDate.isAfter(endDate)) {
+      return DateFormat('dd MMM yyyy').format(endDate);
+    }
+
+    return DateFormat('dd MMM yyyy').format(nextDate);
+  }
+
+
+
+  DateTime _safeAddMonths(DateTime date, int monthsToAdd) {
+    final int year = date.year + ((date.month + monthsToAdd - 1) ~/ 12);
+    final int month = (date.month + monthsToAdd - 1) % 12 + 1;
+
+    int day = date.day;
+    final int lastDayOfMonth = DateTime(year, month + 1, 0).day;
+
+    if (day > lastDayOfMonth) {
+      day = lastDayOfMonth;
+    }
+
+    return DateTime(year, month, day).add(Duration(days: 2));
+  }
+
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
-    final progress =
-    (progressDay / durationInDays).clamp(0.0, 1.0);
+
     final totalAmount = _getTotalAmount(billCycle);
+    final progress =
+    (totalPaidAmount /totalAmount ).clamp(0.0, 1.0);
     final perDayAmount = totalAmount/ durationInDays;
-    final paidAmount = perDayAmount * progressDay;
+    // final paidAmount = perDayAmount * progressDay;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -362,7 +436,7 @@ class PackageProgressBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "₹${paidAmount.toStringAsFixed(2)} / ₹${totalAmount.toStringAsFixed(2)}",
+              "₹${totalPaidAmount.toStringAsFixed(2)} / ₹${totalAmount.toStringAsFixed(2)}",
               style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -415,15 +489,30 @@ class PackageProgressBar extends StatelessWidget {
         const SizedBox(height: 6),
 
         // Footer Info
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Text(
+        //       "₹${perDayAmount.toStringAsFixed(2)} / day",
+        //       style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
+        //     ),
+        //     Text(
+        //       "$progressDay / $durationInDays days",
+        //       style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
+        //     ),
+        //   ],
+        // ),
+
+        // const SizedBox(height: 2.0,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "₹${perDayAmount.toStringAsFixed(2)} / day",
+              "₹${calculateMonthsFromDays(totalAmount: totalAmount)} ${_getBillCycleName(billCycle)}",
               style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
             ),
             Text(
-              "$progressDay / $durationInDays days",
+              '${_getBillNextBillCycleDate(startDate, billCycle, endDate)}',
               style: TextStyle(fontSize: 12, color: Color(0xFFFFE9A8)),
             ),
           ],
@@ -431,4 +520,53 @@ class PackageProgressBar extends StatelessWidget {
       ],
     );
   }
+
+
+  // String calculateMonthsFromDays(double totalAmount) {
+  //   final monthCount = convertDaysIntoMonths(durationInDays);
+  //   switch(billCycle){
+  //     case 'monthly':
+  //       return (totalAmount/monthCount).toStringAsFixed(2);
+  //     case 'halfYearly':
+  //       return (totalAmount/6).toStringAsFixed(2);
+  //     case 'yearly':
+  //       return (totalAmount).toStringAsFixed(2);
+  //     default: return '0';
+  //   }
+  //
+  // }
+
+  String calculateMonthsFromDays({
+    required double totalAmount,
+  }) {
+    final int totalMonths = convertDaysIntoMonths(durationInDays);
+
+    switch (billCycle) {
+      case 'monthly':
+      // Always pro-rata
+        return (totalAmount / totalMonths).toStringAsFixed(2);
+
+      case 'halfYearly':
+        if (totalMonths <= 6) {
+          // Full amount for <= 6 months
+          return totalAmount.toStringAsFixed(2);
+        }
+        // Pro-rata for more than 6 months
+        return (totalAmount / (totalMonths / 6)).toStringAsFixed(2);
+
+      case 'yearly':
+        if (totalMonths <= 12) {
+
+          return totalAmount.toStringAsFixed(2);
+        }
+
+        return (totalAmount / (totalMonths / 12)).toStringAsFixed(2);
+
+      default:
+        return '0.00';
+    }
+  }
+
+
+
 }

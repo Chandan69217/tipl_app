@@ -96,9 +96,9 @@ class BankServiceAPI {
     required String accoune_type,
     required String account_name,
     required String account_no,
-    required String pan_number,
-    required File pan_img,
-    required File bank_acc_img,
+    required String? pan_number,
+    required File? pan_img,
+    required File? bank_acc_img,
   }) async {
     final token = Pref.instance.getString(PrefConst.TOKEN);
     final member_id = Pref.instance.getString(PrefConst.MEMBER_ID);
@@ -114,35 +114,45 @@ class BankServiceAPI {
         ..fields['account_type'] = accoune_type
         ..fields['account_name'] = account_name
         ..fields['account_no'] = account_no
-        ..fields['pan_number'] = pan_number
         ..fields['member_id'] = member_id ?? '';
 
-      final compressed_pan_img = await compressImage(pan_img);
-      final compressed_bank_img = await compressImage(bank_acc_img);
-      final panBytes = await compressed_pan_img.readAsBytes();
-      final accBytes = await compressed_bank_img.readAsBytes();
-      final panFile = http.MultipartFile.fromBytes(
-        'pan_card_photo',
-        panBytes,
-        filename: pan_img.path.split('/').last,
-        contentType: MediaType('image', 'jpeg'),
-      );
-      final bankFile = http.MultipartFile.fromBytes(
-        'bank_account_photo',
-        accBytes,
-        filename: bank_acc_img.path.split('/').last,
-        contentType: MediaType('image', 'jpeg'),
-      );
+      if(pan_number!= null){
+       request.fields['pan_number'] = pan_number;
+      }
 
-      request.files.add(panFile);
-      request.files.add(bankFile);
+
+      if(pan_img != null){
+        final compressed_pan_img = await compressImage(pan_img);
+        final panBytes = await compressed_pan_img.readAsBytes();
+        final panFile = http.MultipartFile.fromBytes(
+          'pan_card_photo',
+          panBytes,
+          filename: pan_img.path.split('/').last,
+          contentType: MediaType('image', 'jpeg'),
+        );
+        request.files.add(panFile);
+      }
+
+      if(bank_acc_img != null){
+        final compressed_bank_img = await compressImage(bank_acc_img);
+        final accBytes = await compressed_bank_img.readAsBytes();
+        final bankFile = http.MultipartFile.fromBytes(
+          'bank_account_photo',
+          accBytes,
+          filename: bank_acc_img.path.split('/').last,
+          contentType: MediaType('image', 'jpeg'),
+        );
+
+
+        request.files.add(bankFile);
+      }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
       printAPIResponse(response);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final body = json.decode(response.body) as Map<String, dynamic>;
         final status = body['isSuccess'] ?? false;
         final message = body['message'] ?? '';
@@ -176,6 +186,7 @@ class BankServiceAPI {
   }
 
   Future<Map<String, dynamic>?> getBankDetails({
+    String? memberId,
     String? branch_name,
     String? ifsc_code,
     String? bank_name,
@@ -187,7 +198,7 @@ class BankServiceAPI {
     File? bank_acc_img,
   }) async {
     final token = Pref.instance.getString(PrefConst.TOKEN);
-    final member_id = Pref.instance.getString(PrefConst.MEMBER_ID);
+    final member_id = memberId??Pref.instance.getString(PrefConst.MEMBER_ID);
 
     try {
       final url = Uri.https(Urls.baseUrl, Urls.updateBankDetails, {
@@ -289,7 +300,7 @@ class BankServiceAPI {
           return data;
         }
       }else{
-        handleApiResponse(context, response);
+        handleApiResponse(null, response);
       }
     }catch(exception,trace){
       print("Exception: $exception,Trace: $trace");
@@ -355,7 +366,7 @@ class BankServiceAPI {
           return data;
         }
       }else{
-        handleApiResponse(context, response);
+        handleApiResponse(null, response);
       }
     }catch(exception,trace){
       print('Exception: ${exception},Trace: ${trace}');

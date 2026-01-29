@@ -11,6 +11,7 @@ import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
 import 'package:tipl_app/core/widgets/custom_network_image.dart';
 import 'package:tipl_app/features/change_password/change_password.dart';
 import 'package:tipl_app/features/navigation/admin/manage_users/purchase_plan_list_screen.dart';
+import 'package:tipl_app/features/navigation/bank_details/view_bank_details.dart';
 import 'package:tipl_app/features/navigation/genealogy/create_genealogy_screen.dart';
 import 'package:tipl_app/features/navigation/meetings/add_meeting_screen.dart';
 import 'package:tipl_app/features/navigation/user/wallets/membership_screen.dart';
@@ -239,6 +240,17 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                   title: "Package Purchased",
                   value: 'Tap to view packages',
                   iconColor: Colors.blue,
+                ),
+                profileListTile(
+                  onTap: (){
+                    navigateWithAnimation(context, ViewBankDetailsScreen(
+                      memberId:  widget.data['member_id']??'N/A',
+                    ));
+                  },
+                  icon: Iconsax.bank,
+                  title: "Bank Details",
+                  value: 'Tap to view bank details',
+                  iconColor: Colors.pinkAccent,
                 ),
                 profileListTile(
                   icon: Iconsax.key,

@@ -598,9 +598,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
         final status = body['isSuccess']??false;
         final data = body['data'] as List<dynamic>;
         if(status && data.isNotEmpty){
-          final sponsor_name = data.first['sponsor_name']??'';
+          final full_name = data.first['full_name']??'';
           setState(() {
-            _sponsorNameController.text = sponsor_name;
+            _sponsorNameController.text = full_name;
             _isSponsorIDValid = true;
           });
         }else{

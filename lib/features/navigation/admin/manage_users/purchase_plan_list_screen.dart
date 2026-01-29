@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tipl_app/api_service/wallets_api/wallet_api_service.dart';
 import 'package:tipl_app/core/utilities/navigate_with_animation.dart';
+import 'package:tipl_app/core/widgets/custom_circular_indicator.dart';
 import 'package:tipl_app/features/navigation/packages/package_transaction_screen.dart';
 import 'package:tipl_app/features/navigation/packages/purchase_slide_card.dart';
 
@@ -73,7 +74,7 @@ class _PurchasedPlanListScreenState
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              "You have not purchased any membership yet.",
+              "User have not purchased any membership yet.",
               style: TextStyle(
                 color: Colors.orange.shade800,
                 fontWeight: FontWeight.w600,
@@ -135,24 +136,24 @@ class _PurchasedPlanListScreenState
                 ),
               ),
             ),
-            Expanded(
-              child: _isLoading
-                  ? _loader()
-                  : _plans.isEmpty
-                  ? _noMembershipMessage()
-                  : _filteredPlans.isEmpty
-                  ? const Center(
-                child: Text(
-                  "No matching membership found",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
+            _isLoading
+                ? CustomCircularIndicator()
+                : _plans.isEmpty
+                ? _noMembershipMessage()
+                : _filteredPlans.isEmpty
+                ? const Center(
+              child: Text(
+                "No matching membership found",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
                 ),
-              )
-                  : RefreshIndicator(
-                onRefresh: _fetchPurchasedPlans,
-                child: ListView.builder(
+              ),
+            )
+                : Expanded(
+                  child: RefreshIndicator(
+                                onRefresh: _fetchPurchasedPlans,
+                                child: ListView.builder(
                   padding:
                   const EdgeInsets.only(bottom: 16),
                   itemCount: _filteredPlans.length,
@@ -166,6 +167,9 @@ class _PurchasedPlanListScreenState
                           PackageTransactionScreen(
                             plan: plan,
                             isAdmin: true,
+                            onSuccessPaymentAdd: (){
+                              _fetchPurchasedPlans();
+                            },
                           ),
                         );
                       },
@@ -173,9 +177,9 @@ class _PurchasedPlanListScreenState
                       PurchasedPlanCard(plan: plan),
                     );
                   },
+                                ),
+                              ),
                 ),
-              ),
-            ),
           ],
         ),
       ),
